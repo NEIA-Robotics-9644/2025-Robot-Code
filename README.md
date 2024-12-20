@@ -1,5 +1,5 @@
-# 2024 Robot Code
-This is the code for our 2024 CRESCENDO FRC robot.
+# 2025 Robot Code
+This is the code for our 2025 CRESCENDO FRC robot.
 We program our robot with Java, using WPILib.
 
 ## Code Structure
