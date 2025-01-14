@@ -109,7 +109,6 @@ Temporary Items
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-!.vscode/style.xml
 
 ### Windows ###
 # Windows thumbnail cache files
@@ -169,16 +168,20 @@ out/
 # Fleet
 .fleet
 
-# Simulation GUI and other tools window save files
-*-window.json
-simgui*.json
+# Simulation GUI and other tools window save file
 networktables.json
+simgui*.json
+*-window.json
+
+# Simulation data log directory
+logs/
+
+# Folder that has CTRE Phoenix Sim device config storage
+ctre_sim/
+
+# clangd
+/.cache
+compile_commands.json
 
 # Version file
-src/main/java/org/littletonrobotics/frc2024/BuildConstants.java
-
-# Generated paths
-src/main/deploy/trajectories/*.pathblob
-
-# Shot map temporary file
-~*.xlsx
+src/main/java/frc/robot/BuildConstants.java
