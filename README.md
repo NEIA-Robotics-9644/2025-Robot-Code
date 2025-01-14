@@ -7,7 +7,7 @@
 
 
 # 2025 Robot Code
-This is the code for our 2025 CRESCENDO FRC robot.
+This is the code for our 2025 REEFSCAPE&trade; FRC robot.
 We program our robot with Java, using WPILib.
 
 ## Code Structure
