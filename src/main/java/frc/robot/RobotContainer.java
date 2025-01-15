@@ -14,7 +14,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -123,15 +122,13 @@ public class RobotContainer {
 
     var hid = controller.getHID();
     // Default command, normal field-relative drive
-    controller
-        .b()
-        .whileFalse(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> hid.getLeftY(),
-                () -> hid.getLeftX(),
-                () -> -hid.getRightX(),
-                () -> (Math.abs(hid.getRightX()) > 0.1)));
+    drive.setDefaultCommand(
+        DriveCommands.joystickDriveAtAngle(
+            drive,
+            () -> hid.getLeftY(),
+            () -> hid.getLeftX(),
+            () -> -hid.getRightX(),
+            () -> (Math.abs(hid.getRightX()) > 0.1)));
 
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
