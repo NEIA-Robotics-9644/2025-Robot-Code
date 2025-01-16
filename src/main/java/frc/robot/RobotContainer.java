@@ -121,7 +121,6 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     var hid = controller.getHID();
-    // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDriveAtAngle(
             drive,
