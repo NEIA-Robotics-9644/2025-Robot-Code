@@ -224,8 +224,6 @@ public class Drive extends SubsystemBase {
    */
   public void runVelocity(ChassisSpeeds speeds) {
     // System.out.println("Running velocity");
-    System.out.println(speeds);
-    System.out.println("runVelocity was called");
 
     // Calculate module setpoints
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
