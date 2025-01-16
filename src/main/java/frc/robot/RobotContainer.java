@@ -127,8 +127,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     if (vision.returnTargets(vision.camera) != null) {
-      System.out.println(
-          vision.getQuaternionFromAprilTags(vision.returnTargets(vision.camera).getTargets()));
+      vision.returnBestPose();
     }
 
     var hid = controller.getHID();

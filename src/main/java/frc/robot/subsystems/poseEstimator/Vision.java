@@ -38,6 +38,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +52,7 @@ import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-public class Vision {
+public class Vision extends SubsystemBase {
   public final PhotonCamera camera;
   private final PhotonPoseEstimator photonEstimator;
   private Matrix<N3, N1> curStdDevs;
@@ -70,7 +71,7 @@ public class Vision {
   private VisionSystemSim visionSim;
 
   public Vision() {
-    camera = new PhotonCamera("photonvision-back");
+    camera = new PhotonCamera("Global_Shutter_Camera");
 
     photonEstimator =
         new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
@@ -193,6 +194,26 @@ public class Vision {
     return curStdDevs;
   }
 
+  public void returnBestPose() {
+    var result = camera.getLatestResult();
+    boolean hasTargets = result.hasTargets();
+    if (hasTargets) {
+      PhotonTrackedTarget target = result.getBestTarget();
+      double yaw = target.getYaw();
+      double pitch = target.getPitch();
+      double area = target.getArea();
+      double skew = target.getSkew();
+      int targetID = target.getFiducialId();
+      double poseAmbiguity = target.getPoseAmbiguity();
+      System.out.println(yaw);
+      System.out.println(pitch);
+      System.out.println(area);
+      System.out.println(skew);
+      System.out.println(targetID);
+      System.out.println(poseAmbiguity);
+    }
+  }
+
   // ----- Simulation
 
   public void simulationPeriodic(Pose2d robotSimPose) {
@@ -254,5 +275,13 @@ public class Vision {
 
     // Return the quaternion object
     return new Quaternion(qx, qy, qz, qw);
+  }
+
+  @Override
+  public void periodic() {
+    if (camera.getLatestResult().hasTargets()) {
+      System.out.println("target aquired");
+      this.returnBestPose();
+    }
   }
 }
