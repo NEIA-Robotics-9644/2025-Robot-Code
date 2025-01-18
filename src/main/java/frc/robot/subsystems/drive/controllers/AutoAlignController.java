@@ -8,13 +8,14 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.subsystems.poseEstimator.Vision;
 import java.util.function.Supplier;
 
 public class AutoAlignController {
-  private static final double linearkP = 3.5;
+  private static final double linearkP = 10;
   private static final double linearkD = 0.0;
-  private static final double thetakP = 7.0;
-  private static final double thetakD = 0.0;
+  private static final double thetakP = 4000;
+  private static final double thetakD = 50;
   private static final double linearTolerance = 0.08;
   private static final double thetaTolerance = Units.degreesToRadians(2.0);
   private static final double toleranceTime = 0.5;
@@ -32,8 +33,9 @@ public class AutoAlignController {
   private static final double ffMinRadius = 0.2;
   private static final double ffMaxRadius = 0.8;
 
+  public Vision vision;
+
   private final Supplier<Pose2d> poseSupplier;
-  private final Supplier<Translation2d> feedforwardSupplier;
   private final boolean slowMode;
   private Translation2d lastSetpointTranslation;
 
@@ -47,7 +49,6 @@ public class AutoAlignController {
       Supplier<Translation2d> feedforwardSupplier,
       boolean slowMode) {
     this.poseSupplier = poseSupplier;
-    this.feedforwardSupplier = feedforwardSupplier;
     this.slowMode = slowMode;
 
     // Set up both controllers
@@ -78,7 +79,7 @@ public class AutoAlignController {
   }
 
   private void resetControllers() {
-    Pose2d currentPose = frc.robot.RobotState.getInstance().getEstimatedPose();
+    Pose2d currentPose = frc.robot.RobotState.getInstance().getEstimatedPose(vision);
     Pose2d goalPose = poseSupplier.get();
     Twist2d fieldVelocity = frc.robot.RobotState.getInstance().getFieldTwist();
     Rotation2d robotToGoalAngle =
@@ -95,8 +96,8 @@ public class AutoAlignController {
     lastSetpointTranslation = currentPose.getTranslation();
   }
 
-  public ChassisSpeeds update() {
-    Pose2d currentPose = frc.robot.RobotState.getInstance().getEstimatedPose();
+  public ChassisSpeeds update(Vision vision) {
+    Pose2d currentPose = frc.robot.RobotState.getInstance().getEstimatedPose(vision);
     Pose2d targetPose = poseSupplier.get();
 
     double currentDistance =
@@ -133,8 +134,7 @@ public class AutoAlignController {
                 new Translation2d(),
                 currentPose.getTranslation().minus(targetPose.getTranslation()).getAngle())
             .transformBy(frc.robot.util.GeomUtil.toTransform2d(driveVelocityScalar, 0.0))
-            .getTranslation()
-            .plus(feedforwardSupplier.get());
+            .getTranslation();
     return ChassisSpeeds.fromFieldRelativeSpeeds(
         driveVelocity.getX(), driveVelocity.getY(), thetaVelocity, currentPose.getRotation());
   }

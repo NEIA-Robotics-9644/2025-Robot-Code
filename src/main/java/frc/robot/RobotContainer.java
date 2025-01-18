@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.AutoAlignCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -31,6 +32,7 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.poseEstimator.Vision;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -42,6 +44,8 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+
+  private final Vision vision;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -61,6 +65,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
+        vision = new Vision();
         break;
 
       case SIM:
@@ -72,6 +77,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
+        vision = new Vision();
         break;
 
       default:
@@ -83,6 +89,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+        vision = new Vision();
         break;
     }
 
@@ -121,13 +128,20 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     var hid = controller.getHID();
+    // drive.setDefaultCommand(
+    //     DriveCommands.joystickDriveAtAngle(
+    //         drive,
+    //         () -> hid.getLeftY(),
+    //         () -> hid.getLeftX(),
+    //         () -> -hid.getRightX(),
+    //         () -> (Math.abs(hid.getRightX()) > 0.1)));
+
+    Rotation2d tagRot = new Rotation2d(120);
+
+    Pose2d aprilTag1 = new Pose2d(15.08, 0.25, tagRot);
+
     drive.setDefaultCommand(
-        DriveCommands.joystickDriveAtAngle(
-            drive,
-            () -> hid.getLeftY(),
-            () -> hid.getLeftX(),
-            () -> -hid.getRightX(),
-            () -> (Math.abs(hid.getRightX()) > 0.1)));
+        AutoAlignCommand.autoAlignCommandAprilTagCommand(() -> aprilTag1, drive, vision));
 
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));

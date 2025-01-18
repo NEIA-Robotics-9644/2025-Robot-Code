@@ -8,13 +8,16 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.subsystems.poseEstimator.Vision;
 
 /** Tracks the robot's position, orientation, and field-relative motion. */
 public class RobotState {
   private static RobotState instance = null;
 
+  public Vision vision = new Vision();
+
   // Current pose of the robot on the field
-  private Pose2d currentPose = new Pose2d();
+  private Pose2d currentPose = vision.returnCameraToTarget(vision);
 
   // Field-relative velocity
   private ChassisSpeeds fieldVelocity = new ChassisSpeeds();
@@ -80,7 +83,7 @@ public class RobotState {
    *
    * @return The current pose of the robot.
    */
-  public Pose2d getEstimatedPose() {
+  public Pose2d getEstimatedPose(Vision vision) {
     return currentPose;
   }
 
