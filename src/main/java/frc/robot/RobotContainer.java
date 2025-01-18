@@ -76,7 +76,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
-        vision = null;
+        vision = new Vision();
         break;
 
       default:
@@ -88,7 +88,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        vision = null;
+        vision = new Vision() {};
         break;
     }
 
