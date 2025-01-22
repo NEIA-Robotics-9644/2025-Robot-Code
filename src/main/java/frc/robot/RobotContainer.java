@@ -37,6 +37,8 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.poseEstimator.Vision;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -49,7 +51,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
 
-  // private final Vision vision;
+  private final Vision vision;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -69,7 +71,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
-        // vision = new Vision();
+        vision = new Vision();
         break;
 
       case SIM:
@@ -81,7 +83,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
-        // vision = new Vision();
+        vision = new Vision();
         break;
 
       default:
@@ -93,7 +95,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        // vision = new Vision() {};
+        vision = new Vision() {};
         break;
     }
 
@@ -128,11 +130,6 @@ public class RobotContainer {
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-
-    var pose = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
-    var constraints = PathConstraints.unlimitedConstraints(12.0);
-
-    autoChooser.addOption("Path on the fly", AutoBuilder.pathfindToPose(pose, constraints));
 
     // Set up SysId routines
     autoChooser.addOption(
@@ -194,22 +191,10 @@ public class RobotContainer {
                 .ignoringDisable(true));
   }
 
-  private double x;
-  private double y;
-
-  private double timeSinceLastUpdate = 0;
 
   public void update() {
 
-    x -= 0.02 * controller.getLeftY() * 3;
-    y -= 0.02 * controller.getLeftX() * 3;
 
-    timeSinceLastUpdate += 0.02;
-    // DriveCommands.goToPose(x, y, drive, timeSinceLastUpdate > 0.1);
-
-    if (timeSinceLastUpdate > 0.1) {
-      timeSinceLastUpdate = 0;
-    }
   }
 
   /**
