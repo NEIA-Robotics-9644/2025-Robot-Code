@@ -14,8 +14,11 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -24,6 +27,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.EndEffectorCommands;
+import frc.robot.commands.ExtenderCommands;
+import frc.robot.commands.IntakeCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -31,7 +37,6 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import frc.robot.subsystems.poseEstimator.Vision;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -44,7 +49,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
 
-  private final Vision vision;
+  // private final Vision vision;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -64,7 +69,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
-        vision = new Vision();
+        // vision = new Vision();
         break;
 
       case SIM:
@@ -76,7 +81,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
-        vision = new Vision();
+        // vision = new Vision();
         break;
 
       default:
@@ -88,12 +93,46 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        vision = new Vision() {};
+        // vision = new Vision() {};
         break;
     }
 
+    // Register named commands
+
+    NamedCommands.registerCommand(
+        "Extender to L1", ExtenderCommands.goToSetpoint(ExtenderCommands.ExtenderSetpoint.L1, 2));
+    NamedCommands.registerCommand(
+        "Extender to L2", ExtenderCommands.goToSetpoint(ExtenderCommands.ExtenderSetpoint.L2, 2));
+    NamedCommands.registerCommand(
+        "Extender to L3", ExtenderCommands.goToSetpoint(ExtenderCommands.ExtenderSetpoint.L3, 2));
+    NamedCommands.registerCommand(
+        "Extender to L4", ExtenderCommands.goToSetpoint(ExtenderCommands.ExtenderSetpoint.L4, 2));
+    NamedCommands.registerCommand(
+        "Extender to Intake",
+        ExtenderCommands.goToSetpoint(ExtenderCommands.ExtenderSetpoint.Intake, 2));
+    NamedCommands.registerCommand(
+        "Extender to Process",
+        ExtenderCommands.goToSetpoint(ExtenderCommands.ExtenderSetpoint.Process, 2));
+    NamedCommands.registerCommand(
+        "Extender to L2 Dealgify",
+        ExtenderCommands.goToSetpoint(ExtenderCommands.ExtenderSetpoint.L2Dealgify, 2));
+    NamedCommands.registerCommand(
+        "Extender to L3 Dealgify",
+        ExtenderCommands.goToSetpoint(ExtenderCommands.ExtenderSetpoint.L3Dealgify, 2));
+
+    NamedCommands.registerCommand(
+        "Intake Coral From Station", IntakeCommands.intakeCoralFromStation());
+
+    NamedCommands.registerCommand("Score Coral", EndEffectorCommands.scoreCoral());
+    NamedCommands.registerCommand("Dealgify", EndEffectorCommands.dealgify());
+
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+
+    var pose = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
+    var constraints = PathConstraints.unlimitedConstraints(12.0);
+
+    autoChooser.addOption("Path on the fly", AutoBuilder.pathfindToPose(pose, constraints));
 
     // Set up SysId routines
     autoChooser.addOption(
@@ -126,9 +165,9 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    if (vision.returnTargets(vision.camera) != null) {
-      vision.returnBestPose();
-    }
+    // if (vision.returnTargets(vision.camera) != null) {
+    //   vision.returnBestPose();
+    // }
 
     var hid = controller.getHID();
     // Default command, normal field-relative drive
@@ -153,6 +192,24 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
+  }
+
+  private double x;
+  private double y;
+
+  private double timeSinceLastUpdate = 0;
+
+  public void update() {
+
+    x -= 0.02 * controller.getLeftY() * 3;
+    y -= 0.02 * controller.getLeftX() * 3;
+
+    timeSinceLastUpdate += 0.02;
+    // DriveCommands.goToPose(x, y, drive, timeSinceLastUpdate > 0.1);
+
+    if (timeSinceLastUpdate > 0.1) {
+      timeSinceLastUpdate = 0;
+    }
   }
 
   /**

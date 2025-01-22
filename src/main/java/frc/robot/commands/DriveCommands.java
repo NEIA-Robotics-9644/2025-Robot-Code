@@ -13,6 +13,8 @@
 
 package frc.robot.commands;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -35,6 +37,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.Logger;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
@@ -158,6 +161,19 @@ public class DriveCommands {
 
         // Reset PID controller when command starts
         .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
+  }
+
+  public static void goToPose(double x, double y, Drive drive, boolean schedule) {
+
+    var pose = new Pose2d(x, y, new Rotation2d());
+
+    var constraints = PathConstraints.unlimitedConstraints(12.0);
+
+    Logger.recordOutput("Target pose", pose);
+
+    if (schedule) {
+      AutoBuilder.pathfindToPose(pose, constraints).schedule();
+    }
   }
 
   /**
