@@ -5,8 +5,7 @@
 ![Static Badge](https://img.shields.io/badge/Advantage-Scope-dee3ff?style=flat-square&labelColor=0027e6)
 ![Static Badge](https://img.shields.io/badge/Advantage-Kit-fff3d9?style=flat-square&labelColor=fec007)\
 [![Build](https://github.com/NEIA-Robotics-9644/2025-Robot-Code/actions/workflows/build.yml/badge.svg)](https://github.com/NEIA-Robotics-9644/2025-Robot-Code/actions/workflows/build.yml)
-![Last Commit](https://img.shields.io/github/last-commit/NEIA-Robotics-9644/2025-Robot-Code?color=cb007b)
-
+![Last Commit](https://img.shields.io/github/last-commit/NEIA-Robotics-9644/2025-Robot-Code?color=32bd51)
 # 2025 Robot Code
 This is the code for our 2025 REEFSCAPE&trade; FRC robot.
 We program our robot with Java, using WPILib.
