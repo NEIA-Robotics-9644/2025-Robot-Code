@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.poseEstimator.Vision;
 
+
 /** Tracks the robot's position, orientation, and field-relative motion. */
 public class RobotState {
   private static RobotState instance = null;
@@ -17,7 +18,7 @@ public class RobotState {
   public Vision vision = new Vision();
 
   // Current pose of the robot on the field
-  private Pose2d currentPose = vision.returnCameraToTarget(vision);
+  private Pose2d currentPose = new Pose2d();
 
   // Field-relative velocity
   private ChassisSpeeds fieldVelocity = new ChassisSpeeds();
@@ -84,6 +85,7 @@ public class RobotState {
    * @return The current pose of the robot.
    */
   public Pose2d getEstimatedPose(Vision vision) {
+    this.currentPose = vision.returnCameraToTarget(vision);
     return currentPose;
   }
 

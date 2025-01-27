@@ -1,27 +1,3 @@
-/*
- * MIT License
- *
- * Copyright (c) PhotonVision
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-
 package frc.robot.subsystems.poseEstimator;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -37,6 +13,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
@@ -54,17 +31,20 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Vision extends SubsystemBase {
   public final PhotonCamera camera;
+  public final PhotonCamera camera2;
   private final PhotonPoseEstimator photonEstimator;
   private Matrix<N3, N1> curStdDevs;
 
   public static final AprilTagFieldLayout kTagLayout =
       AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
+  
+  
 
   public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
   public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
 
   public static final Transform3d kRobotToCam =
-      new Transform3d(new Translation3d(0.3, 0.0, 0.1), new Rotation3d(0, 0, 0));
+      new Transform3d(new Translation3d(Units.inchesToMeters(-5), Units.inchesToMeters(-4), Units.inchesToMeters(0)), new Rotation3d(0,Math.toRadians(30), 0));
 
   // Simulation
   private PhotonCameraSim cameraSim;
@@ -72,6 +52,7 @@ public class Vision extends SubsystemBase {
 
   public Vision() {
     camera = new PhotonCamera("Global_Shutter_Camera");
+    camera2 = new PhotonCamera("Global_Shutter_Camera");
 
     photonEstimator =
         new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
@@ -152,7 +133,45 @@ public class Vision extends SubsystemBase {
           new Pose2d(fieldPose.getX(), fieldPose.getY(), fieldPose.getRotation().toRotation2d());
       return fieldPose2d;
     }
-    return null;
+    else {
+      return null;
+    }
+  }
+
+
+  public Pose2d calculateRobotToTargetPose(Transform3d cameraToRobot) {
+      // Get the latest result from the camera
+      PhotonPipelineResult result = camera.getLatestResult();
+
+      // Check if there are valid targets
+      if (result.hasTargets()) {
+          // Get the best target
+          var target = result.getBestTarget();
+
+          // Get the camera-to-target Transform3d
+          Transform3d cameraToTarget = target.getBestCameraToTarget();
+
+          // Calculate robot-to-target Transform3d
+          Transform3d robotToTarget = cameraToRobot.plus(cameraToTarget);
+
+          // Convert the robot-to-target Transform3d into a Pose3d
+          Pose3d robotToTargetPose3d = new Pose3d(
+              robotToTarget.getTranslation(),
+              robotToTarget.getRotation()
+          );
+
+          // Convert Pose3d to Pose2d (dropping the z-axis and using only yaw for rotation)
+          Pose2d robotToTargetPose2d = new Pose2d(
+              robotToTargetPose3d.getX(),
+              robotToTargetPose3d.getY(),
+              new Rotation2d(robotToTargetPose3d.getRotation().getZ())
+          );
+
+          return robotToTargetPose2d;
+      }
+
+      // Return null if no targets are found
+      else {return null;}
   }
 
   /**
