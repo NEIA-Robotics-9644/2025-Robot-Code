@@ -15,11 +15,10 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,8 +36,9 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.end_effector_wheels.EndEffectorWheels;
+import frc.robot.subsystems.end_effector_wheels.FlywheelIOSim;
 import frc.robot.subsystems.poseEstimator.Vision;
-
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -189,13 +189,15 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
+
+    var flywheel =
+        new EndEffectorWheels(
+            new FlywheelIOSim(new DCMotor(100.0, 10.0, 10.0, 10.0, 100, 1), 1, 1));
+
+    controller.y().whileTrue(Commands.run(() -> flywheel.setVelocity(10)));
   }
 
-
-  public void update() {
-
-
-  }
+  public void update() {}
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
