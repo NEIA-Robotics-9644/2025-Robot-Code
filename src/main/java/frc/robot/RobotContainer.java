@@ -51,8 +51,6 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
 
-  private final Vision vision;
-
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
@@ -70,8 +68,8 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontLeft),
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
-                new ModuleIOTalonFX(TunerConstants.BackRight));
-        vision = new Vision();
+                new ModuleIOTalonFX(TunerConstants.BackRight),
+                new Vision());
         break;
 
       case SIM:
@@ -82,8 +80,8 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontLeft),
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
-                new ModuleIOSim(TunerConstants.BackRight));
-        vision = new Vision();
+                new ModuleIOSim(TunerConstants.BackRight),
+                new Vision());
         break;
 
       default:
@@ -94,8 +92,8 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
-                new ModuleIO() {});
-        vision = new Vision() {};
+                new ModuleIO() {},
+                new Vision());
         break;
     }
 
