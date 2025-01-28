@@ -29,8 +29,6 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -64,7 +62,7 @@ public class Vision extends SubsystemBase {
   public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
 
   public static final Transform3d kRobotToCam =
-      new Transform3d(new Translation3d(0.3, 0.0, 0.1), new Rotation3d(0, 0, 0));
+      new Transform3d(new Translation3d(0.0, 0.3, 0.15), new Rotation3d(0, 0, 0));
 
   // Simulation
   private PhotonCameraSim cameraSim;
@@ -194,25 +192,25 @@ public class Vision extends SubsystemBase {
     return curStdDevs;
   }
 
-  public void returnBestPose() {
-    var result = camera.getLatestResult();
-    boolean hasTargets = result.hasTargets();
-    if (hasTargets) {
-      PhotonTrackedTarget target = result.getBestTarget();
-      double yaw = target.getYaw();
-      double pitch = target.getPitch();
-      double area = target.getArea();
-      double skew = target.getSkew();
-      int targetID = target.getFiducialId();
-      double poseAmbiguity = target.getPoseAmbiguity();
-      System.out.println(yaw);
-      System.out.println(pitch);
-      System.out.println(area);
-      System.out.println(skew);
-      System.out.println(targetID);
-      System.out.println(poseAmbiguity);
-    }
-  }
+  // public void returnBestPose() {
+  //   var result = camera.getLatestResult();
+  //   boolean hasTargets = result.hasTargets();
+  //   if (hasTargets) {
+  //     PhotonTrackedTarget target = result.getBestTarget();
+  //     double yaw = target.getYaw();
+  //     double pitch = target.getPitch();
+  //     double area = target.getArea();
+  //     double skew = target.getSkew();
+  //     int targetID = target.getFiducialId();
+  //     double poseAmbiguity = target.getPoseAmbiguity();
+  //     System.out.println(yaw);
+  //     System.out.println(pitch);
+  //     System.out.println(area);
+  //     System.out.println(skew);
+  //     System.out.println(targetID);
+  //     System.out.println(poseAmbiguity);
+  //   }
+  // }
 
   // ----- Simulation
 
@@ -231,57 +229,58 @@ public class Vision extends SubsystemBase {
     return visionSim.getDebugField();
   }
 
-  public Quaternion getQuaternionFromAprilTags(List<PhotonTrackedTarget> targets) {
-    // Ensure targets are not null or empty
-    if (targets == null || targets.isEmpty()) {
-      return null;
-    }
+  // public Quaternion getQuaternionFromAprilTags(List<PhotonTrackedTarget> targets) {
+  //   // Ensure targets are not null or empty
+  //   if (targets == null || targets.isEmpty()) {
+  //     return null;
+  //   }
 
-    // Initialize cumulative rotation values
-    double qx = 0;
-    double qy = 0;
-    double qz = 0;
-    double qw = 0;
-    int validTagCount = 0;
+  //   // Initialize cumulative rotation values
+  //   double qx = 0;
+  //   double qy = 0;
+  //   double qz = 0;
+  //   double qw = 0;
+  //   int validTagCount = 0;
 
-    // Iterate through targets to extract rotations
-    for (PhotonTrackedTarget target : targets) {
-      Optional<Pose3d> tagPose = photonEstimator.getFieldTags().getTagPose(target.getFiducialId());
+  //   // Iterate through targets to extract rotations
+  //   for (PhotonTrackedTarget target : targets) {
+  //     Optional<Pose3d> tagPose =
+  // photonEstimator.getFieldTags().getTagPose(target.getFiducialId());
 
-      if (tagPose.isPresent()) {
-        Rotation3d rotation = tagPose.get().getRotation();
+  //     if (tagPose.isPresent()) {
+  //       Rotation3d rotation = tagPose.get().getRotation();
 
-        // Accumulate quaternion components
-        qx += rotation.getQuaternion().getX();
-        qy += rotation.getQuaternion().getY();
-        qz += rotation.getQuaternion().getZ();
-        qw += rotation.getQuaternion().getW();
+  //       // Accumulate quaternion components
+  //       qx += rotation.getQuaternion().getX();
+  //       qy += rotation.getQuaternion().getY();
+  //       qz += rotation.getQuaternion().getZ();
+  //       qw += rotation.getQuaternion().getW();
 
-        validTagCount++;
-      }
-    }
+  //       validTagCount++;
+  //     }
+  //   }
 
-    // If no valid tags were found, return null
-    if (validTagCount == 0) {
-      return null;
-    }
+  // // If no valid tags were found, return null
+  // if (validTagCount == 0) {
+  //   return null;
+  // }
 
-    // Normalize the accumulated quaternion
-    double magnitude = Math.sqrt(qx * qx + qy * qy + qz * qz + qw * qw);
-    qx /= magnitude;
-    qy /= magnitude;
-    qz /= magnitude;
-    qw /= magnitude;
+  //   // Normalize the accumulated quaternion
+  //   double magnitude = Math.sqrt(qx * qx + qy * qy + qz * qz + qw * qw);
+  //   qx /= magnitude;
+  //   qy /= magnitude;
+  //   qz /= magnitude;
+  //   qw /= magnitude;
 
-    // Return the quaternion object
-    return new Quaternion(qx, qy, qz, qw);
-  }
+  //   // Return the quaternion object
+  //   return new Quaternion(qx, qy, qz, qw);
+  // }
 
   @Override
   public void periodic() {
     if (camera.getLatestResult().hasTargets()) {
-      System.out.println("target aquired");
-      this.returnBestPose();
+      // System.out.println("target aquired");
+      // this.returnBestPose();
     }
   }
 }
