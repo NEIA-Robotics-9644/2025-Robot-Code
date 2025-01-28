@@ -236,6 +236,13 @@ public class Drive extends SubsystemBase {
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
   }
 
+  @Override
+  public void simulationPeriodic() {
+    vision.visionSim.update(this.getPose());
+    var debugField = vision.getSimDebugField();
+    debugField.getObject("EstimatedRobot").setPose(this.getPose());
+  }
+
   /**
    * Runs the drive at the desired velocity.
    *

@@ -66,7 +66,7 @@ public class Vision extends SubsystemBase {
 
   // Simulation
   private PhotonCameraSim cameraSim;
-  private VisionSystemSim visionSim;
+  public VisionSystemSim visionSim;
 
   public Vision() {
     camera = new PhotonCamera("Global_Shutter_Camera");
