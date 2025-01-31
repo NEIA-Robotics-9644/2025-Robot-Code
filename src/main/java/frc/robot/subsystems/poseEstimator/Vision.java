@@ -55,8 +55,6 @@ public class Vision extends SubsystemBase {
   public final PhotonCamera camera_back;
   private final PhotonPoseEstimator backPhotonEstimator;
   private final PhotonPoseEstimator frontPhotonEstimator;
-  private Matrix<N3, N1> curBackStdDevs;
-  private Matrix<N3, N1> curFrontStdDevs;
 
   public static final AprilTagFieldLayout kTagLayout =
       AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
@@ -64,10 +62,14 @@ public class Vision extends SubsystemBase {
   public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
   public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
 
+  private Matrix<N3, N1> curBackStdDevs = kSingleTagStdDevs;
+  private Matrix<N3, N1> curFrontStdDevs = kSingleTagStdDevs;
+
   public static final Transform3d kBackRobotToCam =
-      new Transform3d(new Translation3d(0.0, -0.3, 0.15), new Rotation3d(0, 0, 0));
+      new Transform3d(
+          new Translation3d(0.0, -0.3, 0.15), new Rotation3d(0, 0, Math.toRadians(180)));
   public static final Transform3d kFrontRobotToCam =
-      new Transform3d(new Translation3d(0.0, 0.3, 0.15), new Rotation3d(0, 0, Math.toRadians(180)));
+      new Transform3d(new Translation3d(0.0, 0.3, 0.15), new Rotation3d(0, 0, 0));
 
   // Simulation
   private PhotonCameraSim cameraSim;
