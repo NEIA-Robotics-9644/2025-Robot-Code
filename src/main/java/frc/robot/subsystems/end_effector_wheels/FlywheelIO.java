@@ -7,21 +7,31 @@
 
 package frc.robot.subsystems.end_effector_wheels;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface FlywheelIO {
   @AutoLog
-  static class FlywheelIOInputs {
-    public boolean connected = false;
-    public double positionRads = 0.0;
-    public double velocityRadsPerSec = 0.0;
-    public double appliedVoltage = 0.0;
-    public double supplyCurrentAmps = 0.0;
-    public double torqueCurrentAmps = 0.0;
+  class FlywheelIOInputs {
+    public Rotation2d relativeEncoderPosition = new Rotation2d();
+    public Rotation2d absoluteEncoderPosition = new Rotation2d();
+    public double velocityRadPerSec = 0.0;
+    public double appliedVolts = 0.0;
+    public double currentAmps = 0.0;
     public double tempCelsius = 0.0;
   }
 
   default void updateInputs(FlywheelIOInputs inputs) {}
 
-  default void runVelocity(double velocity) {}
+  default void runVolts(double volts) {}
+
+  default void runVelocity(double velocityRadPerSec) {}
+
+  default void runPosition(Rotation2d position) {}
+
+  default void setPID(double kP, double kI, double kD) {}
+
+  default void setBrakeMode(boolean enabled) {}
+
+  default void stop() {}
 }
