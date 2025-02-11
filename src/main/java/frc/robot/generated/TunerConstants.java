@@ -80,7 +80,7 @@ public class TunerConstants {
 
   // Theoretical free speed (m/s) at 12 V applied output;
   // This needs to be tuned to your individual robot
-  public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(1); // 4.69
+  public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.1); // 4.69
 
   // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
   // This may need to be tuned to your individual robot
@@ -90,6 +90,7 @@ public class TunerConstants {
   private static final double kSteerGearRatio = 21.428571428571427;
   private static final Distance kWheelRadius = Inches.of(2); // TODO: measure precisely
 
+  // When these values where swapped, the robot went into spin mode and sam's computer got smashed
   private static final boolean kInvertLeftSide = false;
   private static final boolean kInvertRightSide = true;
 
@@ -141,6 +142,9 @@ public class TunerConstants {
   private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.471435546875);
   private static final boolean kFrontLeftSteerMotorInverted = true;
   private static final boolean kFrontLeftEncoderInverted = false;
+
+  // ALL THE POSITIONS ARE SWAPPED BECAUSE WE MOVED ALL THE SWERVE MODULES AROUND
+  // We should fix this eventually
 
   private static final Distance kFrontLeftXPos = Inches.of(11.5);
   private static final Distance kFrontLeftYPos = Inches.of(11.5);

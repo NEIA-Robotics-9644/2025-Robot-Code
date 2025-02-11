@@ -1,0 +1,20 @@
+{
+  "name": "Presto",
+  "rotations": [
+    {
+      "axis": "x",
+      "degrees": 90
+    },
+    {
+      "axis": "z",
+      "degrees": 90
+    }
+  ],
+  "position": [
+    0.3336544,
+    -0.292481,
+    0
+  ],
+  "cameras": [],
+  "components": []
+}
