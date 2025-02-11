@@ -1,16 +1,3 @@
-// Copyright 2021-2025 FRC 6328
-// http://github.com/Mechanical-Advantage
-//
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// version 3 as published by the Free Software Foundation or
-// available in the root directory of this project.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
-
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -25,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.AutoAlignCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.EndEffectorCommands;
 import frc.robot.commands.ExtenderCommands;
@@ -50,6 +38,8 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+
+  private final Vision vision;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -165,7 +155,6 @@ public class RobotContainer {
     // }
 
     var hid = controller.getHID();
-    // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDriveAtAngle(
             drive,
@@ -173,6 +162,13 @@ public class RobotContainer {
             () -> hid.getLeftX(),
             () -> -hid.getRightX(),
             () -> (Math.abs(hid.getRightX()) > 0.1)));
+
+    Rotation2d tagRot = new Rotation2d(120);
+
+    Pose2d aprilTag1 = new Pose2d(15.08, 0.25, tagRot);
+
+    //drive.setDefaultCommand(
+        //AutoAlignCommand.autoAlignCommandAprilTagCommand(() -> aprilTag1, drive, vision));
 
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));

@@ -29,12 +29,15 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
@@ -51,14 +54,14 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Vision extends SubsystemBase {
-  public final PhotonCamera camera_front;
-  public final PhotonCamera camera_back;
-  private final PhotonPoseEstimator backPhotonEstimator;
-  private final PhotonPoseEstimator frontPhotonEstimator;
+  public final PhotonCamera camera;
+  public final PhotonCamera camera2;
+  private final PhotonPoseEstimator photonEstimator;
+  private Matrix<N3, N1> curStdDevs;
 
   public static final AprilTagFieldLayout kTagLayout =
       AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
-
+  
   public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
   public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
 
@@ -178,7 +181,6 @@ public class Vision extends SubsystemBase {
     if (estimatedPose.isEmpty()) {
       // No pose input. Default to single-tag std devs
       curBackStdDevs = kSingleTagStdDevs;
-
     } else {
       // Pose present. Start running Heuristic
       var estStdDevs = kSingleTagStdDevs;

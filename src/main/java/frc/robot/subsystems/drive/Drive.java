@@ -84,8 +84,12 @@ public class Drive extends SubsystemBase {
         new SwerveModulePosition(),
         new SwerveModulePosition()
       };
+
+  private Vision vision = new Vision();
   private SwerveDrivePoseEstimator poseEstimator =
-      new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
+      new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d()).addVisionMeasurement(vision.getEstimatedGlobalPose(), );
+
+  
 
   public Drive(
       GyroIO gyroIO,
@@ -362,7 +366,6 @@ public class Drive extends SubsystemBase {
   /** Returns the current odometry pose. */
   @AutoLogOutput(key = "Odometry/Robot")
   public Pose2d getPose() {
-
     return poseEstimator.getEstimatedPosition();
   }
 
