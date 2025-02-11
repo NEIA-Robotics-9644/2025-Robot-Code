@@ -1,7 +1,8 @@
 package frc.robot.subsystems.end_effector_wheels;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class EndEffectorWheels extends SubsystemBase {
 

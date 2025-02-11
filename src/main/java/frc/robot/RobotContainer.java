@@ -13,8 +13,11 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -38,8 +41,14 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.end_effector_wheels.EndEffectorWheels;
 import frc.robot.subsystems.end_effector_wheels.FlywheelIOSim;
+import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.intake.sensor.CoralSensorIO;
+import frc.robot.subsystems.intake.sensor.CoralSensorIORoboRio;
+import frc.robot.subsystems.intake.sensor.CoralSensorIOSim;
+import frc.robot.subsystems.intake.wheel.IntakeWheelIO;
+import frc.robot.subsystems.intake.wheel.IntakeWheelIOSim;
+import frc.robot.subsystems.intake.wheel.IntakeWheelIOSparkMax;
 import frc.robot.subsystems.poseEstimator.Vision;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -50,6 +59,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final IntakeSubsystem intake;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -70,6 +80,10 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight),
                 new Vision());
+        intake = 
+            new IntakeSubsystem(
+                new IntakeWheelIOSparkMax(1, 0), 
+                new CoralSensorIORoboRio());
         break;
 
       case SIM:
@@ -82,6 +96,10 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight),
                 new Vision());
+        intake = 
+            new IntakeSubsystem(
+                new IntakeWheelIOSim(),
+                 new CoralSensorIOSim());
         break;
 
       default:
@@ -94,6 +112,10 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new Vision());
+        intake = 
+            new IntakeSubsystem(
+                new IntakeWheelIO() {},
+                new CoralSensorIO() {});
         break;
     }
 
@@ -121,7 +143,8 @@ public class RobotContainer {
         ExtenderCommands.goToSetpoint(ExtenderCommands.ExtenderSetpoint.L3Dealgify, 2));
 
     NamedCommands.registerCommand(
-        "Intake Coral From Station", IntakeCommands.intakeCoralFromStation());
+        "Intake Coral From Station",
+        IntakeCommands.intakeCoralFromStation(intake, ExtenderCommands.ExtenderSetpoint.Intake));
 
     NamedCommands.registerCommand("Score Coral", EndEffectorCommands.scoreCoral());
     NamedCommands.registerCommand("Dealgify", EndEffectorCommands.dealgify());
