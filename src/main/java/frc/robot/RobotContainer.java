@@ -78,7 +78,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight),
                 new Vision());
-        intake = new IntakeSubsystem(new IntakeWheelIOSparkMax(1, 0), new CoralSensorIORoboRio());
+        intake = new IntakeSubsystem(new IntakeWheelIOSparkMax(1, 1), new CoralSensorIORoboRio());
         break;
 
       case SIM:
@@ -171,29 +171,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    // if (vision.returnTargets(vision.camera) != null) {
-    //   vision.returnBestPose();
-    // }
-
-
-    // Switch to X pattern when X button is pressed
-    driveCon.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-
-    // Reset gyro to 0° B button is pressed
-    driveCon
-        .b()
-        .onTrue(
-            Commands.runOnce(
-                    () ->
-                        drive.setPose(
-                            new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-                    drive)
-                .ignoringDisable(true));
-
     // --- Driver Controls ---
-
-
-
 
     var hid = driveCon.getHID();
     // Default command, normal field-relative drive
@@ -205,11 +183,11 @@ public class RobotContainer {
             () -> -hid.getRightX(),
             () -> (Math.abs(hid.getRightX()) > 0.1)));
 
-
     // When the b button is pressed, score coral
     opCon.b().onTrue(Commands.print("Score coral"));
 
-    // When the right trigger is held, auto-align to the current april tag.  This overrides the joystick drive, for as long as the trigger is held down
+    // When the right trigger is held, auto-align to the current april tag.  This overrides the
+    // joystick drive, for as long as the trigger is held down
     opCon.rightTrigger().whileTrue(Commands.print("Auto-aligning to april tag"));
 
     // When the right bumper is pressed, level up the speed setting
@@ -217,7 +195,6 @@ public class RobotContainer {
 
     // When the left bumper is pressed, level down the speed setting
     opCon.leftBumper().onTrue(Commands.print("Fudge speed down"));
-
 
     // --- Operator Controls ---
 
@@ -255,7 +232,6 @@ public class RobotContainer {
 
     // When the Y button is pressed, go to L4
     opCon.y().onTrue(Commands.print("Going to L4"));
-
 
     // Adjust the end effector setpoint with the right and left D-Pad
     opCon.povLeft().onTrue(Commands.print("Decreasing End Effector Setpoint Angle"));
