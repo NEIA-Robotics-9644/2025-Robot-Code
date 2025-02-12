@@ -18,7 +18,6 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,8 +35,6 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import frc.robot.subsystems.end_effector_wheels.EndEffectorWheels;
-import frc.robot.subsystems.end_effector_wheels.FlywheelIOSim;
 import frc.robot.subsystems.poseEstimator.Vision;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -51,8 +48,11 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
 
-  // Controller
-  private final CommandXboxController controller = new CommandXboxController(0);
+  // Driver controller
+  private final CommandXboxController driveCon = new CommandXboxController(0);
+
+  // Operator controller
+  private final CommandXboxController opCon = new CommandXboxController(1);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -164,21 +164,12 @@ public class RobotContainer {
     //   vision.returnBestPose();
     // }
 
-    var hid = controller.getHID();
-    // Default command, normal field-relative drive
-    drive.setDefaultCommand(
-        DriveCommands.joystickDriveAtAngle(
-            drive,
-            () -> hid.getLeftY(),
-            () -> hid.getLeftX(),
-            () -> -hid.getRightX(),
-            () -> (Math.abs(hid.getRightX()) > 0.1)));
 
     // Switch to X pattern when X button is pressed
-    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    driveCon.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro to 0° B button is pressed
-    controller
+    driveCon
         .b()
         .onTrue(
             Commands.runOnce(
@@ -188,11 +179,80 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    var flywheel =
-        new EndEffectorWheels(
-            new FlywheelIOSim(new DCMotor(100.0, 10.0, 10.0, 10.0, 100, 1), 1, 1));
+    // --- Driver Controls ---
 
-    controller.y().whileTrue(Commands.run(() -> flywheel.setVelocity(10)));
+
+
+
+    var hid = driveCon.getHID();
+    // Default command, normal field-relative drive
+    drive.setDefaultCommand(
+        DriveCommands.joystickDriveAtAngle(
+            drive,
+            () -> hid.getLeftY(),
+            () -> hid.getLeftX(),
+            () -> -hid.getRightX(),
+            () -> (Math.abs(hid.getRightX()) > 0.1)));
+
+
+    // When the b button is pressed, score coral
+    opCon.b().onTrue(Commands.print("Score coral"));
+
+    // When the right trigger is held, auto-align to the current april tag.  This overrides the joystick drive, for as long as the trigger is held down
+    opCon.rightTrigger().whileTrue(Commands.print("Auto-aligning to april tag"));
+
+    // When the right bumper is pressed, level up the speed setting
+    opCon.rightBumper().onTrue(Commands.print("Fudge speed up"));
+
+    // When the left bumper is pressed, level down the speed setting
+    opCon.leftBumper().onTrue(Commands.print("Fudge speed down"));
+
+
+    // --- Operator Controls ---
+
+    // When the right button is pressed, score coral
+    opCon.rightBumper().whileTrue(Commands.print("Score coral"));
+
+    // When the right trigger is held, run intake (spin feeder wheel and EE wheels, will stop when
+    // coral is detected in the right place)
+    opCon.rightTrigger(0.3).whileTrue(Commands.print("Running intake"));
+
+    // When the left trigger is held, use manual velocity-control to run the extender
+    opCon
+        .leftTrigger(0.3)
+        .whileTrue(
+            Commands.run(
+                () -> {
+                  var elevatorVelocity = opCon.getLeftY();
+                  var endEffectorVelocity = opCon.getRightY();
+
+                  System.out.println(
+                      "Running manual control:   elevator: "
+                          + elevatorVelocity
+                          + "  end effector: "
+                          + endEffectorVelocity);
+                }));
+
+    // When the A button is pressed, go to L1
+    opCon.a().onTrue(Commands.print("Going to L1"));
+
+    // When the B button is pressed, go to L2
+    opCon.b().onTrue(Commands.print("Going to L2"));
+
+    // When the X button is pressed, go to L3
+    opCon.x().onTrue(Commands.print("Going to L3"));
+
+    // When the Y button is pressed, go to L4
+    opCon.y().onTrue(Commands.print("Going to L4"));
+
+
+    // Adjust the end effector setpoint with the right and left D-Pad
+    opCon.povLeft().onTrue(Commands.print("Decreasing End Effector Setpoint Angle"));
+    opCon.povRight().onTrue(Commands.print("Increasing End Effector Setpoint Angle"));
+
+    // Adjust the elevator setpoint with the up and down D-Pad
+    opCon.povDown().onTrue(Commands.print("Decreasing Elevator Setpoint Height"));
+    opCon.povRight().onTrue(Commands.print("Increasing Elevator Setpoint Height"));
   }
 
   public void update() {}

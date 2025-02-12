@@ -3,14 +3,12 @@ package frc.robot.subsystems.end_effector_wheels;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
 public class FlywheelIOSparkMax implements FlywheelIO {
 
   private final SparkMax sparkMax;
-
 
   private enum ControlMode {
     VOLTAGE,
@@ -25,9 +23,7 @@ public class FlywheelIOSparkMax implements FlywheelIO {
     sparkMax = new SparkMax(canId, MotorType.kBrushless);
 
     var config = new SparkMaxConfig();
-
   }
-
 
   public void updateInputs(FlywheelIOInputs inputs) {
 
@@ -37,13 +33,14 @@ public class FlywheelIOSparkMax implements FlywheelIO {
 
     inputs.relativeEncoderPosition = Rotation2d.fromRotations(sparkMax.getEncoder().getPosition());
 
-    inputs.absoluteEncoderPosition = Rotation2d.fromRotations(sparkMax.getAbsoluteEncoder().getPosition());
+    inputs.absoluteEncoderPosition =
+        Rotation2d.fromRotations(sparkMax.getAbsoluteEncoder().getPosition());
 
     inputs.tempCelsius = sparkMax.getMotorTemperature();
 
-    inputs.velocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(sparkMax.getEncoder().getVelocity());
+    inputs.velocityRadPerSec =
+        Units.rotationsPerMinuteToRadiansPerSecond(sparkMax.getEncoder().getVelocity());
   }
-
 
   public void runVolts(double volts) {}
 
@@ -56,5 +53,4 @@ public class FlywheelIOSparkMax implements FlywheelIO {
   public void setBrakeMode(boolean enabled) {}
 
   public void stop() {}
-
 }
