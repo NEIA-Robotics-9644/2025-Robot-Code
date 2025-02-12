@@ -67,9 +67,9 @@ public class Vision extends SubsystemBase {
 
   public static final Transform3d kBackRobotToCam =
       new Transform3d(
-          new Translation3d(0.0, -0.3, 0.15), new Rotation3d(0, 0, Math.toRadians(180)));
+          new Translation3d(-0.301, 0.184, -0.249), new Rotation3d(0, 0, Math.toRadians(0)));
   public static final Transform3d kFrontRobotToCam =
-      new Transform3d(new Translation3d(0.0, 0.3, 0.15), new Rotation3d(0, 0, 0));
+      new Transform3d(new Translation3d(0.321, 0.184, -0.249), new Rotation3d(0, 0, Math.toRadians(0)));
 
   // Simulation
   private PhotonCameraSim cameraSim;
