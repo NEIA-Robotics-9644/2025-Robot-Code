@@ -13,15 +13,11 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -39,8 +35,6 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import frc.robot.subsystems.end_effector_wheels.EndEffectorWheels;
-import frc.robot.subsystems.end_effector_wheels.FlywheelIOSim;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.intake.sensor.CoralSensorIO;
 import frc.robot.subsystems.intake.sensor.CoralSensorIORoboRio;
@@ -49,6 +43,7 @@ import frc.robot.subsystems.intake.wheel.IntakeWheelIO;
 import frc.robot.subsystems.intake.wheel.IntakeWheelIOSim;
 import frc.robot.subsystems.intake.wheel.IntakeWheelIOSparkMax;
 import frc.robot.subsystems.poseEstimator.Vision;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -80,10 +75,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight),
                 new Vision());
-        intake = 
-            new IntakeSubsystem(
-                new IntakeWheelIOSparkMax(1, 0), 
-                new CoralSensorIORoboRio());
+        intake = new IntakeSubsystem(new IntakeWheelIOSparkMax(1, 0), new CoralSensorIORoboRio());
         break;
 
       case SIM:
@@ -96,10 +88,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight),
                 new Vision());
-        intake = 
-            new IntakeSubsystem(
-                new IntakeWheelIOSim(),
-                 new CoralSensorIOSim());
+        intake = new IntakeSubsystem(new IntakeWheelIOSim(), new CoralSensorIOSim());
         break;
 
       default:
@@ -112,10 +101,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new Vision());
-        intake = 
-            new IntakeSubsystem(
-                new IntakeWheelIO() {},
-                new CoralSensorIO() {});
+        intake = new IntakeSubsystem(new IntakeWheelIO() {}, new CoralSensorIO() {});
         break;
     }
 
@@ -143,8 +129,7 @@ public class RobotContainer {
         ExtenderCommands.goToSetpoint(ExtenderCommands.ExtenderSetpoint.L3Dealgify, 2));
 
     NamedCommands.registerCommand(
-        "Intake Coral From Station",
-        IntakeCommands.intakeCoralFromStation(intake, ExtenderCommands.ExtenderSetpoint.Intake));
+        "Intake Coral From Station", IntakeCommands.intakeCoralFromStation());
 
     NamedCommands.registerCommand("Score Coral", EndEffectorCommands.scoreCoral());
     NamedCommands.registerCommand("Dealgify", EndEffectorCommands.dealgify());
@@ -183,10 +168,6 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    // if (vision.returnTargets(vision.camera) != null) {
-    //   vision.returnBestPose();
-    // }
-
     var hid = controller.getHID();
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
@@ -210,12 +191,6 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
-
-    var flywheel =
-        new EndEffectorWheels(
-            new FlywheelIOSim(new DCMotor(100.0, 10.0, 10.0, 10.0, 100, 1), 1, 1));
-
-    controller.y().whileTrue(Commands.run(() -> flywheel.setVelocity(10)));
   }
 
   public void update() {}

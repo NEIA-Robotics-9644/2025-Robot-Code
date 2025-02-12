@@ -16,11 +16,13 @@ public interface IntakeWheelIO {
 
   default void runVelocity(double velocity) {}
 
-  default public void setVelocity(double normalizedVelocity){}
+  public default void setVelocity(double normalizedVelocity) {}
 
-  default public double getVelocityPercent(){return 0.0;}
+  public default double getVelocityPercent() {
+    return 0.0;
+  }
 
-  default public void periodic(){}
+  public default void periodic() {}
 
-  default public void setBrakeMode(boolean brake){}
+  public default void setBrakeMode(boolean brake) {}
 }

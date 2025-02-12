@@ -2,7 +2,9 @@ package frc.robot.subsystems.intake.sensor;
 
 public interface CoralSensorIO {
 
-  default public boolean coralDetected(){return true;}
+  public default boolean coralDetected() {
+    return true;
+  }
 
-  default public void setDisplayLight(boolean on){}
+  public default void setDisplayLight(boolean on) {}
 }

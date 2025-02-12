@@ -3,7 +3,6 @@ package frc.robot.subsystems.intake.wheel;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.math.util.Units;
 
 public class IntakeWheelIOSparkMax implements IntakeWheelIO {
@@ -34,7 +33,10 @@ public class IntakeWheelIOSparkMax implements IntakeWheelIO {
     config.smartCurrentLimit(maxCurrentA);
     config.openLoopRampRate(0.5);
 
-    this.motor.configure(config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+    this.motor.configure(
+        config,
+        SparkBase.ResetMode.kResetSafeParameters,
+        SparkBase.PersistMode.kNoPersistParameters);
 
     this.reduction = reduction;
 
@@ -55,7 +57,7 @@ public class IntakeWheelIOSparkMax implements IntakeWheelIO {
 
   @Override
   public double getVelocityPercent() {
-      return motor.getEncoder().getVelocity() / maxSpeedRPM;
+    return motor.getEncoder().getVelocity() / maxSpeedRPM;
   }
 
   @Override
@@ -64,14 +66,14 @@ public class IntakeWheelIOSparkMax implements IntakeWheelIO {
       motor.set(normalizedVelocity);
       newInput = false;
     } else {
-        motor.set(0.0);
+      motor.set(0.0);
     }
   }
 
   @Override
   public void updateInputs(IntakeWheelIOInputs inputs) {
     inputs.positionRads = Units.rotationsToRadians(position) / reduction;
-    inputs.velocityRadsPerSec = Units.rotationsToRadians(velocity * (2*Math.PI/60)) / reduction;
+    inputs.velocityRadsPerSec = Units.rotationsToRadians(velocity * (2 * Math.PI / 60)) / reduction;
     inputs.appliedVoltage = appliedVoltage;
     inputs.outputCurrentAmps = outputCurrent;
     inputs.tempCelsius = tempCelsius;
@@ -79,7 +81,10 @@ public class IntakeWheelIOSparkMax implements IntakeWheelIO {
 
   @Override
   public void setBrakeMode(boolean brake) {
-      config.idleMode(brake ? SparkMaxConfig.IdleMode.kBrake : SparkMaxConfig.IdleMode.kCoast);
-      this.motor.configure(config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+    config.idleMode(brake ? SparkMaxConfig.IdleMode.kBrake : SparkMaxConfig.IdleMode.kCoast);
+    this.motor.configure(
+        config,
+        SparkBase.ResetMode.kResetSafeParameters,
+        SparkBase.PersistMode.kNoPersistParameters);
   }
 }
