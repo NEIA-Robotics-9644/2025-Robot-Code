@@ -35,6 +35,13 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.intake.sensor.CoralSensorIO;
+import frc.robot.subsystems.intake.sensor.CoralSensorIORoboRio;
+import frc.robot.subsystems.intake.sensor.CoralSensorIOSim;
+import frc.robot.subsystems.intake.wheel.IntakeWheelIO;
+import frc.robot.subsystems.intake.wheel.IntakeWheelIOSim;
+import frc.robot.subsystems.intake.wheel.IntakeWheelIOSparkMax;
 import frc.robot.subsystems.poseEstimator.Vision;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -47,6 +54,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final IntakeSubsystem intake;
 
   // Driver controller
   private final CommandXboxController driveCon = new CommandXboxController(0);
@@ -70,6 +78,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight),
                 new Vision());
+        intake = new IntakeSubsystem(new IntakeWheelIOSparkMax(1, 0), new CoralSensorIORoboRio());
         break;
 
       case SIM:
@@ -82,6 +91,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight),
                 new Vision());
+        intake = new IntakeSubsystem(new IntakeWheelIOSim(), new CoralSensorIOSim());
         break;
 
       default:
@@ -94,6 +104,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new Vision());
+        intake = new IntakeSubsystem(new IntakeWheelIO() {}, new CoralSensorIO() {});
         break;
     }
 
