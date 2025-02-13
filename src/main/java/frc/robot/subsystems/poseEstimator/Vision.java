@@ -67,13 +67,14 @@ public class Vision extends SubsystemBase {
 
   public static final Transform3d kBackRobotToCam =
       new Transform3d(
-          new Translation3d(-0.301, 0.184, -0.249), new Rotation3d(0, 0, Math.toRadians(180)));
+          new Translation3d(-0.301, 0.184, -0.249), new Rotation3d(0, 0, Math.toRadians(0)));
   public static final Transform3d kFrontRobotToCam =
       new Transform3d(
-          new Translation3d(0.321, 0.184, -0.249), new Rotation3d(0, 0, Math.toRadians(180)));
+          new Translation3d(0.321, 0.184, -0.249), new Rotation3d(0, 0, Math.toRadians(0)));
 
   // Simulation
-  private PhotonCameraSim cameraSim;
+  private PhotonCameraSim frontCameraSim;
+  private PhotonCameraSim backCameraSim;
   public VisionSystemSim visionSim;
 
   public Vision() {
@@ -104,11 +105,14 @@ public class Vision extends SubsystemBase {
       cameraProp.setLatencyStdDevMs(15);
       // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
       // targets.
-      cameraSim = new PhotonCameraSim(camera_front, cameraProp);
+      frontCameraSim = new PhotonCameraSim(camera_front, cameraProp);
+      backCameraSim = new PhotonCameraSim(camera_back, cameraProp);
       // Add the simulated camera to view the targets on this simulated field.
-      visionSim.addCamera(cameraSim, kBackRobotToCam);
+      visionSim.addCamera(frontCameraSim, kFrontRobotToCam);
+      visionSim.addCamera(backCameraSim, kBackRobotToCam);
 
-      cameraSim.enableDrawWireframe(true);
+      frontCameraSim.enableDrawWireframe(true);
+      backCameraSim.enableDrawWireframe(true);
     }
   }
 

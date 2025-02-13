@@ -12,7 +12,7 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.controllers.AutoAlignController;
 import java.util.List;
 
-public class AutoAlignCommand {
+public class AutoAlignCommands {
 
   private static double distanceBetween(Pose2d pose1, Pose2d pose2) {
     return pose1.getTranslation().getDistance(pose2.getTranslation());
@@ -37,9 +37,9 @@ public class AutoAlignCommand {
     return closestPose;
   }
 
-  private AutoAlignCommand() {}
+  private AutoAlignCommands() {}
 
-  public static Command autoAlignCommandAprilTagCommand(Drive drive) {
+  public static Command closestReefAlign(Drive drive) {
 
     Pose2d currentPose = drive.getPose();
     List<Pose2d> targetPoses = List.of();
@@ -47,7 +47,7 @@ public class AutoAlignCommand {
     DriverStation.Alliance fieldSide =
         DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
     AprilTagFieldLayout kTagLayout = AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
-    if (fieldSide == DriverStation.Alliance.Blue) {
+    if (fieldSide == DriverStation.Alliance.Blue) { // blue alliance reef autoalign
       targetPoses =
           List.of(
               new Pose2d(5.716, 4.197, new Rotation2d(Math.toRadians(180))), // H

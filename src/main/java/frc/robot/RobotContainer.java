@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.AutoAlignCommand;
+import frc.robot.commands.AutoAlignCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.EndEffectorCommands;
 import frc.robot.commands.ExtenderCommands;
@@ -201,7 +201,7 @@ public class RobotContainer {
 
     // When the right trigger is held, auto-align to the current april tag.  This overrides the
     // joystick drive, for as long as the trigger is held down
-    driveCon.rightTrigger().whileTrue(AutoAlignCommand.autoAlignCommandAprilTagCommand(drive));
+    driveCon.rightTrigger().whileTrue(AutoAlignCommands.closestReefAlign(drive));
 
     // When the right bumper is pressed, level up the speed setting
     opCon.rightBumper().onTrue(Commands.print("Fudge speed up"));
