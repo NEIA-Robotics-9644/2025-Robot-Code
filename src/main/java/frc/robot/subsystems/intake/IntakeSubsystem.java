@@ -21,11 +21,12 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void periodic() {
     wheel.updateInputs(inputs);
+    wheel.periodic();
     Logger.processInputs("IntakeWheel", inputs);
   }
 
   public void setVelocity(double velocity) {
-    wheel.runVelocity(velocity);
+    wheel.setVelocity(velocity);
   }
 
   public boolean sensorState() {

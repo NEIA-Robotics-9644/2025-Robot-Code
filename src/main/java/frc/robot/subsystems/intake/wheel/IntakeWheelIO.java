@@ -14,8 +14,6 @@ public interface IntakeWheelIO {
 
   default void updateInputs(IntakeWheelIOInputs inputs) {}
 
-  default void runVelocity(double velocity) {}
-
   public default void setVelocity(double normalizedVelocity) {}
 
   public default double getVelocityPercent() {

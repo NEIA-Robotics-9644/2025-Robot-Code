@@ -5,31 +5,16 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
-import frc.robot.Constants;
 
 public class ElevatorIOSparkMax implements ElevatorIO {
-  private final double bottomLimitDeg = 0.0;
-  private final double topLimitDeg = 1000;
 
-  private final double encoderOffsetDeg = 0.0;
-
-  private double startingOffsetDeg = 0;
-
-  private final boolean encoderReversed = false;
-
-  private final double physicalMaxSpeed = 100;
+  private ControlMode mode = ControlMode.HOMING;
 
   private final SparkMax leftMotor;
   private final SparkMax rightMotor;
 
   private final boolean leftReversed = false;
   private final boolean rightReversed = true;
-
-  private double encoderReadingRotationsToAngleDeg = 360.0 / 80.0;
-
-  private final double maxSpeedDegPerSec = 25.0;
-
-  private boolean manualControl = false;
 
   private PIDController pid = new PIDController(2, 0.0, 0.0);
   private final double kG = 5;
@@ -104,14 +89,6 @@ public class ElevatorIOSparkMax implements ElevatorIO {
   }
 
   @Override
-  public void setAngleSetpoint(String height) {
-    // Clamp the setpoint between the higher and lower limits
-    double setpointClamped =
-        Math.max(bottomLimitDeg, Math.min(topLimitDeg, Constants.extenderAngles.get(height)));
-    pid.setSetpoint(setpointClamped);
-  }
-
-  @Override
   public void periodic() {
 
     // if (!manualControl) {
@@ -136,63 +113,9 @@ public class ElevatorIOSparkMax implements ElevatorIO {
   }
 
   @Override
-  public double getVelocityPercent() {
-    return (leftMotor.getEncoder().getVelocity()
-            * (1 / 80.0)
-            * (encoderReversed ? -1 : 1)
-            * 360.0
-            * (1 / 60.0))
-        / maxSpeedDegPerSec;
-  }
-
-  @Override
-  public double getAngleDeg() {
-
-    double angle =
-        leftMotor.getEncoder().getPosition()
-            * encoderReadingRotationsToAngleDeg
-            * (encoderReversed ? -1 : 1);
-    return angle + encoderOffsetDeg + startingOffsetDeg;
-  }
-
-  @Override
-  public boolean manualControlEnabled() {
-    return manualControl;
-  }
-
-  @Override
   public void setManualVelocity(double normalizedVelocity) {
-    manualControl = true;
+    // manualControl = true;
     leftMotor.set(normalizedVelocity);
-  }
-
-  @Override
-  public boolean atBottom() {
-    // TODO: Make this better
-    return getAngleDeg() <= bottomLimitDeg + 0.1;
-  }
-
-  @Override
-  public boolean atTop() {
-    // TODO: Make this better
-    return getAngleDeg() >= topLimitDeg - 0.1;
-  }
-
-  @Override
-  public void resetAngleToBottom() {
-
-    leftMotor.getEncoder().setPosition(0.0);
-    startingOffsetDeg = 0.0;
-  }
-
-  @Override
-  public double getTopAngleDeg() {
-    return topLimitDeg;
-  }
-
-  @Override
-  public double getBottomAngleDeg() {
-    return bottomLimitDeg;
   }
 
   @Override

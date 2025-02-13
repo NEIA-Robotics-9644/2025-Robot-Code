@@ -18,6 +18,12 @@ public interface ElevatorIO {
     public double tempCelsiusR = 0.0;
   }
 
+  public enum ControlMode {
+    HOMING,
+    SETPOINT,
+    MANUAL
+  }
+
   public default void periodic() {}
 
   default void updateInputs(ElevatorIOInputs inputs) {}

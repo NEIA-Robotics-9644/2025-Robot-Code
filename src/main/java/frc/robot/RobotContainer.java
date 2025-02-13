@@ -46,7 +46,6 @@ import frc.robot.subsystems.extender.sensor.LimitSwitchSensorIORoboRio;
 import frc.robot.subsystems.extender.sensor.LimitSwitchSensorIOSim;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.intake.sensor.CoralSensorIO;
-import frc.robot.subsystems.intake.sensor.CoralSensorIORoboRio;
 import frc.robot.subsystems.intake.sensor.CoralSensorIOSim;
 import frc.robot.subsystems.intake.wheel.IntakeWheelIO;
 import frc.robot.subsystems.intake.wheel.IntakeWheelIOSim;
@@ -63,7 +62,8 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final IntakeSubsystem intake;
+  private final IntakeSubsystem intakeWheels;
+  private final IntakeSubsystem endEffectorWheels;
   private final ExtenderSubsystem extender;
 
   // Driver controller
@@ -88,12 +88,15 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight),
                 new Vision());
-        intake = new IntakeSubsystem(new IntakeWheelIOSparkMax(23, 1), new CoralSensorIORoboRio());
+        endEffectorWheels =
+            new IntakeSubsystem(new IntakeWheelIOSparkMax(23, 1, 40), new CoralSensorIOSim());
         extender =
             new ExtenderSubsystem(
                 new ElevatorIOSparkMax(20, 21, 5, 5, 50),
                 new PivotIOSparkMax(22, 1, 50),
                 new LimitSwitchSensorIORoboRio());
+        intakeWheels =
+            new IntakeSubsystem(new IntakeWheelIOSparkMax(24, 1, 40), new CoralSensorIOSim());
         break;
 
       case SIM:
@@ -106,10 +109,12 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight),
                 new Vision());
-        intake = new IntakeSubsystem(new IntakeWheelIOSim(), new CoralSensorIOSim());
+        endEffectorWheels = new IntakeSubsystem(new IntakeWheelIOSim(), new CoralSensorIOSim());
         extender =
             new ExtenderSubsystem(
                 new ElevatorIOSim(), new PivotIOSim(), new LimitSwitchSensorIOSim());
+
+        intakeWheels = new IntakeSubsystem(new IntakeWheelIOSim(), new CoralSensorIOSim());
         break;
 
       default:
@@ -122,10 +127,12 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new Vision());
-        intake = new IntakeSubsystem(new IntakeWheelIO() {}, new CoralSensorIO() {});
+        endEffectorWheels = new IntakeSubsystem(new IntakeWheelIO() {}, new CoralSensorIO() {});
         extender =
             new ExtenderSubsystem(
                 new ElevatorIO() {}, new PivotIO() {}, new LimitSwitchSensorIO() {});
+
+        intakeWheels = new IntakeSubsystem(new IntakeWheelIO() {}, new CoralSensorIO() {});
         break;
     }
 
@@ -145,7 +152,8 @@ public class RobotContainer {
         "Extender to L3 Dealgify", ExtenderCommands.setToPoint(extender, "L3 Dealgify"));
 
     NamedCommands.registerCommand(
-        "Intake Coral From Station", IntakeCommands.intakeCoralFromStation(intake, extender));
+        "Intake Coral From Station",
+        IntakeCommands.intakeCoralFromStation(endEffectorWheels, extender));
 
     NamedCommands.registerCommand("Score Coral", EndEffectorCommands.scoreCoral());
     NamedCommands.registerCommand("Dealgify", EndEffectorCommands.dealgify());
@@ -217,11 +225,16 @@ public class RobotContainer {
     // When the right trigger is held, run intake (spin feeder wheel and EE wheels, will stop when
     // coral is detected in the right place)
     opCon
-        .rightTrigger(0.3)
+        .rightTrigger(0.05)
         .whileTrue(
-            Commands.run(
+            Commands.runEnd(
                 () -> {
-                  intake.setVelocity(0.5);
+                  endEffectorWheels.setVelocity(opCon.getRightTriggerAxis());
+                  intakeWheels.setVelocity(opCon.getRightTriggerAxis());
+                },
+                () -> {
+                  endEffectorWheels.setVelocity(0);
+                  intakeWheels.setVelocity(0);
                 }));
 
     // When the left trigger is held, use manual velocity-control to run the extender
