@@ -1,6 +1,5 @@
 package frc.robot.subsystems.extender;
 
-import frc.robot.Constants;
 import frc.robot.subsystems.extender.elevator.ElevatorIO;
 import frc.robot.subsystems.extender.elevator.ElevatorIOInputsAutoLogged;
 import frc.robot.subsystems.extender.pivot.PivotIO;
@@ -27,7 +26,7 @@ public class ExtenderSubsystem {
     Logger.processInputs("ElevatorExtender", elevatorInputs);
     Logger.processInputs("ElevatorPivot", pivotInputs);
 
-    if(elevator.atBottom() && limitSwitch.sensorHit()){
+    if (elevator.atBottom() && limitSwitch.sensorHit()) {
       elevator.resetAngleToBottom();
     }
   }
@@ -39,14 +38,16 @@ public class ExtenderSubsystem {
   public void moveElevatorToSetpoint(String position) {
     elevator.setAngleSetpoint(position);
   }
-  
+
   public void moveEffectorToSetpoint(String position) {
     pivot.setAngleSetpoint(position);
   }
-  public double getElevatorAngle(){
+
+  public double getElevatorAngle() {
     return elevator.getAngleDeg();
   }
-  public double getEffectorAngle(){
+
+  public double getEffectorAngle() {
     return pivot.getAngleDeg();
   }
 }

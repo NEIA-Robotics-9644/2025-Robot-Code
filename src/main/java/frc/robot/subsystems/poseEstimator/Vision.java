@@ -67,9 +67,10 @@ public class Vision extends SubsystemBase {
 
   public static final Transform3d kBackRobotToCam =
       new Transform3d(
-          new Translation3d(-0.301, 0.184, -0.249), new Rotation3d(0, 0, Math.toRadians(0)));
+          new Translation3d(-0.301, 0.184, -0.249), new Rotation3d(0, 0, Math.toRadians(180)));
   public static final Transform3d kFrontRobotToCam =
-      new Transform3d(new Translation3d(0.321, 0.184, -0.249), new Rotation3d(0, 0, Math.toRadians(0)));
+      new Transform3d(
+          new Translation3d(0.321, 0.184, -0.249), new Rotation3d(0, 0, Math.toRadians(180)));
 
   // Simulation
   private PhotonCameraSim cameraSim;
@@ -271,25 +272,25 @@ public class Vision extends SubsystemBase {
     return curBackStdDevs;
   }
 
-  // public void returnBestPose() {
-  //   var result = camera.getLatestResult();
-  //   boolean hasTargets = result.hasTargets();
-  //   if (hasTargets) {
-  //     PhotonTrackedTarget target = result.getBestTarget();
-  //     double yaw = target.getYaw();
-  //     double pitch = target.getPitch();
-  //     double area = target.getArea();
-  //     double skew = target.getSkew();
-  //     int targetID = target.getFiducialId();
-  //     double poseAmbiguity = target.getPoseAmbiguity();
-  //     System.out.println(yaw);
-  //     System.out.println(pitch);
-  //     System.out.println(area);
-  //     System.out.println(skew);
-  //     System.out.println(targetID);
-  //     System.out.println(poseAmbiguity);
-  //   }
-  // }
+  public void returnBestPose() {
+    var result = camera_front.getLatestResult();
+    boolean hasTargets = result.hasTargets();
+    if (hasTargets) {
+      PhotonTrackedTarget target = result.getBestTarget();
+      double yaw = target.getYaw();
+      double pitch = target.getPitch();
+      double area = target.getArea();
+      double skew = target.getSkew();
+      int targetID = target.getFiducialId();
+      double poseAmbiguity = target.getPoseAmbiguity();
+      System.out.println(yaw);
+      System.out.println(pitch);
+      System.out.println(area);
+      System.out.println(skew);
+      System.out.println(targetID);
+      System.out.println(poseAmbiguity);
+    }
+  }
 
   // ----- Simulation
 
@@ -356,5 +357,7 @@ public class Vision extends SubsystemBase {
   // }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    this.returnBestPose();
+  }
 }

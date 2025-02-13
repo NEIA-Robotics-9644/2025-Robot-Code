@@ -15,8 +15,10 @@ public class IntakeCommands {
         Commands.runOnce(
             () -> {
               System.out.println("Intaking coral from station");
-              double elevatorDifference = Math.abs(extender.getElevatorAngle() - Constants.extenderAngles.get("Intake"));
-              double effectorDifference = Math.abs(extender.getEffectorAngle() - Constants.effectorAngles.get("Intake"));
+              double elevatorDifference =
+                  Math.abs(extender.getElevatorAngle() - Constants.extenderAngles.get("Intake"));
+              double effectorDifference =
+                  Math.abs(extender.getEffectorAngle() - Constants.effectorAngles.get("Intake"));
               if (intake.sensorState() && elevatorDifference < 0.25 && effectorDifference < 0.25) {
                 intake.setVelocity(1);
               }

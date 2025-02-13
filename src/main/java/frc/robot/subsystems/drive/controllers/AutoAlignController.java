@@ -13,10 +13,10 @@ import frc.robot.subsystems.poseEstimator.Vision;
 import java.util.function.Supplier;
 
 public class AutoAlignController {
-  private static final double linearkP = 10;
-  private static final double linearkD = 0.0;
-  private static final double thetakP = 4000;
-  private static final double thetakD = 50;
+  private static final double linearkP = 1;
+  private static final double linearkD = 0;
+  private static final double thetakP = 1;
+  private static final double thetakD = 0;
   private static final double linearTolerance = 0.08;
   private static final double thetaTolerance = Units.degreesToRadians(2.0);
   private static final double toleranceTime = 0.5;
@@ -47,9 +47,13 @@ public class AutoAlignController {
   private final Timer toleranceTimer = new Timer();
 
   public AutoAlignController(
-      Pose2d poseSupplier, Supplier<Translation2d> feedforwardSupplier, boolean slowMode) {
+      Pose2d poseSupplier,
+      Supplier<Translation2d> feedforwardSupplier,
+      boolean slowMode,
+      Drive drive) {
     this.poseSupplier = poseSupplier;
     this.slowMode = slowMode;
+    this.drive = drive;
 
     // Set up both controllers
     linearController =

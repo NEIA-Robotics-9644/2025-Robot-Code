@@ -67,7 +67,7 @@ public class AutoAlignCommand {
 
     }
     AutoAlignController alignController =
-        new AutoAlignController(findClosestPose(currentPose, targetPoses), null, false);
+        new AutoAlignController(findClosestPose(currentPose, targetPoses), null, false, drive);
 
     return Commands.run(
         () -> {

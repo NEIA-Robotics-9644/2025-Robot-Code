@@ -13,11 +13,8 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -55,6 +52,7 @@ import frc.robot.subsystems.intake.wheel.IntakeWheelIO;
 import frc.robot.subsystems.intake.wheel.IntakeWheelIOSim;
 import frc.robot.subsystems.intake.wheel.IntakeWheelIOSparkMax;
 import frc.robot.subsystems.poseEstimator.Vision;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -90,12 +88,12 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight),
                 new Vision());
-        intake = new IntakeSubsystem(new IntakeWheelIOSparkMax(1, 1), new CoralSensorIORoboRio());
-        extender = new ExtenderSubsystem(
-            new ElevatorIOSparkMax(1, 2, 0, 0),
-            new PivotIOSparkMax(3, 0),
-            new LimitSwitchSensorIORoboRio()
-        );
+        intake = new IntakeSubsystem(new IntakeWheelIOSparkMax(22, 1), new CoralSensorIORoboRio());
+        extender =
+            new ExtenderSubsystem(
+                new ElevatorIOSparkMax(20, 21, 5, 5),
+                new PivotIOSparkMax(24, 1),
+                new LimitSwitchSensorIORoboRio());
         break;
 
       case SIM:
@@ -109,11 +107,9 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackRight),
                 new Vision());
         intake = new IntakeSubsystem(new IntakeWheelIOSim(), new CoralSensorIOSim());
-        extender = new ExtenderSubsystem(
-            new ElevatorIOSim(),
-            new PivotIOSim(),
-            new LimitSwitchSensorIOSim()
-        );
+        extender =
+            new ExtenderSubsystem(
+                new ElevatorIOSim(), new PivotIOSim(), new LimitSwitchSensorIOSim());
         break;
 
       default:
@@ -127,36 +123,26 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new Vision());
         intake = new IntakeSubsystem(new IntakeWheelIO() {}, new CoralSensorIO() {});
-        extender = new ExtenderSubsystem(
-            new ElevatorIO(){},
-            new PivotIO(){},
-            new LimitSwitchSensorIO(){}
-        );
+        extender =
+            new ExtenderSubsystem(
+                new ElevatorIO() {}, new PivotIO() {}, new LimitSwitchSensorIO() {});
         break;
     }
 
     // Register named commands
 
+    NamedCommands.registerCommand("Extender to L1", ExtenderCommands.setToPoint(extender, "L1"));
+    NamedCommands.registerCommand("Extender to L2", ExtenderCommands.setToPoint(extender, "L2"));
+    NamedCommands.registerCommand("Extender to L3", ExtenderCommands.setToPoint(extender, "L3"));
+    NamedCommands.registerCommand("Extender to L4", ExtenderCommands.setToPoint(extender, "L4"));
     NamedCommands.registerCommand(
-        "Extender to L1", ExtenderCommands.setToPoint(extender, "L1"));
+        "Extender to Intake", ExtenderCommands.setToPoint(extender, "Intake"));
     NamedCommands.registerCommand(
-        "Extender to L2", ExtenderCommands.setToPoint(extender, "L2"));
+        "Extender to Process", ExtenderCommands.setToPoint(extender, "Processor"));
     NamedCommands.registerCommand(
-        "Extender to L3", ExtenderCommands.setToPoint(extender, "L3"));
+        "Extender to L2 Dealgify", ExtenderCommands.setToPoint(extender, "L2 Dealgify"));
     NamedCommands.registerCommand(
-        "Extender to L4", ExtenderCommands.setToPoint(extender, "L4"));
-    NamedCommands.registerCommand(
-        "Extender to Intake",
-        ExtenderCommands.setToPoint(extender, "Intake"));
-    NamedCommands.registerCommand(
-        "Extender to Process",
-        ExtenderCommands.setToPoint(extender, "Processor"));
-    NamedCommands.registerCommand(
-        "Extender to L2 Dealgify",
-        ExtenderCommands.setToPoint(extender, "L2 Dealgify"));
-    NamedCommands.registerCommand(
-        "Extender to L3 Dealgify",
-        ExtenderCommands.setToPoint(extender, "L3 Dealgify"));
+        "Extender to L3 Dealgify", ExtenderCommands.setToPoint(extender, "L3 Dealgify"));
 
     NamedCommands.registerCommand(
         "Intake Coral From Station", IntakeCommands.intakeCoralFromStation(intake, extender));
