@@ -18,7 +18,7 @@ public interface PivotIO {
 
   default void setAngleSetpoint(String setpoint) {}
 
-  public default void setVelocity(double normalizedVelocity) {}
+  public default void setManualVelocity(double normalizedVelocity) {}
 
   public default double getAngleDeg() {
     return 0.0;

@@ -287,12 +287,12 @@ public class Vision extends SubsystemBase {
       double skew = target.getSkew();
       int targetID = target.getFiducialId();
       double poseAmbiguity = target.getPoseAmbiguity();
-      System.out.println(yaw);
-      System.out.println(pitch);
-      System.out.println(area);
-      System.out.println(skew);
-      System.out.println(targetID);
-      System.out.println(poseAmbiguity);
+      // System.out.println(yaw);
+      // System.out.println(pitch);
+      // System.out.println(area);
+      // System.out.println(skew);
+      // System.out.println(targetID);
+      // System.out.println(poseAmbiguity);
     }
   }
 

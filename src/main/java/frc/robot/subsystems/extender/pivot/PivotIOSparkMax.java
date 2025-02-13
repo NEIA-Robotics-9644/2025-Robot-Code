@@ -16,8 +16,6 @@ public class PivotIOSparkMax implements PivotIO {
 
   private SparkMaxConfig config = new SparkMaxConfig();
 
-  private boolean newInput = false;
-
   private final double reduction;
 
   private double normalizedVelocity = 0.0;
@@ -75,12 +73,14 @@ public class PivotIOSparkMax implements PivotIO {
     double setpointClamped =
         Math.max(bottomLimitDeg, Math.min(topLimitDeg, Constants.extenderAngles.get(height)));
     pid.setSetpoint(setpointClamped);
+    this.manualControl = false;
   }
 
   @Override
-  public void setVelocity(double normalizedVelocity) {
+  public void setManualVelocity(double normalizedVelocity) {
+
     this.normalizedVelocity = Math.max(-1.0, Math.min(1.0, normalizedVelocity));
-    newInput = true;
+    this.manualControl = true;
   }
 
   private double maxSpeedRPM = 5000.0;
@@ -108,8 +108,10 @@ public class PivotIOSparkMax implements PivotIO {
         output = -maxSpeedDegPerSec;
       }
 
-      this.motor.set(output / physicalMaxSpeed);
-      this.motor.set(output / physicalMaxSpeed);
+      this.motor.set(output * physicalMaxSpeed);
+    } else {
+
+      this.motor.set(normalizedVelocity * physicalMaxSpeed);
     }
   }
 

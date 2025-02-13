@@ -92,7 +92,7 @@ public class RobotContainer {
         extender =
             new ExtenderSubsystem(
                 new ElevatorIOSparkMax(20, 21, 5, 5),
-                new PivotIOSparkMax(24, 1),
+                new PivotIOSparkMax(22, 1),
                 new LimitSwitchSensorIORoboRio());
         break;
 
@@ -197,17 +197,17 @@ public class RobotContainer {
             () -> (Math.abs(hid.getRightX()) > 0.1)));
 
     // When the b button is pressed, score coral
-    opCon.b().onTrue(Commands.print("Score coral"));
+    driveCon.b().onTrue(Commands.print("Score coral"));
 
     // When the right trigger is held, auto-align to the current april tag.  This overrides the
     // joystick drive, for as long as the trigger is held down
     driveCon.rightTrigger().whileTrue(AutoAlignCommands.closestReefAlign(drive));
 
     // When the right bumper is pressed, level up the speed setting
-    opCon.rightBumper().onTrue(Commands.print("Fudge speed up"));
+    driveCon.rightBumper().onTrue(Commands.print("Fudge speed up"));
 
     // When the left bumper is pressed, level down the speed setting
-    opCon.leftBumper().onTrue(Commands.print("Fudge speed down"));
+    driveCon.leftBumper().onTrue(Commands.print("Fudge speed down"));
 
     // --- Operator Controls ---
 
@@ -224,14 +224,8 @@ public class RobotContainer {
         .whileTrue(
             Commands.run(
                 () -> {
-                  var elevatorVelocity = opCon.getLeftY();
-                  var endEffectorVelocity = opCon.getRightY();
-
-                  System.out.println(
-                      "Running manual control:   elevator: "
-                          + elevatorVelocity
-                          + "  end effector: "
-                          + endEffectorVelocity);
+                  extender.setElevatorVelocity(-opCon.getLeftY());
+                  extender.setPivotVelocity(-opCon.getRightY());
                 }));
 
     // When the A button is pressed, go to L1

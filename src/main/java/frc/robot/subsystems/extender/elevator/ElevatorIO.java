@@ -22,8 +22,6 @@ public interface ElevatorIO {
 
   default void updateInputs(ElevatorIOInputs inputs) {}
 
-  default void runVelocity(double velocity) {}
-
   public default void setAngleSetpoint(String height) {}
 
   public default double getAngleDeg() {

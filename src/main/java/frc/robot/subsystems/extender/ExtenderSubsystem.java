@@ -1,5 +1,6 @@
 package frc.robot.subsystems.extender;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.extender.elevator.ElevatorIO;
 import frc.robot.subsystems.extender.elevator.ElevatorIOInputsAutoLogged;
 import frc.robot.subsystems.extender.pivot.PivotIO;
@@ -7,7 +8,7 @@ import frc.robot.subsystems.extender.pivot.PivotIOInputsAutoLogged;
 import frc.robot.subsystems.extender.sensor.LimitSwitchSensorIO;
 import org.littletonrobotics.junction.Logger;
 
-public class ExtenderSubsystem {
+public class ExtenderSubsystem extends SubsystemBase {
   private final ElevatorIO elevator;
   private final PivotIO pivot;
   private final LimitSwitchSensorIO limitSwitch;
@@ -21,8 +22,10 @@ public class ExtenderSubsystem {
     this.limitSwitch = limitSwitch;
   }
 
+  @Override
   public void periodic() {
     elevator.updateInputs(elevatorInputs);
+    pivot.updateInputs(pivotInputs);
     Logger.processInputs("ElevatorExtender", elevatorInputs);
     Logger.processInputs("ElevatorPivot", pivotInputs);
 
@@ -32,7 +35,11 @@ public class ExtenderSubsystem {
   }
 
   public void setElevatorVelocity(double velocity) {
-    elevator.runVelocity(velocity);
+    elevator.setManualVelocity(velocity);
+  }
+
+  public void setPivotVelocity(double velocity) {
+    pivot.setManualVelocity(velocity);
   }
 
   public void moveElevatorToSetpoint(String position) {
