@@ -54,7 +54,11 @@ public class ElevatorIOSparkMax implements ElevatorIO {
   }
 
   public ElevatorIOSparkMax(
-      int leftMotorCanID, int rightMotorCanID, double reductionL, double reductionR) {
+      int leftMotorCanID,
+      int rightMotorCanID,
+      double reductionL,
+      double reductionR,
+      int currentLimit) {
     this.leftMotor = new SparkMax(leftMotorCanID, SparkMax.MotorType.kBrushless);
     this.rightMotor = new SparkMax(rightMotorCanID, SparkMax.MotorType.kBrushless);
 
@@ -67,8 +71,8 @@ public class ElevatorIOSparkMax implements ElevatorIO {
     lConfig.idleMode(SparkMaxConfig.IdleMode.kBrake);
     rConfig.idleMode(SparkMaxConfig.IdleMode.kBrake);
 
-    lConfig.smartCurrentLimit(10);
-    rConfig.smartCurrentLimit(10);
+    lConfig.smartCurrentLimit(currentLimit);
+    rConfig.smartCurrentLimit(currentLimit);
     rConfig.openLoopRampRate(0.5);
     rConfig.openLoopRampRate(0.5);
 
@@ -110,25 +114,25 @@ public class ElevatorIOSparkMax implements ElevatorIO {
   @Override
   public void periodic() {
 
-    if (!manualControl) {
+    // if (!manualControl) {
 
-      // Calculate the pid
-      double pidOutput = pid.calculate(getAngleDeg());
+    //   // Calculate the pid
+    //   double pidOutput = pid.calculate(getAngleDeg());
 
-      double gravityComp = kG * Math.cos(Math.toRadians(getAngleDeg()));
+    //   double gravityComp = kG * Math.cos(Math.toRadians(getAngleDeg()));
 
-      double output = pidOutput + gravityComp;
+    //   double output = pidOutput + gravityComp;
 
-      // Clamp so it is under the max speed
-      if (output > maxSpeedDegPerSec) {
-        output = maxSpeedDegPerSec;
-      } else if (output < -maxSpeedDegPerSec) {
-        output = -maxSpeedDegPerSec;
-      }
+    //   // Clamp so it is under the max speed
+    //   if (output > maxSpeedDegPerSec) {
+    //     output = maxSpeedDegPerSec;
+    //   } else if (output < -maxSpeedDegPerSec) {
+    //     output = -maxSpeedDegPerSec;
+    //   }
 
-      this.leftMotor.set(output / physicalMaxSpeed);
-      this.rightMotor.set(output / physicalMaxSpeed);
-    }
+    //   this.leftMotor.set(output / physicalMaxSpeed);
+    //   this.rightMotor.set(output / physicalMaxSpeed);
+    // }
   }
 
   @Override
@@ -152,20 +156,14 @@ public class ElevatorIOSparkMax implements ElevatorIO {
   }
 
   @Override
-  public void setManualControl(boolean enabled) {
-    manualControl = enabled;
-  }
-
-  @Override
   public boolean manualControlEnabled() {
     return manualControl;
   }
 
   @Override
   public void setManualVelocity(double normalizedVelocity) {
-    if (manualControl) {
-      leftMotor.set(normalizedVelocity);
-    }
+    manualControl = true;
+    leftMotor.set(normalizedVelocity);
   }
 
   @Override

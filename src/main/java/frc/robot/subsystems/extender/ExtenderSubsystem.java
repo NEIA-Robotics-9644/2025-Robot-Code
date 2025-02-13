@@ -26,6 +26,8 @@ public class ExtenderSubsystem extends SubsystemBase {
   public void periodic() {
     elevator.updateInputs(elevatorInputs);
     pivot.updateInputs(pivotInputs);
+    elevator.periodic();
+    pivot.periodic();
     Logger.processInputs("ElevatorExtender", elevatorInputs);
     Logger.processInputs("ElevatorPivot", pivotInputs);
 

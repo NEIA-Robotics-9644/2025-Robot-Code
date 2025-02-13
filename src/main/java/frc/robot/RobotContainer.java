@@ -88,11 +88,11 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight),
                 new Vision());
-        intake = new IntakeSubsystem(new IntakeWheelIOSparkMax(22, 1), new CoralSensorIORoboRio());
+        intake = new IntakeSubsystem(new IntakeWheelIOSparkMax(23, 1), new CoralSensorIORoboRio());
         extender =
             new ExtenderSubsystem(
-                new ElevatorIOSparkMax(20, 21, 5, 5),
-                new PivotIOSparkMax(22, 1),
+                new ElevatorIOSparkMax(20, 21, 5, 5, 50),
+                new PivotIOSparkMax(22, 1, 50),
                 new LimitSwitchSensorIORoboRio());
         break;
 
@@ -193,7 +193,7 @@ public class RobotContainer {
             drive,
             () -> hid.getLeftY(),
             () -> hid.getLeftX(),
-            () -> -hid.getRightX(),
+            () -> -hid.getRightX() * 4,
             () -> (Math.abs(hid.getRightX()) > 0.1)));
 
     // When the b button is pressed, score coral
@@ -216,7 +216,13 @@ public class RobotContainer {
 
     // When the right trigger is held, run intake (spin feeder wheel and EE wheels, will stop when
     // coral is detected in the right place)
-    opCon.rightTrigger(0.3).whileTrue(Commands.print("Running intake"));
+    opCon
+        .rightTrigger(0.3)
+        .whileTrue(
+            Commands.run(
+                () -> {
+                  intake.setVelocity(0.5);
+                }));
 
     // When the left trigger is held, use manual velocity-control to run the extender
     opCon

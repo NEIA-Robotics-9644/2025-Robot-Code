@@ -45,13 +45,13 @@ public class PivotIOSparkMax implements PivotIO {
   private final Double outputCurrent;
   private final Double tempCelsius;
 
-  public PivotIOSparkMax(int id, double reduction) {
+  public PivotIOSparkMax(int id, double reduction, int maxCurrentA) {
     this.motor = new SparkMax(id, SparkMax.MotorType.kBrushless);
 
     config.idleMode(SparkMaxConfig.IdleMode.kBrake);
 
     config.smartCurrentLimit(maxCurrentA);
-    config.openLoopRampRate(0.5);
+    // config.openLoopRampRate(0.5);
 
     this.motor.configure(
         config,
@@ -92,27 +92,27 @@ public class PivotIOSparkMax implements PivotIO {
 
   @Override
   public void periodic() {
-    if (!manualControl) {
+    // if (!manualControl) {
 
-      // Calculate the pid
-      double pidOutput = pid.calculate(getAngleDeg());
+    //   // Calculate the pid
+    //   double pidOutput = pid.calculate(getAngleDeg());
 
-      double gravityComp = kG * Math.cos(Math.toRadians(getAngleDeg()));
+    //   double gravityComp = kG * Math.cos(Math.toRadians(getAngleDeg()));
 
-      double output = pidOutput + gravityComp;
+    //   double output = pidOutput + gravityComp;
 
-      // Clamp so it is under the max speed
-      if (output > maxSpeedDegPerSec) {
-        output = maxSpeedDegPerSec;
-      } else if (output < -maxSpeedDegPerSec) {
-        output = -maxSpeedDegPerSec;
-      }
+    //   // Clamp so it is under the max speed
+    //   if (output > maxSpeedDegPerSec) {
+    //     output = maxSpeedDegPerSec;
+    //   } else if (output < -maxSpeedDegPerSec) {
+    //     output = -maxSpeedDegPerSec;
+    //   }
 
-      this.motor.set(output * physicalMaxSpeed);
-    } else {
+    //   this.motor.set(output * physicalMaxSpeed);
+    // } else {
 
-      this.motor.set(normalizedVelocity * physicalMaxSpeed);
-    }
+    this.motor.set(normalizedVelocity);
+    System.out.println("Setting the speed to: " + normalizedVelocity);
   }
 
   @Override
