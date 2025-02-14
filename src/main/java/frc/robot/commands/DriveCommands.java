@@ -73,12 +73,27 @@ public class DriveCommands {
       Drive drive,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
-      DoubleSupplier omegaSupplier) {
-    return Commands.run(
-        () -> {
+      DoubleSupplier omegaSupplier, BooleanSupplier upSpeedSupplier, BooleanSupplier downSpeedSupplier, double[] speeds) {
+    return new Command() {
+        int index = 0;
+
+        @Override
+        public void execute() {
+
+          if (upSpeedSupplier.getAsBoolean()) {
+            index++;
+          } else if (downSpeedSupplier.getAsBoolean()) {
+            index--;
+          }
+
+          index = MathUtil.clamp(index, 0, speeds.length - 1);
+
+          var speedMultiplier = speeds[index];
+
+
           // Get linear velocity
           Translation2d linearVelocity =
-              getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+              getLinearVelocityFromJoysticks(xSupplier.getAsDouble() * speedMultiplier, ySupplier.getAsDouble() * speedMultiplier);
 
           // Apply rotation deadband
           double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
@@ -101,8 +116,8 @@ public class DriveCommands {
                   isFlipped
                       ? drive.getRotation().plus(new Rotation2d(Math.PI))
                       : drive.getRotation()));
-        },
-        drive);
+        }
+      };
   }
 
   /**

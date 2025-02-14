@@ -87,6 +87,7 @@ public class Drive extends SubsystemBase {
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
 
+
   public Drive(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
@@ -167,6 +168,7 @@ public class Drive extends SubsystemBase {
           Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
         });
   }
+
 
   @Override
   public void periodic() {

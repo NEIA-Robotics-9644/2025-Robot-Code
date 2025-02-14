@@ -11,7 +11,6 @@ public class ExtenderCommands {
         Commands.runOnce(
             () -> {
               System.out.println("Intaking coral from station");
-              extender.moveElevatorToSetpoint(position);
             }));
   }
 }

@@ -10,25 +10,18 @@ public interface PivotIO {
     public double appliedVoltage = 0.0;
     public double outputCurrentAmps = 0.0;
     public double tempCelsius = 0.0;
+
+    public double currentAngleDeg = 0.0;
+    public double targetAngleDeg = 0.0;
   }
 
   default void updateInputs(PivotIOInputs inputs) {}
 
-  default void runVelocity(double velocity) {}
-
-  default void setAngleSetpoint(String setpoint) {}
+  default void setAngleSetpoint(double angleDeg) {}
 
   public default void setManualVelocity(double normalizedVelocity) {}
 
-  public default double getAngleDeg() {
-    return 0.0;
-  }
-
-  public default double getVelocityPercent() {
-    return 0.0;
-  }
-
   public default void periodic() {}
 
-  public default void setBrakeMode(boolean brake) {}
+  public default void zeroEncoder() {}
 }

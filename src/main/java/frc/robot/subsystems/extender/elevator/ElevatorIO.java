@@ -16,69 +16,62 @@ public interface ElevatorIO {
     public double appliedVoltageR = 0.0;
     public double outputCurrentAmpsR = 0.0;
     public double tempCelsiusR = 0.0;
-   
-    
-    public double heightIn = 0.0;
-    public boolean switchTriggered = false;
-    public ControlMode mode = ControlMode.HOMING;
+
+    public ControlMode mode = ControlMode.MANUAL;
+
+    public double targetHeight = 0.0;
+    public double setpoint = 0.0;
+    public double currentHeight = 0.0;
+  }
+
+  static class ElevatorIOConfig {
+    public double kP = 0;
+    public double kD = 0;
+    public double kG = 0;
+    public double maxSpeedUpNormalized = 0;
+    public double maxSpeedDownNormalized = 0;
+    public double maxHeight = 0;
+    public int maxCurrentA = 0;
+    public boolean leftReversed = false;
+    public boolean rightReversed = false;
+
+    public ElevatorIOConfig(
+        double kP,
+        double kD,
+        double kG,
+        double maxSpeedDownNormalized,
+        double maxSpeedUpNormalized,
+        double maxHeight,
+        int maxCurrentA,
+        boolean leftReversed,
+        boolean rightReversed) {
+
+      this.kP = kP;
+      this.kD = kD;
+      this.kG = kG;
+      this.maxSpeedUpNormalized = maxSpeedUpNormalized;
+      this.maxSpeedDownNormalized = maxSpeedDownNormalized;
+      this.maxHeight = maxHeight;
+      this.maxCurrentA = maxCurrentA;
+      this.leftReversed = leftReversed;
+      this.rightReversed = rightReversed;
+    }
   }
 
   public enum ControlMode {
-    HOMING,
     SETPOINT,
     MANUAL
   }
 
   public default void periodic() {}
 
+  public void configure(ElevatorIOConfig config);
+
   default void updateInputs(ElevatorIOInputs inputs) {}
 
-  public default void setAngleSetpoint(String height) {}
+  public void setManualVelocity(double normalizedVelocity);
 
-  public default double getAngleDeg() {
-    return 0.0;
-  }
+  public void setSetpointHeight(double height);
 
-  /*
-   * Enable manual control of the mechanism
-   * This disables all internal control loops
-   * USE WITH CAUTION
-   */
-  public default void setManualControl(boolean enabled) {}
-
-  /*
-   * Set the velocity of the mechanism
-   * Negative is always down.
-   * This is only used when manual control is enabled
-   */
-  public default void setManualVelocity(double velocity) {}
-
-  /*
-   * Get whether manual control is enabled
-   */
-  public default boolean manualControlEnabled() {
-    return true;
-  }
-
-  public default boolean atBottom() {
-    return true;
-  }
-
-  public default boolean atTop() {
-    return true;
-  }
-
-  public default void resetAngleToBottom() {}
-
-  public default double getTopAngleDeg() {
-    return 0.0;
-  }
-
-  public default double getBottomAngleDeg() {
-    return 0.0;
-  }
-
-  public default double getVelocityPercent() {
-    return 0.0;
-  }
+  public void zeroEncoders();
 }

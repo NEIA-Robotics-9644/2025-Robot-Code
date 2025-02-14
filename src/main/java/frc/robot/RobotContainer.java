@@ -26,29 +26,17 @@ import frc.robot.commands.AutoAlignCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.EndEffectorCommands;
 import frc.robot.commands.ExtenderCommands;
-import frc.robot.commands.IntakeCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
-import frc.robot.subsystems.drive.ModuleIO;
-import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.extender.ExtenderSubsystem;
-import frc.robot.subsystems.extender.elevator.ElevatorIO;
-import frc.robot.subsystems.extender.elevator.ElevatorIOSim;
+import frc.robot.subsystems.extender.elevator.ElevatorIO.ElevatorIOConfig;
 import frc.robot.subsystems.extender.elevator.ElevatorIOSparkMax;
-import frc.robot.subsystems.extender.pivot.PivotIO;
-import frc.robot.subsystems.extender.pivot.PivotIOSim;
 import frc.robot.subsystems.extender.pivot.PivotIOSparkMax;
-import frc.robot.subsystems.extender.sensor.LimitSwitchSensorIO;
 import frc.robot.subsystems.extender.sensor.LimitSwitchSensorIORoboRio;
-import frc.robot.subsystems.extender.sensor.LimitSwitchSensorIOSim;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.intake.sensor.CoralSensorIO;
 import frc.robot.subsystems.intake.sensor.CoralSensorIOSim;
-import frc.robot.subsystems.intake.wheel.IntakeWheelIO;
-import frc.robot.subsystems.intake.wheel.IntakeWheelIOSim;
 import frc.robot.subsystems.intake.wheel.IntakeWheelIOSparkMax;
 import frc.robot.subsystems.poseEstimator.Vision;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -77,64 +65,29 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    switch (Constants.currentMode) {
-      case REAL:
-        // Real robot, instantiate hardware IO implementations
-        drive =
-            new Drive(
-                new GyroIOPigeon2(),
-                new ModuleIOTalonFX(TunerConstants.FrontLeft),
-                new ModuleIOTalonFX(TunerConstants.FrontRight),
-                new ModuleIOTalonFX(TunerConstants.BackLeft),
-                new ModuleIOTalonFX(TunerConstants.BackRight),
-                new Vision());
-        endEffectorWheels =
-            new IntakeSubsystem(new IntakeWheelIOSparkMax(23, 1, 40), new CoralSensorIOSim());
-        extender =
-            new ExtenderSubsystem(
-                new ElevatorIOSparkMax(20, 21, 5, 5, 50),
-                new PivotIOSparkMax(22, 1, 50),
-                new LimitSwitchSensorIORoboRio());
-        intakeWheels =
-            new IntakeSubsystem(new IntakeWheelIOSparkMax(24, 1, 40), new CoralSensorIOSim());
-        break;
 
-      case SIM:
-        // Sim robot, instantiate physics sim IO implementations
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new ModuleIOSim(TunerConstants.FrontLeft),
-                new ModuleIOSim(TunerConstants.FrontRight),
-                new ModuleIOSim(TunerConstants.BackLeft),
-                new ModuleIOSim(TunerConstants.BackRight),
-                new Vision());
-        endEffectorWheels = new IntakeSubsystem(new IntakeWheelIOSim(), new CoralSensorIOSim());
-        extender =
-            new ExtenderSubsystem(
-                new ElevatorIOSim(), new PivotIOSim(), new LimitSwitchSensorIOSim());
+    var elevatorIOConfig = new ElevatorIOConfig(0.3, 0.01, 0.12, 0.0008, 1, 100.0, 60, false, true);
 
-        intakeWheels = new IntakeSubsystem(new IntakeWheelIOSim(), new CoralSensorIOSim());
-        break;
-
-      default:
-        // Replayed robot, disable IO implementations
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new Vision());
-        endEffectorWheels = new IntakeSubsystem(new IntakeWheelIO() {}, new CoralSensorIO() {});
-        extender =
-            new ExtenderSubsystem(
-                new ElevatorIO() {}, new PivotIO() {}, new LimitSwitchSensorIO() {});
-
-        intakeWheels = new IntakeSubsystem(new IntakeWheelIO() {}, new CoralSensorIO() {});
-        break;
-    }
+    // Real robot, instantiate hardware IO implementations
+    drive =
+        new Drive(
+            new GyroIOPigeon2(),
+            new ModuleIOTalonFX(TunerConstants.FrontLeft),
+            new ModuleIOTalonFX(TunerConstants.FrontRight),
+            new ModuleIOTalonFX(TunerConstants.BackLeft),
+            new ModuleIOTalonFX(TunerConstants.BackRight),
+            new Vision());
+    endEffectorWheels =
+        new IntakeSubsystem(new IntakeWheelIOSparkMax(23, 1, 40), new CoralSensorIOSim());
+    extender =
+        new ExtenderSubsystem(
+            new ElevatorIOSparkMax(20, 21, elevatorIOConfig),
+            new PivotIOSparkMax(22, 10, 0.5, 0, 0.5, false),
+            new LimitSwitchSensorIORoboRio(9),
+            new double[] {0, 1, 3, 9},
+            new double[] {0, 0, 0, 0});
+    intakeWheels =
+        new IntakeSubsystem(new IntakeWheelIOSparkMax(24, 1, 40), new CoralSensorIOSim());
 
     // Register named commands
 
@@ -150,10 +103,6 @@ public class RobotContainer {
         "Extender to L2 Dealgify", ExtenderCommands.setToPoint(extender, "L2 Dealgify"));
     NamedCommands.registerCommand(
         "Extender to L3 Dealgify", ExtenderCommands.setToPoint(extender, "L3 Dealgify"));
-
-    NamedCommands.registerCommand(
-        "Intake Coral From Station",
-        IntakeCommands.intakeCoralFromStation(endEffectorWheels, extender));
 
     NamedCommands.registerCommand("Score Coral", EndEffectorCommands.scoreCoral());
     NamedCommands.registerCommand("Dealgify", EndEffectorCommands.dealgify());
@@ -192,30 +141,38 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
+
+
+    var runWheelsCommand = Commands.runEnd(
+                () -> {
+                  extender.setElevatorVelocity(opCon.getLeftY() * -0.5);
+                  extender.setPivotVelocity(opCon.getRightY() * -0.5);
+                },
+                () -> {
+                  extender.setElevatorVelocity(0);
+                  extender.setPivotVelocity(0);
+                });
+
+
+
     // --- Driver Controls ---
 
     var hid = driveCon.getHID();
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
-        DriveCommands.joystickDriveAtAngle(
+        DriveCommands.joystickDrive(
             drive,
             () -> hid.getLeftY(),
             () -> hid.getLeftX(),
             () -> -hid.getRightX() * 4,
-            () -> (Math.abs(hid.getRightX()) > 0.1)));
+            () -> driveCon.leftBumper().getAsBoolean(),
+            () -> driveCon.rightBumper().getAsBoolean(),
+            new double[] {0.1, 0.2, 0.5, 1}));
 
     // When the b button is pressed, score coral
-    driveCon.b().onTrue(Commands.print("Score coral"));
 
-    // When the right trigger is held, auto-align to the current april tag.  This overrides the
-    // joystick drive, for as long as the trigger is held down
-    driveCon.rightTrigger().whileTrue(AutoAlignCommands.closestReefAlign(drive));
+    driveCon.b().whileTrue(runWheelsCommand);
 
-    // When the right bumper is pressed, level up the speed setting
-    driveCon.rightBumper().onTrue(Commands.print("Fudge speed up"));
-
-    // When the left bumper is pressed, level down the speed setting
-    driveCon.leftBumper().onTrue(Commands.print("Fudge speed down"));
 
     // --- Operator Controls ---
 
@@ -229,43 +186,39 @@ public class RobotContainer {
         .whileTrue(
             Commands.runEnd(
                 () -> {
-                  endEffectorWheels.setVelocity(opCon.getRightTriggerAxis());
-                  intakeWheels.setVelocity(opCon.getRightTriggerAxis());
+                  endEffectorWheels.setVelocity(opCon.getRightTriggerAxis() * 0.2);
+                  intakeWheels.setVelocity(opCon.getRightTriggerAxis() * 0.2);
                 },
                 () -> {
                   endEffectorWheels.setVelocity(0);
                   intakeWheels.setVelocity(0);
                 }));
 
-    // When the left trigger is held, use manual velocity-control to run the extender
-    opCon
-        .leftTrigger(0.3)
-        .whileTrue(
-            Commands.run(
-                () -> {
-                  extender.setElevatorVelocity(-opCon.getLeftY());
-                  extender.setPivotVelocity(-opCon.getRightY());
-                }));
 
-    // When the A button is pressed, go to L1
-    opCon.a().onTrue(Commands.print("Going to L1"));
+    opCon
+        .leftTrigger(0.05)
+        .whileTrue(runWheelsCommand);   
+
+
+                // When the A button is pressed, go to L1
+    opCon.a().onTrue(Commands.runOnce(() -> extender.setSetpoint(0)));
 
     // When the B button is pressed, go to L2
-    opCon.b().onTrue(Commands.print("Going to L2"));
+    opCon.b().onTrue(Commands.runOnce(() -> extender.setSetpoint(1)));
 
     // When the X button is pressed, go to L3
-    opCon.x().onTrue(Commands.print("Going to L3"));
+    opCon.x().onTrue(Commands.runOnce(() -> extender.setSetpoint(2)));
 
     // When the Y button is pressed, go to L4
-    opCon.y().onTrue(Commands.print("Going to L4"));
+    opCon.y().onTrue(Commands.runOnce(() -> extender.setSetpoint(3)));
 
     // Adjust the end effector setpoint with the right and left D-Pad
-    opCon.povLeft().onTrue(Commands.print("Decreasing End Effector Setpoint Angle"));
-    opCon.povRight().onTrue(Commands.print("Increasing End Effector Setpoint Angle"));
+    opCon.povLeft().onTrue(Commands.runOnce(() -> extender.modifySetpointAngle(-1)));
+    opCon.povRight().onTrue(Commands.runOnce(() -> extender.modifySetpointAngle(1)));
 
     // Adjust the elevator setpoint with the up and down D-Pad
-    opCon.povDown().onTrue(Commands.print("Decreasing Elevator Setpoint Height"));
-    opCon.povRight().onTrue(Commands.print("Increasing Elevator Setpoint Height"));
+    opCon.povDown().onTrue(Commands.runOnce(() -> extender.modifySetpointHeight(-0.05)));
+    opCon.povUp().onTrue(Commands.runOnce(() -> extender.modifySetpointHeight(0.05)));
   }
 
   public void update() {}
