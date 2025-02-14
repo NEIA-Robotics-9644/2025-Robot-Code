@@ -16,6 +16,11 @@ public interface ElevatorIO {
     public double appliedVoltageR = 0.0;
     public double outputCurrentAmpsR = 0.0;
     public double tempCelsiusR = 0.0;
+   
+    
+    public double heightIn = 0.0;
+    public boolean switchTriggered = false;
+    public ControlMode mode = ControlMode.HOMING;
   }
 
   public enum ControlMode {

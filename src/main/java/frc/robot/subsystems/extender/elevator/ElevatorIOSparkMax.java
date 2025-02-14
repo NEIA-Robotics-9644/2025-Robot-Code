@@ -19,30 +19,11 @@ public class ElevatorIOSparkMax implements ElevatorIO {
   private PIDController pid = new PIDController(2, 0.0, 0.0);
   private final double kG = 5;
 
-  private final Double positionL;
-  private final Double velocityL;
-  private final Double appliedVoltageL;
-  private final Double outputCurrentL;
-  private final Double tempCelsiusL;
-
-  private final Double positionR;
-  private final Double velocityR;
-  private final Double appliedVoltageR;
-  private final Double outputCurrentR;
-  private final Double tempCelsiusR;
-
-  private final Double reductionL;
-  private final Double reductionR;
-
-  public ElevatorIOSparkMax() {
-    throw new IllegalArgumentException("You must pass in valid hardware for a subsystem to work");
-  }
+  
 
   public ElevatorIOSparkMax(
       int leftMotorCanID,
       int rightMotorCanID,
-      double reductionL,
-      double reductionR,
       int currentLimit) {
     this.leftMotor = new SparkMax(leftMotorCanID, SparkMax.MotorType.kBrushless);
     this.rightMotor = new SparkMax(rightMotorCanID, SparkMax.MotorType.kBrushless);
@@ -58,34 +39,15 @@ public class ElevatorIOSparkMax implements ElevatorIO {
 
     lConfig.smartCurrentLimit(currentLimit);
     rConfig.smartCurrentLimit(currentLimit);
-    rConfig.openLoopRampRate(0.5);
-    rConfig.openLoopRampRate(0.5);
 
     this.leftMotor.configure(
         lConfig,
         SparkBase.ResetMode.kResetSafeParameters,
-        SparkBase.PersistMode.kNoPersistParameters);
+        SparkBase.PersistMode.kPersistParameters);
     this.rightMotor.configure(
         rConfig,
         SparkBase.ResetMode.kResetSafeParameters,
-        SparkBase.PersistMode.kNoPersistParameters);
-
-    this.pid.setTolerance(0.1);
-
-    this.reductionL = reductionL;
-    this.reductionR = reductionR;
-
-    positionL = leftMotor.getAbsoluteEncoder().getPosition();
-    velocityL = leftMotor.getAbsoluteEncoder().getVelocity() / 2;
-    appliedVoltageL = leftMotor.getBusVoltage();
-    outputCurrentL = leftMotor.getOutputCurrent();
-    tempCelsiusL = leftMotor.getMotorTemperature();
-
-    positionR = rightMotor.getAbsoluteEncoder().getPosition();
-    velocityR = rightMotor.getAbsoluteEncoder().getVelocity() / 2;
-    appliedVoltageR = rightMotor.getBusVoltage();
-    outputCurrentR = rightMotor.getOutputCurrent();
-    tempCelsiusR = rightMotor.getMotorTemperature();
+        SparkBase.PersistMode.kPersistParameters);
   }
 
   @Override
@@ -114,24 +76,28 @@ public class ElevatorIOSparkMax implements ElevatorIO {
 
   @Override
   public void setManualVelocity(double normalizedVelocity) {
-    // manualControl = true;
     leftMotor.set(normalizedVelocity);
   }
 
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
-    inputs.positionRadsL = Units.rotationsToRadians(positionL) / reductionL;
-    inputs.velocityRadsPerSecL =
-        Units.rotationsToRadians(velocityL * (2 * Math.PI / 60)) / reductionL;
-    inputs.appliedVoltageL = appliedVoltageL;
-    inputs.outputCurrentAmpsL = outputCurrentL;
-    inputs.tempCelsiusL = tempCelsiusL;
+    var lEncoder = leftMotor.getEncoder();
+    var rEncoder = rightMotor.getEncoder(); 
 
-    inputs.positionRadsR = Units.rotationsToRadians(positionR) / reductionR;
+    inputs.positionRadsL = Units.rotationsToRadians(lEncoder.getPosition());
+    inputs.velocityRadsPerSecL =
+        Units.rotationsPerMinuteToRadiansPerSecond(lEncoder.getVelocity());
+    inputs.appliedVoltageL = leftMotor.getAppliedOutput();
+    inputs.outputCurrentAmpsL = leftMotor.getOutputCurrent();
+    inputs.tempCelsiusL = leftMotor.getMotorTemperature();
+
+    inputs.positionRadsR = Units.rotationsToRadians(rEncoder.getPosition());
     inputs.velocityRadsPerSecR =
-        Units.rotationsToRadians(velocityR * (2 * Math.PI / 60)) / reductionR;
-    inputs.appliedVoltageR = appliedVoltageR;
-    inputs.outputCurrentAmpsR = outputCurrentR;
-    inputs.tempCelsiusR = tempCelsiusR;
+        Units.rotationsPerMinuteToRadiansPerSecond(rEncoder.getVelocity());
+    inputs.appliedVoltageR = rightMotor.getAppliedOutput();
+    inputs.outputCurrentAmpsR = rightMotor.getOutputCurrent();
+    inputs.tempCelsiusR = rightMotor.getMotorTemperature();
+
+    inputs.switchTriggered = 
   }
 }
