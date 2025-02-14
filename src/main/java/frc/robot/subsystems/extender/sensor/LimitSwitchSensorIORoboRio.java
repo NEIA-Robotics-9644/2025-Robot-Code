@@ -5,15 +5,21 @@ import edu.wpi.first.wpilibj.DigitalInput;
 public class LimitSwitchSensorIORoboRio implements LimitSwitchSensorIO {
   // Initializes a DigitalInput on DIO 9
   private DigitalInput input;
+  private boolean defaultOn = false;
 
-  public LimitSwitchSensorIORoboRio(int rioInputPin) {
+  public LimitSwitchSensorIORoboRio(int rioInputPin, boolean defaultOn) {
     input = new DigitalInput(rioInputPin);
+    this.defaultOn = defaultOn;
   }
 
   @Override
   public boolean sensorHit() {
     // Returns the value of the DigitalInput
-    return input.get();
+    if (defaultOn) {
+      return !input.get();
+    } else {
+      return input.get();
+    }
   }
 
   @Override

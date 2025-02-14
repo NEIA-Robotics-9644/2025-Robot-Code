@@ -73,51 +73,60 @@ public class DriveCommands {
       Drive drive,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
-      DoubleSupplier omegaSupplier, BooleanSupplier upSpeedSupplier, BooleanSupplier downSpeedSupplier, double[] speeds) {
+      DoubleSupplier omegaSupplier,
+      BooleanSupplier upSpeedSupplier,
+      BooleanSupplier downSpeedSupplier,
+      double[] speeds) {
     return new Command() {
-        int index = 0;
+      int index = 0;
 
-        @Override
-        public void execute() {
+      @Override
+      public void initialize() {
+        index = 0;
+      }
 
-          if (upSpeedSupplier.getAsBoolean()) {
-            index++;
-          } else if (downSpeedSupplier.getAsBoolean()) {
-            index--;
-          }
+      @Override
+      public void execute() {
 
-          index = MathUtil.clamp(index, 0, speeds.length - 1);
-
-          var speedMultiplier = speeds[index];
-
-
-          // Get linear velocity
-          Translation2d linearVelocity =
-              getLinearVelocityFromJoysticks(xSupplier.getAsDouble() * speedMultiplier, ySupplier.getAsDouble() * speedMultiplier);
-
-          // Apply rotation deadband
-          double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
-
-          // Square rotation value for more precise control
-          omega = Math.copySign(omega * omega, omega);
-
-          // Convert to field relative speeds & send command
-          ChassisSpeeds speeds =
-              new ChassisSpeeds(
-                  linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
-                  linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
-                  omega * drive.getMaxAngularSpeedRadPerSec());
-          boolean isFlipped =
-              DriverStation.getAlliance().isPresent()
-                  && DriverStation.getAlliance().get() == Alliance.Red;
-          drive.runVelocity(
-              ChassisSpeeds.fromFieldRelativeSpeeds(
-                  speeds,
-                  isFlipped
-                      ? drive.getRotation().plus(new Rotation2d(Math.PI))
-                      : drive.getRotation()));
+        if (upSpeedSupplier.getAsBoolean()) {
+          index++;
+        } else if (downSpeedSupplier.getAsBoolean()) {
+          index--;
         }
-      };
+
+        index = MathUtil.clamp(index, 0, speeds.length - 1);
+
+        var speedMultiplier = speeds[index];
+
+        // Get linear velocity
+        Translation2d linearVelocity =
+            getLinearVelocityFromJoysticks(
+                xSupplier.getAsDouble() * speedMultiplier,
+                ySupplier.getAsDouble() * speedMultiplier);
+
+        // Apply rotation deadband
+        double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
+
+        // Square rotation value for more precise control
+        omega = Math.copySign(omega * omega, omega);
+
+        // Convert to field relative speeds & send command
+        ChassisSpeeds speeds =
+            new ChassisSpeeds(
+                linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+                linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+                omega * drive.getMaxAngularSpeedRadPerSec());
+        boolean isFlipped =
+            DriverStation.getAlliance().isPresent()
+                && DriverStation.getAlliance().get() == Alliance.Red;
+        drive.runVelocity(
+            ChassisSpeeds.fromFieldRelativeSpeeds(
+                speeds,
+                isFlipped
+                    ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                    : drive.getRotation()));
+      }
+    };
   }
 
   /**

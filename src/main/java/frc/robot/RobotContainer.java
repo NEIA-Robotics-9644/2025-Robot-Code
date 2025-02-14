@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.AutoAlignCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.EndEffectorCommands;
 import frc.robot.commands.ExtenderCommands;
@@ -83,8 +82,8 @@ public class RobotContainer {
         new ExtenderSubsystem(
             new ElevatorIOSparkMax(20, 21, elevatorIOConfig),
             new PivotIOSparkMax(22, 10, 0.5, 0, 0.5, false),
-            new LimitSwitchSensorIORoboRio(9),
-            new double[] {0, 1, 3, 9},
+            new LimitSwitchSensorIORoboRio(9, true),
+            new double[] {0, 4.9444444444, 9.2, 17.5},
             new double[] {0, 0, 0, 0});
     intakeWheels =
         new IntakeSubsystem(new IntakeWheelIOSparkMax(24, 1, 40), new CoralSensorIOSim());
@@ -141,25 +140,22 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-
-
-    var runWheelsCommand = Commands.runEnd(
-                () -> {
-                  extender.setElevatorVelocity(opCon.getLeftY() * -0.5);
-                  extender.setPivotVelocity(opCon.getRightY() * -0.5);
-                },
-                () -> {
-                  extender.setElevatorVelocity(0);
-                  extender.setPivotVelocity(0);
-                });
-
-
+    var runWheelsCommand =
+        Commands.runEnd(
+            () -> {
+              extender.setElevatorVelocity(opCon.getLeftY() * -0.5);
+              extender.setPivotVelocity(opCon.getRightY() * -0.5);
+            },
+            () -> {
+              extender.setElevatorVelocity(0);
+              extender.setPivotVelocity(0);
+            });
 
     // --- Driver Controls ---
 
     var hid = driveCon.getHID();
     // Default command, normal field-relative drive
-    drive.setDefaultCommand(
+    Command driveCommand =
         DriveCommands.joystickDrive(
             drive,
             () -> hid.getLeftY(),
@@ -167,12 +163,14 @@ public class RobotContainer {
             () -> -hid.getRightX() * 4,
             () -> driveCon.leftBumper().getAsBoolean(),
             () -> driveCon.rightBumper().getAsBoolean(),
-            new double[] {0.1, 0.2, 0.5, 1}));
+            new double[] {0.1, 0.2, 0.5, 1});
+
+    driveCommand.addRequirements(drive);
+    drive.setDefaultCommand(driveCommand);
 
     // When the b button is pressed, score coral
 
     driveCon.b().whileTrue(runWheelsCommand);
-
 
     // --- Operator Controls ---
 
@@ -187,20 +185,16 @@ public class RobotContainer {
             Commands.runEnd(
                 () -> {
                   endEffectorWheels.setVelocity(opCon.getRightTriggerAxis() * 0.2);
-                  intakeWheels.setVelocity(opCon.getRightTriggerAxis() * 0.2);
+                  intakeWheels.setVelocity(opCon.getRightTriggerAxis() * -0.2);
                 },
                 () -> {
                   endEffectorWheels.setVelocity(0);
                   intakeWheels.setVelocity(0);
                 }));
 
+    opCon.leftTrigger(0.05).whileTrue(runWheelsCommand);
 
-    opCon
-        .leftTrigger(0.05)
-        .whileTrue(runWheelsCommand);   
-
-
-                // When the A button is pressed, go to L1
+    // When the A button is pressed, go to L1
     opCon.a().onTrue(Commands.runOnce(() -> extender.setSetpoint(0)));
 
     // When the B button is pressed, go to L2
