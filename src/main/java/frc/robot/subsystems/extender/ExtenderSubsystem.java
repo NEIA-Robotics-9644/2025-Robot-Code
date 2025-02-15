@@ -74,7 +74,7 @@ public class ExtenderSubsystem extends SubsystemBase {
         break;
       case SETPOINT:
         elevator.setSetpointHeight(heights[index]);
-        pivot.setAngleSetpoint(angles[index]);
+        // pivot.setAngleSetpoint(angles[index]);
         break;
 
       case MANUAL:

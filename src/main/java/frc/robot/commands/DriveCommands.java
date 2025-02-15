@@ -76,7 +76,7 @@ public class DriveCommands {
       DoubleSupplier omegaSupplier,
       BooleanSupplier upSpeedSupplier,
       BooleanSupplier downSpeedSupplier,
-      double[] speeds) {
+      double[] speeds, BooleanSupplier resetGyroSupplier) {
     return new Command() {
       int index = 0;
 
@@ -87,6 +87,10 @@ public class DriveCommands {
 
       @Override
       public void execute() {
+
+        if (resetGyroSupplier.getAsBoolean()) {
+          drive.setPose(new Pose2d());
+        }
 
         if (upSpeedSupplier.getAsBoolean()) {
           index++;

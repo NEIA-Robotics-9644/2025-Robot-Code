@@ -109,25 +109,6 @@ public class RobotContainer {
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
-    // Set up SysId routines
-    autoChooser.addOption(
-        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-    autoChooser.addOption(
-        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Forward)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Reverse)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-    autoChooser.addOption(
-        "Move Test", Commands.run(() -> drive.runVelocity(new ChassisSpeeds(1, 0, 0))));
-
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -162,9 +143,9 @@ public class RobotContainer {
             () -> hid.getLeftY(),
             () -> hid.getLeftX(),
             () -> -hid.getRightX() * 4,
-            () -> driveCon.leftBumper().getAsBoolean(),
-            () -> driveCon.rightBumper().getAsBoolean(),
-            new double[] {0.1, 0.2, 0.5, 1});
+            () -> hid.getRightBumperButton(),
+            () -> hid.getLeftBumperButton(),
+            new double[] {0.2, 0.4, 0.7, 1}, () -> hid.getAButton());
 
     driveCommand.addRequirements(drive);
     drive.setDefaultCommand(driveCommand);
@@ -178,22 +159,16 @@ public class RobotContainer {
     // When the right button is pressed, score coral
     opCon.rightBumper().whileTrue(Commands.print("Score coral"));
 
-    // When the right trigger is held, run intake (spin feeder wheel and EE wheels, will stop when
-    // coral is detected in the right place)
-    opCon
-        .rightTrigger(0.05)
-        .whileTrue(
-            Commands.runEnd(
-                () -> {
-                  endEffectorWheels.setVelocity(opCon.getRightTriggerAxis() * 0.2);
-                  intakeWheels.setVelocity(opCon.getRightTriggerAxis() * -0.2);
-                },
-                () -> {
-                  endEffectorWheels.setVelocity(0);
-                  intakeWheels.setVelocity(0);
-                }));
 
-    opCon.leftTrigger(0.05).whileTrue(runWheelsCommand);
+    opCon.leftTrigger(0.1).whileTrue(runWheelsCommand);
+
+
+    extender.setDefaultCommand(
+        Commands.run(() -> {
+            extender.setPivotVelocity(opCon.getRightY() * -0.5);
+        }, extender));
+
+
 
     // When the A button is pressed, go to L1
     opCon.a().onTrue(Commands.runOnce(() -> extender.setSetpoint(0)));
@@ -207,7 +182,7 @@ public class RobotContainer {
     // When the Y button is pressed, go to L4
     opCon.y().onTrue(Commands.runOnce(() -> extender.setSetpoint(3)));
 
-    // Adjust the end effector setpoint with the right and left D-Pad
+    // NOT USED RIGHT NOW Adjust the end effector setpoint with the right and left D-Pad
     opCon.povLeft().onTrue(Commands.runOnce(() -> extender.modifySetpointAngle(-1)));
     opCon.povRight().onTrue(Commands.runOnce(() -> extender.modifySetpointAngle(1)));
 
