@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.EndEffectorCommands;
 import frc.robot.commands.ExtenderCommands;
@@ -65,7 +64,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    var elevatorIOConfig = new ElevatorIOConfig(0.3, 0.01, 0.12, 0.0008, 1, 100.0, 60, false, true);
+    var elevatorIOConfig = new ElevatorIOConfig(0.3, 0.01, 0.12, 0.01, 1, 100.0, 60, false, true);
 
     // Real robot, instantiate hardware IO implementations
     drive =
@@ -109,6 +108,17 @@ public class RobotContainer {
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
+    // FIX THIS WON"T WORK ON RED !!!
+    var week0defaultBlue =
+        Commands.run(
+                () -> {
+                  drive.runVelocity(new ChassisSpeeds(-1, 0, 0));
+                })
+            .withTimeout(8.0);
+    week0defaultBlue.addRequirements(drive);
+
+    autoChooser.addOption("BLUE Week 0 Move forward", week0defaultBlue);
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -121,18 +131,6 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    var runWheelsCommand =
-        Commands.runEnd(
-            () -> {
-              extender.setElevatorVelocity(opCon.getLeftY() * -0.5);
-              extender.setPivotVelocity(opCon.getRightY() * -0.5);
-            },
-            () -> {
-              extender.setElevatorVelocity(0);
-              extender.setPivotVelocity(0);
-            });
-
-
     // --- Driver Controls ---
 
     var hid = driveCon.getHID();
@@ -140,35 +138,44 @@ public class RobotContainer {
     Command driveCommand =
         DriveCommands.joystickDrive(
             drive,
-            () -> hid.getLeftY(),
-            () -> hid.getLeftX(),
-            () -> -hid.getRightX() * 4,
-            () -> hid.getRightBumperButton(),
-            () -> hid.getLeftBumperButton(),
-            new double[] {0.2, 0.4, 0.7, 1}, () -> hid.getAButton());
+            () -> -hid.getLeftY(),
+            () -> -hid.getLeftX(),
+            () -> -hid.getRightX(),
+            () -> hid.getRightBumperButtonPressed(),
+            () -> hid.getLeftBumperButtonPressed(),
+            new double[] {0.4, 0.6, 0.8, 1},
+            () -> driveCon.povRight().getAsBoolean());
 
     driveCommand.addRequirements(drive);
     drive.setDefaultCommand(driveCommand);
 
-    // When the b button is pressed, score coral
-
-    driveCon.b().whileTrue(runWheelsCommand);
-
     // --- Operator Controls ---
 
-    // When the right button is pressed, score coral
-    opCon.rightBumper().whileTrue(Commands.print("Score coral"));
+    opCon
+        .rightTrigger(0.1)
+        .whileTrue(
+            Commands.runEnd(
+                () -> {
+                  intakeWheels.setVelocity(opCon.getRightTriggerAxis() * -0.2);
+                  endEffectorWheels.setVelocity(opCon.getRightTriggerAxis() * 0.2);
+                },
+                () -> {
+                  intakeWheels.setVelocity(0);
+                  endEffectorWheels.setVelocity(0);
+                }));
 
-
-    opCon.leftTrigger(0.1).whileTrue(runWheelsCommand);
-
-
-    extender.setDefaultCommand(
-        Commands.run(() -> {
-            extender.setPivotVelocity(opCon.getRightY() * -0.5);
-        }, extender));
-
-
+    opCon
+        .leftTrigger(0.1)
+        .whileTrue(
+            Commands.runEnd(
+                () -> {
+                  intakeWheels.setVelocity(opCon.getLeftTriggerAxis() * 0.2);
+                  endEffectorWheels.setVelocity(opCon.getLeftTriggerAxis() * -0.2);
+                },
+                () -> {
+                  intakeWheels.setVelocity(0);
+                  endEffectorWheels.setVelocity(0);
+                }));
 
     // When the A button is pressed, go to L1
     opCon.a().onTrue(Commands.runOnce(() -> extender.setSetpoint(0)));

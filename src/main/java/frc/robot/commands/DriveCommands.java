@@ -76,7 +76,8 @@ public class DriveCommands {
       DoubleSupplier omegaSupplier,
       BooleanSupplier upSpeedSupplier,
       BooleanSupplier downSpeedSupplier,
-      double[] speeds, BooleanSupplier resetGyroSupplier) {
+      double[] speeds,
+      BooleanSupplier resetGyroSupplier) {
     return new Command() {
       int index = 0;
 
@@ -109,7 +110,8 @@ public class DriveCommands {
                 ySupplier.getAsDouble() * speedMultiplier);
 
         // Apply rotation deadband
-        double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
+        double omega =
+            MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND) * speedMultiplier;
 
         // Square rotation value for more precise control
         omega = Math.copySign(omega * omega, omega);

@@ -101,7 +101,6 @@ public class ExtenderSubsystem extends SubsystemBase {
       return;
     }
     pivot.setManualVelocity(velocity);
-    mode = ExtenderMode.MANUAL;
   }
 
   public void setElevatorSetpoint(double height) {
