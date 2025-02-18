@@ -30,7 +30,7 @@ public class PivotIOSim implements PivotIO {
 
   @Override
   public void setVelocity(double normalizedVelocity) {
-    this.velocityRadsPerSec = normalizedVelocity;
+    this.velocityRadsPerSec = normalizedVelocity * 100;
   }
 
   @Override

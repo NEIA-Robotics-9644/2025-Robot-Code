@@ -34,7 +34,7 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.intake.sensor.CoralSensorIOSim;
 import frc.robot.subsystems.intake.wheel.IntakeWheelIOSparkMax;
 import frc.robot.subsystems.pivot.Pivot;
-import frc.robot.subsystems.pivot.PivotIOSparkMax;
+import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.poseEstimator.Vision;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -78,7 +78,7 @@ public class RobotContainer {
     endEffectorWheels =
         new IntakeSubsystem(new IntakeWheelIOSparkMax(23, 1, 40), new CoralSensorIOSim());
     elevator = new Elevator(new ElevatorIOSim(), new LimitSwitchSensorIOSim());
-    pivot = new Pivot(new PivotIOSparkMax(22));
+    pivot = new Pivot(new PivotIOSim());
 
     intakeWheels =
         new IntakeSubsystem(new IntakeWheelIOSparkMax(24, 1, 40), new CoralSensorIOSim());
@@ -167,6 +167,9 @@ public class RobotContainer {
 
     pivot.setDefaultCommand(pivot.goToAngle(() -> controllerState.getCurrentSetpoint().angle));
 
+    // When the left bumper is held, manually control the pivot with the right joystick
+    opCon.leftBumper().whileTrue(pivot.manualControl(opCon::getRightY));
+
     // When the A button is pressed, go to Intake
     opCon
         .a()
@@ -186,6 +189,20 @@ public class RobotContainer {
     opCon
         .y()
         .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L4)));
+
+    opCon
+        .povUp()
+        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().height += 0.1));
+    opCon
+        .povDown()
+        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().height -= 0.1));
+
+    opCon
+        .povLeft()
+        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().angle -= 0.1));
+    opCon
+        .povRight()
+        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().angle += 0.1));
   }
 
   public void update() {}

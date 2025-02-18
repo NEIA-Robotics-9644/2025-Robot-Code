@@ -39,6 +39,10 @@ public class Pivot extends SubsystemBase {
 
   public void periodic() {
     io.updateInputs(inputs);
+    io.periodic();
+    Logger.recordOutput(
+        "Pivot/CurrentCommand",
+        getCurrentCommand() != null ? getCurrentCommand().getName() : "None");
     Logger.processInputs("Pivot", inputs);
 
     io.setMaxAmps((int) maxAmps.get());
@@ -58,16 +62,15 @@ public class Pivot extends SubsystemBase {
   public Command goToAngle(DoubleSupplier angleRad) {
     return Commands.run(
             () -> {
-              Logger.recordOutput("Pivot/TargetAngle", angleRad.getAsDouble());
+              Logger.recordOutput("Pivot/TargetAngleRads", angleRad.getAsDouble());
 
               pid.setPID(kP.get(), kI.get(), kD.get());
 
               // Assuming pivot is zero when vertical, sin will be 0 when vertical and 1 when
               // horizontal (which is where we need most strength to hold the pivot up)
               double output =
-                  pid.calculate(
-                      getPositionRads(),
-                      angleRad.getAsDouble() + Math.sin(angleRad.getAsDouble()) * kAngle.get());
+                  pid.calculate(getPositionRads(), angleRad.getAsDouble())
+                      + Math.sin(angleRad.getAsDouble()) * kAngle.get();
               output = MathUtil.clamp(output, -maxSpeedUp.get(), maxSpeedDown.get());
 
               setVelocity(output);
