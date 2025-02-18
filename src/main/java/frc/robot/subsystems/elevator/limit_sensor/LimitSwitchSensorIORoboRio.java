@@ -1,4 +1,4 @@
-package frc.robot.subsystems.extender.sensor;
+package frc.robot.subsystems.elevator.limit_sensor;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 

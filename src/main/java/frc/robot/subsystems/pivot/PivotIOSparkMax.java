@@ -1,4 +1,4 @@
-package frc.robot.subsystems.extender.pivot;
+package frc.robot.subsystems.pivot;
 
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkMax;

@@ -14,25 +14,22 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.EndEffectorCommands;
-import frc.robot.commands.ExtenderCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import frc.robot.subsystems.extender.ExtenderSubsystem;
-import frc.robot.subsystems.extender.elevator.ElevatorIO.ElevatorIOConfig;
-import frc.robot.subsystems.extender.elevator.ElevatorIOSparkMax;
-import frc.robot.subsystems.extender.pivot.PivotIOSparkMax;
-import frc.robot.subsystems.extender.sensor.LimitSwitchSensorIORoboRio;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.elevator_motors.ElevatorIOSim;
+import frc.robot.subsystems.elevator.limit_sensor.LimitSwitchSensorIOSim;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.intake.sensor.CoralSensorIOSim;
 import frc.robot.subsystems.intake.wheel.IntakeWheelIOSparkMax;
@@ -50,7 +47,7 @@ public class RobotContainer {
   private final Drive drive;
   private final IntakeSubsystem intakeWheels;
   private final IntakeSubsystem endEffectorWheels;
-  private final ExtenderSubsystem extender;
+  private final Elevator elevator;
 
   // Driver controller
   private final CommandXboxController driveCon = new CommandXboxController(0);
@@ -58,13 +55,13 @@ public class RobotContainer {
   // Operator controller
   private final CommandXboxController opCon = new CommandXboxController(1);
 
+  ControllerState controllerState = new ControllerState();
+
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
-    var elevatorIOConfig = new ElevatorIOConfig(0.3, 0.01, 0.12, 0.01, 1, 100.0, 60, false, true);
 
     // Real robot, instantiate hardware IO implementations
     drive =
@@ -77,33 +74,10 @@ public class RobotContainer {
             new Vision());
     endEffectorWheels =
         new IntakeSubsystem(new IntakeWheelIOSparkMax(23, 1, 40), new CoralSensorIOSim());
-    extender =
-        new ExtenderSubsystem(
-            new ElevatorIOSparkMax(20, 21, elevatorIOConfig),
-            new PivotIOSparkMax(22, 10, 0.5, 0, 0.5, false),
-            new LimitSwitchSensorIORoboRio(9, true),
-            new double[] {0, 4.9444444444, 9.2, 17.5},
-            new double[] {0, 0, 0, 0});
+    elevator = new Elevator(new ElevatorIOSim(), new LimitSwitchSensorIOSim());
+
     intakeWheels =
         new IntakeSubsystem(new IntakeWheelIOSparkMax(24, 1, 40), new CoralSensorIOSim());
-
-    // Register named commands
-
-    NamedCommands.registerCommand("Extender to L1", ExtenderCommands.setToPoint(extender, "L1"));
-    NamedCommands.registerCommand("Extender to L2", ExtenderCommands.setToPoint(extender, "L2"));
-    NamedCommands.registerCommand("Extender to L3", ExtenderCommands.setToPoint(extender, "L3"));
-    NamedCommands.registerCommand("Extender to L4", ExtenderCommands.setToPoint(extender, "L4"));
-    NamedCommands.registerCommand(
-        "Extender to Intake", ExtenderCommands.setToPoint(extender, "Intake"));
-    NamedCommands.registerCommand(
-        "Extender to Process", ExtenderCommands.setToPoint(extender, "Processor"));
-    NamedCommands.registerCommand(
-        "Extender to L2 Dealgify", ExtenderCommands.setToPoint(extender, "L2 Dealgify"));
-    NamedCommands.registerCommand(
-        "Extender to L3 Dealgify", ExtenderCommands.setToPoint(extender, "L3 Dealgify"));
-
-    NamedCommands.registerCommand("Score Coral", EndEffectorCommands.scoreCoral());
-    NamedCommands.registerCommand("Dealgify", EndEffectorCommands.dealgify());
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -177,25 +151,35 @@ public class RobotContainer {
                   endEffectorWheels.setVelocity(0);
                 }));
 
-    // When the A button is pressed, go to L1
-    opCon.a().onTrue(Commands.runOnce(() -> extender.setSetpoint(0)));
+    // When the robot is enabled, go into homing mode
+    new Trigger(DriverStation::isEnabled).onTrue(elevator.home());
+
+    // When the right bumper is held, manually control the elevator with the left joystick
+
+    opCon.rightBumper().whileTrue(elevator.manualControl(opCon::getLeftY));
+
+    elevator.setDefaultCommand(
+        elevator.goToHeight(() -> controllerState.getCurrentSetpoint().height));
+
+    // When the A button is pressed, go to Intake
+    opCon
+        .a()
+        .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.INTAKE)));
 
     // When the B button is pressed, go to L2
-    opCon.b().onTrue(Commands.runOnce(() -> extender.setSetpoint(1)));
+    opCon
+        .b()
+        .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L2)));
 
     // When the X button is pressed, go to L3
-    opCon.x().onTrue(Commands.runOnce(() -> extender.setSetpoint(2)));
+    opCon
+        .x()
+        .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L3)));
 
     // When the Y button is pressed, go to L4
-    opCon.y().onTrue(Commands.runOnce(() -> extender.setSetpoint(3)));
-
-    // NOT USED RIGHT NOW Adjust the end effector setpoint with the right and left D-Pad
-    opCon.povLeft().onTrue(Commands.runOnce(() -> extender.modifySetpointAngle(-1)));
-    opCon.povRight().onTrue(Commands.runOnce(() -> extender.modifySetpointAngle(1)));
-
-    // Adjust the elevator setpoint with the up and down D-Pad
-    opCon.povDown().onTrue(Commands.runOnce(() -> extender.modifySetpointHeight(-0.05)));
-    opCon.povUp().onTrue(Commands.runOnce(() -> extender.modifySetpointHeight(0.05)));
+    opCon
+        .y()
+        .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L4)));
   }
 
   public void update() {}

@@ -1,15 +1,8 @@
-package frc.robot.subsystems.extender;
+package frc.robot.subsystems.old_extender;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.extender.elevator.ElevatorIO;
-import frc.robot.subsystems.extender.elevator.ElevatorIOInputsAutoLogged;
-import frc.robot.subsystems.extender.pivot.PivotIO;
-import frc.robot.subsystems.extender.pivot.PivotIOInputsAutoLogged;
-import frc.robot.subsystems.extender.sensor.LimitSwitchSensorIO;
-import frc.robot.subsystems.extender.sensor.LimitSwitchSensorIOInputsAutoLogged;
-import org.littletonrobotics.junction.Logger;
-
+/*
 public class ExtenderSubsystem extends SubsystemBase {
+
 
   public enum ExtenderMode {
     HOMING,
@@ -64,7 +57,7 @@ public class ExtenderSubsystem extends SubsystemBase {
 
     switch (mode) {
       case HOMING:
-        elevator.setManualVelocity(-0.02);
+        elevator.setVelocity(-0.02);
         if (limitSwitch.sensorHit()) {
           elevator.zeroEncoders();
           pivot.zeroEncoder();
@@ -91,7 +84,7 @@ public class ExtenderSubsystem extends SubsystemBase {
       System.out.println("Elevator is homing, cannot set velocity.");
       return;
     }
-    elevator.setManualVelocity(velocity);
+    elevator.setVelocity(velocity);
     mode = ExtenderMode.MANUAL;
   }
 
@@ -142,3 +135,4 @@ public class ExtenderSubsystem extends SubsystemBase {
     angles[index] += delta;
   }
 }
+*/

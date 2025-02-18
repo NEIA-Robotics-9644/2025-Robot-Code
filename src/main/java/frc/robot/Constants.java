@@ -25,6 +25,9 @@ public final class Constants {
   public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
 
+  // Set this to false during comp to lock in the tuning values
+  public static boolean tuningMode = true;
+
   public static Map<String, Double> extenderAngles =
       Map.of(
           "L1", 25.0,

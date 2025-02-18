@@ -1,3 +1,3 @@
-package frc.robot.subsystems.extender.pivot;
+package frc.robot.subsystems.pivot;
 
 public class PivotIOSim implements PivotIO {}
