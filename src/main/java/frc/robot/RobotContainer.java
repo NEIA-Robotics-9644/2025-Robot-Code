@@ -33,6 +33,8 @@ import frc.robot.subsystems.elevator.limit_sensor.LimitSwitchSensorIOSim;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.intake.sensor.CoralSensorIOSim;
 import frc.robot.subsystems.intake.wheel.IntakeWheelIOSparkMax;
+import frc.robot.subsystems.pivot.Pivot;
+import frc.robot.subsystems.pivot.PivotIOSparkMax;
 import frc.robot.subsystems.poseEstimator.Vision;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -48,6 +50,7 @@ public class RobotContainer {
   private final IntakeSubsystem intakeWheels;
   private final IntakeSubsystem endEffectorWheels;
   private final Elevator elevator;
+  private final Pivot pivot;
 
   // Driver controller
   private final CommandXboxController driveCon = new CommandXboxController(0);
@@ -75,6 +78,7 @@ public class RobotContainer {
     endEffectorWheels =
         new IntakeSubsystem(new IntakeWheelIOSparkMax(23, 1, 40), new CoralSensorIOSim());
     elevator = new Elevator(new ElevatorIOSim(), new LimitSwitchSensorIOSim());
+    pivot = new Pivot(new PivotIOSparkMax(22));
 
     intakeWheels =
         new IntakeSubsystem(new IntakeWheelIOSparkMax(24, 1, 40), new CoralSensorIOSim());
@@ -160,6 +164,8 @@ public class RobotContainer {
 
     elevator.setDefaultCommand(
         elevator.goToHeight(() -> controllerState.getCurrentSetpoint().height));
+
+    pivot.setDefaultCommand(pivot.goToAngle(() -> controllerState.getCurrentSetpoint().angle));
 
     // When the A button is pressed, go to Intake
     opCon
