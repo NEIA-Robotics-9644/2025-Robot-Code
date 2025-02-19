@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.controllers.AutoAlignController;
 import java.util.List;
+import org.littletonrobotics.junction.Logger;
 
 public class AutoAlignCommands {
 
@@ -66,8 +67,13 @@ public class AutoAlignCommands {
     } else if (fieldSide == DriverStation.Alliance.Red) {
 
     }
+
+    for (int i = 0; i < targetPoses.size(); i++) {
+      Logger.recordOutput("Pose " + i, targetPoses.get(i));
+    }
+
     AutoAlignController alignController =
-        new AutoAlignController(findClosestPose(currentPose, targetPoses), null, false, drive);
+        new AutoAlignController(findClosestPose(currentPose, targetPoses), null, true, drive);
 
     return Commands.run(
         () -> {

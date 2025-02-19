@@ -181,7 +181,7 @@ public class Drive extends SubsystemBase {
               est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
         });
 
-    Optional<EstimatedRobotPose> frontVisionEst = vision.getBackEstimatedGlobalPose();
+    Optional<EstimatedRobotPose> frontVisionEst = vision.getFrontEstimatedGlobalPose();
     frontVisionEst.ifPresent(
         est -> {
           // Change our trust in the measurement based on the tags we can see
