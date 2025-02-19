@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package frc.robot.subsystems.end_effector_wheels;
+package frc.robot.subsystems.end_effector;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import org.littletonrobotics.junction.AutoLog;
@@ -22,16 +22,27 @@ public interface FlywheelIO {
   }
 
   default void updateInputs(FlywheelIOInputs inputs) {}
+  public default void setBrakeMode(boolean brake) {}
 
-  default void runVolts(double volts) {}
-
-  default void runVelocity(double velocityRadPerSec) {}
-
-  default void runPosition(Rotation2d position) {}
-
-  default void setPID(double kP, double kI, double kD) {}
-
-  default void setBrakeMode(boolean enabled) {}
+  public default double getVelocityPercent() {
+    return 0.0;
+  }
 
   default void stop() {}
+
+  public default void setVelocity(double normalizedVelocity) {}
+
+  public default double getPositionRads() {
+    return 0.0;
+  }
+
+  public default void setMaxAmps(int maxAmps) {}
+
+  public default void setEncoderOffset(double encoderOffsetRads) {}
+
+  public default void setInverted(boolean inverted) {}
+
+  public default void zeroEncoder() {}
+
+  public default void periodic() {}
 }
