@@ -45,11 +45,11 @@ public class ElevatorIOSparkMax implements ElevatorIO {
     lConfig.smartCurrentLimit(maxAmps);
     rConfig.smartCurrentLimit(maxAmps);
 
-    leftMotor.configure(
+    leftMotor.configureAsync(
         lConfig,
         SparkBase.ResetMode.kResetSafeParameters,
         SparkBase.PersistMode.kPersistParameters);
-    rightMotor.configure(
+    rightMotor.configureAsync(
         rConfig,
         SparkBase.ResetMode.kResetSafeParameters,
         SparkBase.PersistMode.kPersistParameters);

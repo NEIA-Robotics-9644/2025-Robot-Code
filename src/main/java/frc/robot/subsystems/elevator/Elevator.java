@@ -17,7 +17,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
 
-  private LoggedTunableNumber elevatorP = new LoggedTunableNumber("Elevator/P", 0.3);
+  private LoggedTunableNumber elevatorP = new LoggedTunableNumber("Elevator/P", 0.2);
   private LoggedTunableNumber elevatorI = new LoggedTunableNumber("Elevator/I", 0.0);
   private LoggedTunableNumber elevatorD = new LoggedTunableNumber("Elevator/D", 0.0);
 
@@ -27,13 +27,14 @@ public class Elevator extends SubsystemBase {
   private LoggedTunableNumber elevatorMaxSpeedUp =
       new LoggedTunableNumber("Elevator/MaxSpeedUp", 1);
   private LoggedTunableNumber elevatorMaxSpeedDown =
-      new LoggedTunableNumber("Elevator/MaxSpeedDown", 0.01);
+      new LoggedTunableNumber("Elevator/MaxSpeedDown", 0.05);
 
-  private LoggedTunableNumber elevatorMaxHeight = new LoggedTunableNumber("Elevator/MaxHeight", 12);
+  private LoggedTunableNumber elevatorMaxHeight =
+      new LoggedTunableNumber("Elevator/MaxHeight", 18.952320098876953);
   private LoggedTunableNumber elevatorHomingMoveSpeed =
-      new LoggedTunableNumber("Elevator/HomingMoveSpeed", 0.1);
+      new LoggedTunableNumber("Elevator/HomingMoveSpeed", 0.05);
   private LoggedTunableNumber elevatorMaxAmps =
-      new LoggedTunableNumber("Elevator/MaxAmpsPerMotor", 60);
+      new LoggedTunableNumber("Elevator/MaxAmpsPerMotor", 80);
 
   private final ElevatorIO elevatorIO;
   private final ElevatorIOInputsAutoLogged elevatorIOInputs = new ElevatorIOInputsAutoLogged();
@@ -50,12 +51,20 @@ public class Elevator extends SubsystemBase {
     this.limitSwitchSensorIO = limitSwitchSensorIO;
   }
 
+  private int oldMaxAmps = 0;
+
   @Override
   public void periodic() {
     elevatorIO.updateInputs(elevatorIOInputs);
+    Logger.processInputs("ElevatorMotors", elevatorIOInputs);
     elevatorIO.periodic();
     limitSwitchSensorIO.updateInputs(limitSwitchSensorIOInputs);
-    elevatorIO.setMaxAmps((int) elevatorMaxAmps.get());
+    Logger.processInputs("ElevatorLimitSwitch", limitSwitchSensorIOInputs);
+
+    if (oldMaxAmps != (int) elevatorMaxAmps.get()) {
+      elevatorIO.setMaxAmps((int) elevatorMaxAmps.get());
+      oldMaxAmps = (int) elevatorMaxAmps.get();
+    }
 
     var currentCommand = getCurrentCommand();
 

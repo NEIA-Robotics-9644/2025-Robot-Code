@@ -30,11 +30,11 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.elevator_motors.ElevatorIOSim;
 import frc.robot.subsystems.elevator.limit_sensor.LimitSwitchSensorIOSim;
-import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.sensor.CoralSensorIOSim;
 import frc.robot.subsystems.intake.wheel.IntakeWheelIOSparkMax;
 import frc.robot.subsystems.pivot.Pivot;
-import frc.robot.subsystems.pivot.PivotIOSim;
+import frc.robot.subsystems.pivot.PivotIOSparkMax;
 import frc.robot.subsystems.poseEstimator.Vision;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -45,10 +45,11 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
   // Subsystems
   private final Drive drive;
-  private final IntakeSubsystem intakeWheels;
-  private final IntakeSubsystem endEffectorWheels;
+  private final Intake intakeWheels;
+  private final Intake endEffectorWheels;
   private final Elevator elevator;
   private final Pivot pivot;
 
@@ -75,13 +76,15 @@ public class RobotContainer {
             new ModuleIOTalonFX(TunerConstants.BackLeft),
             new ModuleIOTalonFX(TunerConstants.BackRight),
             new Vision());
-    endEffectorWheels =
-        new IntakeSubsystem(new IntakeWheelIOSparkMax(23, 1, 40), new CoralSensorIOSim());
-    elevator = new Elevator(new ElevatorIOSim(), new LimitSwitchSensorIOSim());
-    pivot = new Pivot(new PivotIOSim());
+    endEffectorWheels = new Intake(new IntakeWheelIOSparkMax(23, 1, 40), new CoralSensorIOSim());
+    elevator =
+        new Elevator(
+            new ElevatorIOSim(),
+            new LimitSwitchSensorIOSim()); // new ElevatorIOSparkMax(20, 21, false, true), new
+    // LimitSwitchSensorIORoboRio(9, true));
+    pivot = new Pivot(new PivotIOSparkMax(22));
 
-    intakeWheels =
-        new IntakeSubsystem(new IntakeWheelIOSparkMax(24, 1, 40), new CoralSensorIOSim());
+    intakeWheels = new Intake(new IntakeWheelIOSparkMax(24, 1, 40), new CoralSensorIOSim());
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -204,8 +207,6 @@ public class RobotContainer {
         .povRight()
         .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().angle += 0.1));
   }
-
-  public void update() {}
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

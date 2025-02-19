@@ -6,7 +6,7 @@ import frc.robot.subsystems.intake.wheel.IntakeWheelIO;
 import frc.robot.subsystems.intake.wheel.IntakeWheelIOInputsAutoLogged;
 import org.littletonrobotics.junction.Logger;
 
-public class IntakeSubsystem extends SubsystemBase {
+public class Intake extends SubsystemBase {
 
   private final IntakeWheelIO wheel;
 
@@ -14,7 +14,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private final IntakeWheelIOInputsAutoLogged inputs = new IntakeWheelIOInputsAutoLogged();
 
-  public IntakeSubsystem(IntakeWheelIO wheel, CoralSensorIO coral) {
+  public Intake(IntakeWheelIO wheel, CoralSensorIO coral) {
     this.wheel = wheel;
     this.coral = coral;
   }
