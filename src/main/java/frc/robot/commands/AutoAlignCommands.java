@@ -78,6 +78,11 @@ public class AutoAlignCommands {
     return Commands.run(
         () -> {
           ChassisSpeeds speeds = alignController.update();
+          ChassisSpeeds invertedSpeeds =
+              new ChassisSpeeds(
+                  -speeds.vxMetersPerSecond,
+                  -speeds.vyMetersPerSecond,
+                  -speeds.omegaRadiansPerSecond);
           drive.runVelocity(speeds);
         },
         drive);

@@ -39,7 +39,6 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -249,9 +248,13 @@ public class Drive extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    vision.visionSim.update(this.getPose());
-    var debugField = vision.getSimDebugField();
-    debugField.getObject("EstimatedRobot").setPose(this.getPose());
+
+    // I commented this out because it was taking like 90% of the CPU time and causing Command
+    // Scheduler Loop Overruns
+
+    // vision.visionSim.update(this.getPose());
+    // var debugField = vision.getSimDebugField();
+    // debugField.getObject("EstimatedRobot").setPose(this.getPose());
   }
 
   /**
@@ -263,10 +266,10 @@ public class Drive extends SubsystemBase {
     // System.out.println("Running velocity");
 
     if (DriverStation.getAlliance().isPresent()
-        && DriverStation.getAlliance().get() == Alliance.Blue) {
-      // Flip the chassis speeds
-      speeds.vxMetersPerSecond *= -1;
-      speeds.vyMetersPerSecond *= -1;
+        && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+      speeds =
+          new ChassisSpeeds(
+              -speeds.vxMetersPerSecond, -speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
     }
 
     // Calculate module setpoints

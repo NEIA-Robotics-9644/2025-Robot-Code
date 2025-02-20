@@ -1,10 +1,10 @@
 package frc.robot.subsystems.pivot;
 
-import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.util.SparkMaxUtil;
 
 public class PivotIOSparkMax implements PivotIO {
 
@@ -21,22 +21,19 @@ public class PivotIOSparkMax implements PivotIO {
 
     config.idleMode(SparkMaxConfig.IdleMode.kBrake);
 
-    this.motor.configureAsync(
-        config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+    SparkMaxUtil.configureMotor(motor, config);
   }
 
   @Override
   public void setMaxAmps(int maxAmps) {
     config.smartCurrentLimit(maxAmps);
-    this.motor.configureAsync(
-        config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+    SparkMaxUtil.configureMotor(motor, config);
   }
 
   @Override
   public void setInverted(boolean inverted) {
     config.inverted(inverted);
-    this.motor.configureAsync(
-        config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+    SparkMaxUtil.configureMotor(motor, config);
   }
 
   @Override
