@@ -27,16 +27,20 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
+import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.elevator_motors.ElevatorIOSim;
 import frc.robot.subsystems.elevator.limit_sensor.LimitSwitchSensorIOSim;
 import frc.robot.subsystems.end_effector.EndEffectorSubsystem;
+import frc.robot.subsystems.end_effector.FlywheelIOSim;
 import frc.robot.subsystems.end_effector.FlywheelIOSparkMax;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.sensor.CoralSensorIOSim;
+import frc.robot.subsystems.intake.wheel.IntakeWheelIOSim;
 import frc.robot.subsystems.intake.wheel.IntakeWheelIOSparkMax;
 import frc.robot.subsystems.pivot.Pivot;
+import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOSparkMax;
 import frc.robot.subsystems.poseEstimator.Vision;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -71,23 +75,46 @@ public class RobotContainer {
   public RobotContainer() {
 
     // Real robot, instantiate hardware IO implementations
-    drive =
-        new Drive(
-            new GyroIOPigeon2(),
-            new ModuleIOTalonFX(TunerConstants.FrontLeft),
-            new ModuleIOTalonFX(TunerConstants.FrontRight),
-            new ModuleIOTalonFX(TunerConstants.BackLeft),
-            new ModuleIOTalonFX(TunerConstants.BackRight),
-            new Vision());
-    endEffectorWheels = new EndEffectorSubsystem(new FlywheelIOSparkMax(23));
-    elevator =
-        new Elevator(
-            new ElevatorIOSim(),
-            new LimitSwitchSensorIOSim()); // new ElevatorIOSparkMax(20, 21, false, true), new
-    // LimitSwitchSensorIORoboRio(9, true));
-    pivot = new Pivot(new PivotIOSparkMax(22));
 
-    intakeWheels = new Intake(new IntakeWheelIOSparkMax(24, 1, 40), new CoralSensorIOSim());
+    switch (Constants.currentMode) {
+      case SIM:
+        // Sim robot, instantiate sim hardware IO implementations
+        drive =
+            new Drive(
+                new GyroIOPigeon2(),
+                new ModuleIOSim(TunerConstants.FrontLeft),
+                new ModuleIOSim(TunerConstants.FrontRight),
+                new ModuleIOSim(TunerConstants.BackLeft),
+                new ModuleIOSim(TunerConstants.BackRight),
+                new Vision());
+
+        endEffectorWheels = new EndEffectorSubsystem(new FlywheelIOSim());
+        elevator = new Elevator(new ElevatorIOSim(), new LimitSwitchSensorIOSim());
+        pivot = new Pivot(new PivotIOSim());
+        intakeWheels = new Intake(new IntakeWheelIOSim(), new CoralSensorIOSim());
+        break;
+      default:
+        // Real robot, instantiate hardware IO implementations
+        drive =
+            new Drive(
+                new GyroIOPigeon2(),
+                new ModuleIOTalonFX(TunerConstants.FrontLeft),
+                new ModuleIOTalonFX(TunerConstants.FrontRight),
+                new ModuleIOTalonFX(TunerConstants.BackLeft),
+                new ModuleIOTalonFX(TunerConstants.BackRight),
+                new Vision());
+        endEffectorWheels = new EndEffectorSubsystem(new FlywheelIOSparkMax(23));
+        elevator =
+            new Elevator(
+                new ElevatorIOSim(),
+                new LimitSwitchSensorIOSim()); // new ElevatorIOSparkMax(20, 21, false, true), new
+        // LimitSwitchSensorIORoboRio(9, true));
+        pivot = new Pivot(new PivotIOSparkMax(22));
+
+        intakeWheels = new Intake(new IntakeWheelIOSparkMax(24, 1, 40), new CoralSensorIOSim());
+
+        break;
+    }
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());

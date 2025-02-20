@@ -1,9 +1,8 @@
-package frc.robot.subsystems.end_effector;//volatge, velo, pos
+package frc.robot.subsystems.end_effector; // volatge, velo, pos
 
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 

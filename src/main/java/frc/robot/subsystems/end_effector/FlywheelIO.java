@@ -22,6 +22,7 @@ public interface FlywheelIO {
   }
 
   default void updateInputs(FlywheelIOInputs inputs) {}
+
   public default void setBrakeMode(boolean brake) {}
 
   public default double getVelocityPercent() {
