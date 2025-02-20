@@ -31,6 +31,8 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.elevator_motors.ElevatorIOSim;
 import frc.robot.subsystems.elevator.limit_sensor.LimitSwitchSensorIOSim;
+import frc.robot.subsystems.end_effector.EndEffectorSubsystem;
+import frc.robot.subsystems.end_effector.FlywheelIOSparkMax;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.sensor.CoralSensorIOSim;
 import frc.robot.subsystems.intake.wheel.IntakeWheelIOSparkMax;
@@ -50,7 +52,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Intake intakeWheels;
-  private final Intake endEffectorWheels;
+  private final EndEffectorSubsystem endEffectorWheels;
   private final Elevator elevator;
   private final Pivot pivot;
 
@@ -77,7 +79,7 @@ public class RobotContainer {
             new ModuleIOTalonFX(TunerConstants.BackLeft),
             new ModuleIOTalonFX(TunerConstants.BackRight),
             new Vision());
-    endEffectorWheels = new Intake(new IntakeWheelIOSparkMax(23, 1, 40), new CoralSensorIOSim());
+    endEffectorWheels = new EndEffectorSubsystem(new FlywheelIOSparkMax(23));
     elevator =
         new Elevator(
             new ElevatorIOSim(),
