@@ -91,8 +91,8 @@ public class TunerConstants {
   private static final Distance kWheelRadius = Inches.of(2); // TODO: measure precisely
 
   // When these values where swapped, the robot went into spin mode and sam's computer got smashed
-  private static final boolean kInvertLeftSide = false;
-  private static final boolean kInvertRightSide = true;
+  private static final boolean kInvertLeftSide = true;
+  private static final boolean kInvertRightSide = false;
 
   private static final int kPigeonId = 14;
 

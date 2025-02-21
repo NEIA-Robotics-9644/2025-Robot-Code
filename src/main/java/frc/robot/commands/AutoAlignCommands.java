@@ -7,7 +7,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.controllers.AutoAlignController;
 import java.util.List;
@@ -21,11 +20,12 @@ public class AutoAlignCommands {
 
   public static Pose2d findClosestPose(Pose2d currentPose, List<Pose2d> targetPoses) {
     if (targetPoses.isEmpty()) {
+      System.out.println("No target poses available for comparison.");
       return currentPose; // No target poses to compare
     }
 
     Pose2d closestPose = targetPoses.get(0);
-    double minDistance = distanceBetween(currentPose, closestPose);
+    double minDistance = 999999999;
 
     // Iterate through the list to find the closest pose
     for (Pose2d pose : targetPoses) {
@@ -34,6 +34,7 @@ public class AutoAlignCommands {
         minDistance = distance;
         closestPose = pose;
       }
+      System.out.println("Distance to pose: " + distance);
     }
     return closestPose;
   }
@@ -43,7 +44,7 @@ public class AutoAlignCommands {
   public static Command closestReefAlign(Drive drive) {
 
     Pose2d currentPose = drive.getPose();
-    List<Pose2d> targetPoses = List.of();
+    final List<Pose2d> targetPoses;
 
     DriverStation.Alliance fieldSide =
         DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
@@ -66,25 +67,36 @@ public class AutoAlignCommands {
               );
     } else if (fieldSide == DriverStation.Alliance.Red) {
 
+      targetPoses = List.of();
+    } else {
+      targetPoses = List.of();
     }
 
     for (int i = 0; i < targetPoses.size(); i++) {
       Logger.recordOutput("Pose " + i, targetPoses.get(i));
     }
 
-    AutoAlignController alignController =
-        new AutoAlignController(findClosestPose(currentPose, targetPoses), null, true, drive);
+    return new Command() {
 
-    return Commands.run(
-        () -> {
-          ChassisSpeeds speeds = alignController.update();
-          ChassisSpeeds invertedSpeeds =
-              new ChassisSpeeds(
-                  -speeds.vxMetersPerSecond,
-                  -speeds.vyMetersPerSecond,
-                  -speeds.omegaRadiansPerSecond);
-          drive.runVelocity(speeds);
-        },
-        drive);
+      AutoAlignController alignController;
+
+      @Override
+      public void initialize() {
+
+        alignController =
+            new AutoAlignController(
+                findClosestPose(drive.getPose(), targetPoses), null, false, drive);
+      }
+
+      @Override
+      public void execute() {
+
+        ChassisSpeeds speeds = alignController.update();
+        ChassisSpeeds invertedSpeeds =
+            new ChassisSpeeds(
+                speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, -speeds.omegaRadiansPerSecond);
+        drive.runVelocity(invertedSpeeds);
+      }
+    };
   }
 }

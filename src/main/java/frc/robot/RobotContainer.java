@@ -26,11 +26,14 @@ import frc.robot.commands.AutoAlignCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.elevator_motors.ElevatorIOSim;
+import frc.robot.subsystems.elevator.elevator_motors.ElevatorIOSparkMax;
+import frc.robot.subsystems.elevator.limit_sensor.LimitSwitchSensorIORoboRio;
 import frc.robot.subsystems.elevator.limit_sensor.LimitSwitchSensorIOSim;
 import frc.robot.subsystems.end_effector.EndEffectorSubsystem;
 import frc.robot.subsystems.end_effector.FlywheelIOSim;
@@ -41,7 +44,6 @@ import frc.robot.subsystems.intake.wheel.IntakeWheelIOSim;
 import frc.robot.subsystems.intake.wheel.IntakeWheelIOSparkMax;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIOSim;
-import frc.robot.subsystems.pivot.PivotIOSparkMax;
 import frc.robot.subsystems.poseEstimator.Vision;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -81,7 +83,7 @@ public class RobotContainer {
         // Sim robot, instantiate sim hardware IO implementations
         drive =
             new Drive(
-                new GyroIOPigeon2(),
+                new GyroIO() {},
                 new ModuleIOSim(TunerConstants.FrontLeft),
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
@@ -106,10 +108,11 @@ public class RobotContainer {
         endEffectorWheels = new EndEffectorSubsystem(new FlywheelIOSparkMax(23));
         elevator =
             new Elevator(
-                new ElevatorIOSim(),
-                new LimitSwitchSensorIOSim()); // new ElevatorIOSparkMax(20, 21, false, true), new
+                new ElevatorIOSparkMax(20, 21, false, true),
+                new LimitSwitchSensorIORoboRio(
+                    8, false)); // new ElevatorIOSparkMax(20, 21, false, true), new
         // LimitSwitchSensorIORoboRio(9, true));
-        pivot = new Pivot(new PivotIOSparkMax(22));
+        pivot = new Pivot(new PivotIOSim());
 
         intakeWheels = new Intake(new IntakeWheelIOSparkMax(24, 1, 40), new CoralSensorIOSim());
 
