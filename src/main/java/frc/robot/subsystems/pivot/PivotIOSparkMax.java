@@ -12,7 +12,7 @@ public class PivotIOSparkMax implements PivotIO {
 
   private final SparkMaxConfig config = new SparkMaxConfig();
 
-  private double absoluteEncoderOffsetDegs = 0.0;
+  private double absoluteEncoderOffsetRads = 0.0;
 
   public PivotIOSparkMax(int id) {
     this.motor = new SparkMax(id, SparkMax.MotorType.kBrushless);
@@ -44,13 +44,13 @@ public class PivotIOSparkMax implements PivotIO {
   @Override
   public double getPositionRads() {
     var rawPosition = Rotation2d.fromRotations(motor.getAbsoluteEncoder().getPosition());
-    var offsetPosition = rawPosition.plus(Rotation2d.fromDegrees(absoluteEncoderOffsetDegs));
+    var offsetPosition = rawPosition.plus(Rotation2d.fromRadians(absoluteEncoderOffsetRads));
     return offsetPosition.getRadians();
   }
 
   @Override
-  public void setEncoderOffset(double encoderOffsetDegs) {
-    this.absoluteEncoderOffsetDegs = encoderOffsetDegs;
+  public void setEncoderOffset(double encoderOffsetRads) {
+    this.absoluteEncoderOffsetRads = encoderOffsetRads;
   }
 
   @Override

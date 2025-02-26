@@ -113,7 +113,7 @@ public class RobotContainer {
                 new LimitSwitchSensorIORoboRio(
                     9, true)); // new ElevatorIOSparkMax(20, 21, false, true), new
         // LimitSwitchSensorIORoboRio(9, true));
-        pivot = new Pivot(new PivotIOSparkMax(22));
+        pivot = new Pivot(new PivotIOSparkMax(29));
 
         intakeWheels = new Intake(new IntakeWheelIOSparkMax(24, 1, 40), new CoralSensorIOSim());
 
@@ -195,16 +195,24 @@ public class RobotContainer {
     // When the robot is enabled, go into homing mode
     new Trigger(DriverStation::isEnabled).onTrue(elevator.home());
 
-    // When the right bumper is held, manually control the elevator with the left joystick
+    // When the left bumper is held, manually control the elevator and pivot with the joysticks
 
-    opCon.rightBumper().whileTrue(elevator.manualControl(opCon::getLeftY));
+    opCon.leftBumper().whileTrue(Commands.parallel(elevator.manualControl(opCon::getLeftY), 
+        pivot.manualControl(opCon::getRightY)));
 
+    // Otherwise, go to the setpoint
     elevator.setDefaultCommand(
         elevator.goToHeight(() -> controllerState.getCurrentSetpoint().height));
 
-    pivot.setDefaultCommand(pivot.manualControl(opCon::getRightY));
+    pivot.setDefaultCommand(pivot.goToAngle(() -> controllerState.getCurrentSetpoint().angle));
 
-    // When the A button is pressed, go to Intake
+
+    // When the right bumper is pressed, go to Intake setpoint
+    opCon
+        .rightBumper()
+        .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.INTAKE)));
+
+    // When the A button is pressed, go to L1 
     opCon
         .a()
         .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.INTAKE)));
@@ -226,17 +234,17 @@ public class RobotContainer {
 
     opCon
         .povUp()
-        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().height += 0.1));
+        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().height += 0.01));
     opCon
         .povDown()
-        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().height -= 0.1));
+        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().height -= 0.01));
 
     opCon
         .povLeft()
-        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().angle -= 0.1));
+        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().angle -= 0.01));
     opCon
         .povRight()
-        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().angle += 0.1));
+        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().angle += 0.01));
   }
 
   /**

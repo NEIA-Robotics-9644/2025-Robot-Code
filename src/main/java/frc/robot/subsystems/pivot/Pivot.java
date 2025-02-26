@@ -20,10 +20,12 @@ public class Pivot extends SubsystemBase {
   private LoggedTunableNumber kI = new LoggedTunableNumber("Pivot/I", 0.0);
   private LoggedTunableNumber kD = new LoggedTunableNumber("Pivot/D", 0.0);
 
-  private LoggedTunableNumber kAngle = new LoggedTunableNumber("Pivot/AngleGain", 0.1);
+  private LoggedTunableNumber kAngle = new LoggedTunableNumber("Pivot/AngleGain", 0.0);
 
   private LoggedTunableNumber angleOffsetRads =
       new LoggedTunableNumber("Pivot/AngleOffsetRads", 2.34);
+
+  private LoggedTunableNumber maxAngleRads = new LoggedTunableNumber("Pivot/MaxAngleRads", 1.9);
 
   private LoggedTunableNumber motorScaleFactor =
       new LoggedTunableNumber("Pivot/MotorScaleFactor", 1.0);
@@ -65,6 +67,8 @@ public class Pivot extends SubsystemBase {
               Logger.recordOutput("Pivot/TargetAngleRads", angleRad.getAsDouble());
 
               pid.setPID(kP.get(), kI.get(), kD.get());
+
+              var setpoint = MathUtil.clamp(angleRad.getAsDouble(), 0, maxAngleRads.get());
 
               // Assuming pivot is zero when vertical, sin will be 0 when vertical and 1 when
               // horizontal (which is where we need most strength to hold the pivot up)
