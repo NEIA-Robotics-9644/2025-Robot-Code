@@ -22,15 +22,13 @@ public class ControllerState {
     }
   }
 
-
   public ExtenderSetpoint INTAKE = new ExtenderSetpoint(0, 0);
-  public ExtenderSetpoint L1 = new ExtenderSetpoint(0.1, 0);
-  public ExtenderSetpoint L2 = new ExtenderSetpoint(0.2, 0.5);
-  public ExtenderSetpoint L3 = new ExtenderSetpoint(0.5, 0.5);
-  public ExtenderSetpoint L4 = new ExtenderSetpoint(0.95, 1);
+  public ExtenderSetpoint L1 = new ExtenderSetpoint(0.17, 0.52);
+  public ExtenderSetpoint L2 = new ExtenderSetpoint(0.286, 0.52);
+  public ExtenderSetpoint L3 = new ExtenderSetpoint(0.52, 0.52);
+  public ExtenderSetpoint L4 = new ExtenderSetpoint(1, 0.81);
 
   private ExtenderSetpoint currentSetpoint = INTAKE;
-
 
   public DriveSpeed[] driveSpeeds = {
     new DriveSpeed(0.2, 0.2),
@@ -50,7 +48,6 @@ public class ControllerState {
   public void setCurrentSetpoint(ExtenderSetpoint currentSetpoint) {
     this.currentSetpoint = currentSetpoint;
   }
-
 
   public DriveSpeed getCurrentDriveSpeed() {
     return driveSpeeds[currentDriveSpeedIndex];

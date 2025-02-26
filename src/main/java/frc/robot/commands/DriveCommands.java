@@ -90,19 +90,14 @@ public class DriveCommands {
           drive.setPose(new Pose2d());
         }
 
-        
-
-
-
         // Get linear velocity
         Translation2d linearVelocity =
-            getLinearVelocityFromJoysticks(
-                xSupplier.getAsDouble(),
-                ySupplier.getAsDouble());
+            getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
 
         // Apply rotation deadband
         double omega =
-            -MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND) * drive.getMaxAngularSpeedRadPerSec();
+            -MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND)
+                * drive.getMaxAngularSpeedRadPerSec();
 
         // Square rotation value for more precise control
         omega = Math.copySign(omega * omega, omega);

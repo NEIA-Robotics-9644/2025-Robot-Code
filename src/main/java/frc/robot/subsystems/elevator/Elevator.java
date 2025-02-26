@@ -1,5 +1,6 @@
 package frc.robot.subsystems.elevator;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
@@ -110,6 +111,8 @@ public class Elevator extends SubsystemBase {
                   Logger.recordOutput(
                       "Elevator/TargetPositionRads",
                       normalizedHeight.getAsDouble() * elevatorMaxHeight.get());
+                  Logger.recordOutput(
+                      "Elevator/TargetPositionNormalized", normalizedHeight.getAsDouble());
                   feedback.setPID(elevatorP.get(), elevatorI.get(), elevatorD.get());
 
                   var output =
@@ -123,6 +126,10 @@ public class Elevator extends SubsystemBase {
                   } else {
                     output = Math.max(output, -elevatorMaxSpeedDown.get());
                   }
+
+
+                  output = MathUtil.clamp(output, -elevatorMaxSpeedDown.get(), elevatorMaxSpeedUp.get());
+
                   setVelocity(output);
                 },
                 () -> {

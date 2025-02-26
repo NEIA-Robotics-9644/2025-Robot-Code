@@ -110,10 +110,8 @@ public class RobotContainer {
         elevator =
             new Elevator(
                 new ElevatorIOSparkMax(20, 21, false, true),
-                new LimitSwitchSensorIORoboRio(
-                    9, true)); // new ElevatorIOSparkMax(20, 21, false, true), new
-        // LimitSwitchSensorIORoboRio(9, true));
-        pivot = new Pivot(new PivotIOSparkMax(23));
+                new LimitSwitchSensorIORoboRio(9, true));
+        pivot = new Pivot(new PivotIOSparkMax(22));
 
         intakeWheels = new Intake(new IntakeWheelIOSparkMax(24, 1, 40), new CoralSensorIOSim());
 
@@ -197,8 +195,11 @@ public class RobotContainer {
 
     // When the left bumper is held, manually control the elevator and pivot with the joysticks
 
-    opCon.leftBumper().whileTrue(Commands.parallel(elevator.manualControl(opCon::getLeftY), 
-        pivot.manualControl(opCon::getRightY)));
+    opCon
+        .leftBumper()
+        .whileTrue(
+            Commands.parallel(
+                elevator.manualControl(opCon::getLeftY), pivot.manualControl(opCon::getRightY)));
 
     // Otherwise, go to the setpoint
     elevator.setDefaultCommand(
@@ -206,13 +207,12 @@ public class RobotContainer {
 
     pivot.setDefaultCommand(pivot.goToAngle(() -> controllerState.getCurrentSetpoint().angle));
 
-
     // When the right bumper is pressed, go to Intake setpoint
     opCon
         .rightBumper()
         .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.INTAKE)));
 
-    // When the A button is pressed, go to L1 
+    // When the A button is pressed, go to L1
     opCon
         .a()
         .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.INTAKE)));
