@@ -113,7 +113,7 @@ public class RobotContainer {
                 new LimitSwitchSensorIORoboRio(
                     9, true)); // new ElevatorIOSparkMax(20, 21, false, true), new
         // LimitSwitchSensorIORoboRio(9, true));
-        pivot = new Pivot(new PivotIOSparkMax(29));
+        pivot = new Pivot(new PivotIOSparkMax(23));
 
         intakeWheels = new Intake(new IntakeWheelIOSparkMax(24, 1, 40), new CoralSensorIOSim());
 
