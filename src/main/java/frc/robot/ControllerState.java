@@ -12,6 +12,17 @@ public class ControllerState {
     }
   }
 
+  public class DriveSpeed {
+    public double translationScale;
+    public double rotationScale;
+
+    public DriveSpeed(double translationScale, double rotationScale) {
+      this.translationScale = translationScale;
+      this.rotationScale = rotationScale;
+    }
+  }
+
+
   public ExtenderSetpoint INTAKE = new ExtenderSetpoint(0, 0);
   public ExtenderSetpoint L1 = new ExtenderSetpoint(0.1, 0);
   public ExtenderSetpoint L2 = new ExtenderSetpoint(0.2, 0.5);
@@ -19,6 +30,16 @@ public class ControllerState {
   public ExtenderSetpoint L4 = new ExtenderSetpoint(0.95, 1);
 
   private ExtenderSetpoint currentSetpoint = INTAKE;
+
+
+  public DriveSpeed[] driveSpeeds = {
+    new DriveSpeed(0.2, 0.2),
+    new DriveSpeed(0.5, 0.5),
+    new DriveSpeed(0.75, 0.75),
+    new DriveSpeed(1.0, 1.0)
+  };
+
+  public int currentDriveSpeedIndex = 0;
 
   public ControllerState() {}
 
@@ -28,5 +49,22 @@ public class ControllerState {
 
   public void setCurrentSetpoint(ExtenderSetpoint currentSetpoint) {
     this.currentSetpoint = currentSetpoint;
+  }
+
+
+  public DriveSpeed getCurrentDriveSpeed() {
+    return driveSpeeds[currentDriveSpeedIndex];
+  }
+
+  public void increaseDriveSpeedIndex() {
+    if (currentDriveSpeedIndex < driveSpeeds.length - 1) {
+      currentDriveSpeedIndex++;
+    }
+  }
+
+  public void decreaseDriveSpeedIndex() {
+    if (currentDriveSpeedIndex > 0) {
+      currentDriveSpeedIndex--;
+    }
   }
 }

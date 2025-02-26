@@ -153,19 +153,19 @@ public class RobotContainer {
     Command driveCommand =
         DriveCommands.joystickDrive(
             drive,
-            () -> -hid.getLeftY(),
-            () -> -hid.getLeftX(),
-            () -> -hid.getRightX(),
-            () -> hid.getRightBumperButtonPressed(),
-            () -> hid.getLeftBumperButtonPressed(),
-            new double[] {0.4, 0.6, 0.8, 1},
+            () -> -hid.getLeftY() * controllerState.getCurrentDriveSpeed().translationScale,
+            () -> -hid.getLeftX() * controllerState.getCurrentDriveSpeed().translationScale,
+            () -> -hid.getRightX() * controllerState.getCurrentDriveSpeed().rotationScale,
             () -> driveCon.povRight().getAsBoolean());
 
     driveCommand.addRequirements(drive);
     drive.setDefaultCommand(driveCommand);
     driveCon.rightTrigger(0.5).whileTrue(AutoAlignCommands.closestReefAlign(drive));
-    // --- Operator Controls ---
 
+    driveCon.leftBumper().onTrue(Commands.run(() -> controllerState.decreaseDriveSpeedIndex()));
+    driveCon.rightBumper().onTrue(Commands.run(() -> controllerState.increaseDriveSpeedIndex()));
+
+    // --- Operator Controls ---
     opCon
         .rightTrigger(0.1)
         .whileTrue(

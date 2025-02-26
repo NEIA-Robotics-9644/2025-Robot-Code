@@ -74,9 +74,6 @@ public class DriveCommands {
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
-      BooleanSupplier upSpeedSupplier,
-      BooleanSupplier downSpeedSupplier,
-      double[] speeds,
       BooleanSupplier resetGyroSupplier) {
     return new Command() {
       int index = 0;
@@ -93,25 +90,19 @@ public class DriveCommands {
           drive.setPose(new Pose2d());
         }
 
-        if (upSpeedSupplier.getAsBoolean()) {
-          index++;
-        } else if (downSpeedSupplier.getAsBoolean()) {
-          index--;
-        }
+        
 
-        index = MathUtil.clamp(index, 0, speeds.length - 1);
 
-        var speedMultiplier = speeds[index];
 
         // Get linear velocity
         Translation2d linearVelocity =
             getLinearVelocityFromJoysticks(
-                xSupplier.getAsDouble() * speedMultiplier,
-                ySupplier.getAsDouble() * speedMultiplier);
+                xSupplier.getAsDouble(),
+                ySupplier.getAsDouble());
 
         // Apply rotation deadband
         double omega =
-            -MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND) * speedMultiplier;
+            -MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND) * drive.getMaxAngularSpeedRadPerSec();
 
         // Square rotation value for more precise control
         omega = Math.copySign(omega * omega, omega);
