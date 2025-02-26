@@ -1,10 +1,10 @@
 package frc.robot.subsystems.end_effector; // volatge, velo, pos
 
-import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.util.SparkMaxUtil;
 
 public class FlywheelIOSparkMax implements FlywheelIO {
 
@@ -18,23 +18,19 @@ public class FlywheelIOSparkMax implements FlywheelIO {
     var config = new SparkMaxConfig();
 
     config.idleMode(SparkMaxConfig.IdleMode.kBrake);
-
-    this.motor.configure(
-        config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+    SparkMaxUtil.configureMotor(motor, config);
   }
 
   @Override
   public void setMaxAmps(int maxAmps) {
     config.smartCurrentLimit(maxAmps);
-    this.motor.configure(
-        config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+    SparkMaxUtil.configureMotor(motor, config);
   }
 
   @Override
   public void setInverted(boolean inverted) {
     config.inverted(inverted);
-    this.motor.configure(
-        config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+    SparkMaxUtil.configureMotor(motor, config);
   }
 
   @Override

@@ -23,7 +23,7 @@ public class Pivot extends SubsystemBase {
   private LoggedTunableNumber kAngle = new LoggedTunableNumber("Pivot/AngleGain", 0.1);
 
   private LoggedTunableNumber angleOffsetRads =
-      new LoggedTunableNumber("Pivot/AngleOffsetRads", 0.0);
+      new LoggedTunableNumber("Pivot/AngleOffsetRads", 2.34);
 
   private LoggedTunableNumber motorScaleFactor =
       new LoggedTunableNumber("Pivot/MotorScaleFactor", 1.0);

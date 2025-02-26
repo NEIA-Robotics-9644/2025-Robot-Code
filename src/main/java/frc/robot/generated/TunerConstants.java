@@ -90,7 +90,6 @@ public class TunerConstants {
   private static final double kSteerGearRatio = 21.428571428571427;
   private static final Distance kWheelRadius = Inches.of(2); // TODO: measure precisely
 
-  // When these values where swapped, the robot went into spin mode and sam's computer got smashed
   private static final boolean kInvertLeftSide = true;
   private static final boolean kInvertRightSide = false;
 
@@ -142,9 +141,6 @@ public class TunerConstants {
   private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.471435546875);
   private static final boolean kFrontLeftSteerMotorInverted = true;
   private static final boolean kFrontLeftEncoderInverted = false;
-
-  // ALL THE POSITIONS ARE SWAPPED BECAUSE WE MOVED ALL THE SWERVE MODULES AROUND
-  // We should fix this eventually
 
   private static final Distance kFrontLeftXPos = Inches.of(11.5);
   private static final Distance kFrontLeftYPos = Inches.of(11.5);
