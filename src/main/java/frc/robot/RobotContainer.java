@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoAlignCommands;
@@ -119,9 +121,12 @@ public class RobotContainer {
         break;
     }
 
-    NamedCommands.registerCommand("L4 Height", Commands.run(() -> elevator.goToHeight(() -> 1)));
+    NamedCommands.registerCommand(
+        "L4Height",
+        new SequentialCommandGroup(
+            new PrintCommand("Running elevator"), elevator.goToHeight(() -> 1).withTimeout(2)));
 
-    NamedCommands.registerCommand("L4 Angle", Commands.run(() -> pivot.goToAngle(() -> 0.81)));
+    NamedCommands.registerCommand("L4Angle", pivot.goToAngle(() -> 0.81).withTimeout(2));
 
     NamedCommands.registerCommand(
         "Score Coral", Commands.run(() -> endEffectorWheels.setVelocity(0.5)).withTimeout(2));
@@ -133,9 +138,9 @@ public class RobotContainer {
     var week0defaultBlue =
         Commands.run(
                 () -> {
-                  drive.runVelocity(new ChassisSpeeds(-1, 0, 0));
+                  drive.runVelocity(new ChassisSpeeds(1, 0, 0));
                 })
-            .withTimeout(8.0);
+            .withTimeout(5.0);
     week0defaultBlue.addRequirements(drive);
 
     autoChooser.addOption("BLUE Week 0 Move forward", week0defaultBlue);

@@ -9,18 +9,6 @@
           "data": {
             "pathName": "One Coral Start To Elevator"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L4 Height"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L4 Angle"
-          }
         }
       ]
     }
