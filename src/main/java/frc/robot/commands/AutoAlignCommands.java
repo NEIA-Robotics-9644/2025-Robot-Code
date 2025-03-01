@@ -49,27 +49,41 @@ public class AutoAlignCommands {
     DriverStation.Alliance fieldSide =
         DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
     AprilTagFieldLayout kTagLayout = AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
-    if (fieldSide == DriverStation.Alliance.Blue) { // blue alliance reef autoalign
-      targetPoses =
-          List.of(
-              new Pose2d(5.716, 4.197, new Rotation2d(Math.toRadians(180))), // H
-              new Pose2d(5.716, 3.861, new Rotation2d(Math.toRadians(180))), // G
-              new Pose2d(5.239, 3.040, new Rotation2d(Math.toRadians(120))), // F
-              new Pose2d(4.966, 2.877, new Rotation2d(Math.toRadians(120))), // E
-              new Pose2d(4.028, 2.877, new Rotation2d(Math.toRadians(60))), // D
-              new Pose2d(3.742, 3.040, new Rotation2d(Math.toRadians(60))), // C
-              new Pose2d(3.270, 3.850, new Rotation2d(Math.toRadians(0))), // B
-              new Pose2d(3.270, 4.197, new Rotation2d(Math.toRadians(0))), // A
-              new Pose2d(3.742, 4.943, new Rotation2d(Math.toRadians(-60))), // L
-              new Pose2d(4.028, 5.167, new Rotation2d(Math.toRadians(-60))), // K
-              new Pose2d(4.966, 5.167, new Rotation2d(Math.toRadians(-120))), // J
-              new Pose2d(5.239, 4.943, new Rotation2d(Math.toRadians(-120))) // I
-              );
-    } else if (fieldSide == DriverStation.Alliance.Red) {
 
-      targetPoses = List.of();
+    var bluePoses =
+        List.of(
+            new Pose2d(5.716, 4.197, new Rotation2d(Math.toRadians(180))), // H
+            new Pose2d(5.716, 3.861, new Rotation2d(Math.toRadians(180))), // G
+            new Pose2d(5.239, 3.040, new Rotation2d(Math.toRadians(120))), // F
+            new Pose2d(4.966, 2.877, new Rotation2d(Math.toRadians(120))), // E
+            new Pose2d(4.028, 2.877, new Rotation2d(Math.toRadians(60))), // D
+            new Pose2d(3.742, 3.040, new Rotation2d(Math.toRadians(60))), // C
+            new Pose2d(3.270, 3.850, new Rotation2d(Math.toRadians(0))), // B
+            new Pose2d(3.270, 4.197, new Rotation2d(Math.toRadians(0))), // A
+            new Pose2d(3.702, 5.053, new Rotation2d(Math.toRadians(-60))), // L
+            new Pose2d(4.004, 5.224, new Rotation2d(Math.toRadians(-60))), // K
+            new Pose2d(4.963, 5.244, new Rotation2d(Math.toRadians(-120))), // J
+            new Pose2d(5.298, 5.036, new Rotation2d(Math.toRadians(-120))) // I
+            );
+
+    if (fieldSide == DriverStation.Alliance.Red) {
+      var fieldXSize = 17.55;
+      var fieldYSize = 8.05;
+
+      Pose2d[] redPoses = new Pose2d[12];
+      for (int i = 0; i < bluePoses.size(); i++) {
+
+        var bluePose = bluePoses.get(i);
+        redPoses[i] =
+            new Pose2d(
+                fieldXSize - bluePose.getX(),
+                fieldYSize - bluePose.getY(),
+                new Rotation2d(-bluePose.getRotation().getCos(), -bluePose.getRotation().getSin()));
+      }
+
+      targetPoses = List.of(redPoses);
     } else {
-      targetPoses = List.of();
+      targetPoses = bluePoses;
     }
 
     for (int i = 0; i < targetPoses.size(); i++) {

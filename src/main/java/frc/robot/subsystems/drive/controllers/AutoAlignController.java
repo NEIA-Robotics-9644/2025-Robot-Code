@@ -13,14 +13,15 @@ import frc.robot.subsystems.poseEstimator.Vision;
 import java.util.function.Supplier;
 
 public class AutoAlignController {
-  private static final double linearkP = 0.9;
+  private static final double linearkP = 3.5;
   private static final double linearkD = 0;
-  private static final double thetakP = 1;
+  private static final double thetakP = 1.4;
   private static final double thetakD = 0;
   private static final double linearTolerance = 0.08;
   private static final double thetaTolerance = Units.degreesToRadians(2.0);
   private static final double toleranceTime = 0.5;
-  private static final double maxLinearVelocity = DriveConstants.driveConfig.maxLinearVelocity();
+  private static final double maxLinearVelocity =
+      DriveConstants.driveConfig.maxLinearVelocity() * 0.5;
   private static final double maxLinearAcceleration =
       DriveConstants.driveConfig.maxLinearAcceleration() * 0.4;
   private static final double maxAngularVelocity =

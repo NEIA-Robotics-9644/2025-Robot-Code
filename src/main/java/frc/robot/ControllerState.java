@@ -23,18 +23,17 @@ public class ControllerState {
   }
 
   public ExtenderSetpoint INTAKE = new ExtenderSetpoint(0, 0);
-  public ExtenderSetpoint L1 = new ExtenderSetpoint(0.17, 0.52);
-  public ExtenderSetpoint L2 = new ExtenderSetpoint(0.286, 0.52);
-  public ExtenderSetpoint L3 = new ExtenderSetpoint(0.52, 0.52);
+  public ExtenderSetpoint L1 = new ExtenderSetpoint(0.17, 0.48);
+  public ExtenderSetpoint L2 = new ExtenderSetpoint(0.286, 0.48);
+  public ExtenderSetpoint L3 = new ExtenderSetpoint(0.57, 0.48);
   public ExtenderSetpoint L4 = new ExtenderSetpoint(1, 0.81);
+  public ExtenderSetpoint LowDealgify = new ExtenderSetpoint(0.286, 0.52);
+  public ExtenderSetpoint HighDealgify = new ExtenderSetpoint(0.52, 0.52);
 
   private ExtenderSetpoint currentSetpoint = INTAKE;
 
   public DriveSpeed[] driveSpeeds = {
-    new DriveSpeed(0.2, 0.2),
-    new DriveSpeed(0.5, 0.5),
-    new DriveSpeed(0.75, 0.75),
-    new DriveSpeed(1.0, 1.0)
+    new DriveSpeed(0.5, 0.5), new DriveSpeed(0.75, 0.75), new DriveSpeed(1.0, 1.0)
   };
 
   public int currentDriveSpeedIndex = 0;

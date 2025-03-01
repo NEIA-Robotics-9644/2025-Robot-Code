@@ -3,1325 +3,28 @@
   "grid_size": 128,
   "tabs": [
     {
-      "name": "Teleop",
+      "name": "Teleoperated",
       "grid_layout": {
         "layouts": [],
         "containers": [
           {
-            "title": "Swerve Drive",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 512.0,
-            "height": 512.0,
-            "type": "SwerveDrive",
-            "properties": {
-              "topic": "/SmartDashboard/Swerve Drive",
-              "period": 0.06,
-              "show_robot_rotation": false,
-              "rotation_unit": "Degrees"
-            }
-          },
-          {
-            "title": "Field",
-            "x": 512.0,
-            "y": 0.0,
-            "width": 640.0,
-            "height": 512.0,
-            "type": "Field",
-            "properties": {
-              "topic": "/SmartDashboard/Field",
-              "period": 0.06,
-              "field_game": "Crescendo",
-              "robot_width": 0.85,
-              "robot_length": 0.85,
-              "show_other_objects": true,
-              "show_trajectories": true,
-              "field_rotation": 0.0,
-              "robot_color": 4294198070,
-              "trajectory_color": 4294967295
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "Current",
-      "grid_layout": {
-        "layouts": [],
-        "containers": [
-          {
-            "title": "Motor 0 Output Current",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/Shuffleboard/Current/Motor 0 Output Current",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Motor 1 Output Current",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/Shuffleboard/Current/Motor 1 Output Current",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Motor 2 Output Current",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/Shuffleboard/Current/Motor 2 Output Current",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Motor 3 Output Current",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/Shuffleboard/Current/Motor 3 Output Current",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Feeder Motor Output Current",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/Shuffleboard/Current/Feeder Motor Output Current",
-              "period": 0.06,
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Left Angle Motor Output Current",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/Shuffleboard/Current/Left Angle Motor Output Current",
-              "period": 0.06,
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Right Angle Motor Output Current",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/Shuffleboard/Current/Right Angle Motor Output Current",
-              "period": 0.06,
-              "show_submit_button": false
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "Drive Tuning",
-      "grid_layout": {
-        "layouts": [
-          {
-            "title": "Steer Feedback",
-            "x": 256.0,
+            "title": "Alerts",
+            "x": 1024.0,
             "y": 0.0,
             "width": 256.0,
             "height": 384.0,
-            "type": "List Layout",
+            "type": "Alerts",
             "properties": {
-              "label_position": "TOP"
-            },
-            "children": [
-              {
-                "title": "kP",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Number Slider",
-                "properties": {
-                  "topic": "/SmartDashboard/Tuning/Swerve Steer Gains/kP",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "min_value": 0.0,
-                  "max_value": 10.0,
-                  "divisions": 11,
-                  "update_continuously": false
-                }
-              },
-              {
-                "title": "kI",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Number Slider",
-                "properties": {
-                  "topic": "/SmartDashboard/Tuning/Swerve Steer Gains/kI",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "min_value": 0.0,
-                  "max_value": 10.0,
-                  "divisions": 11,
-                  "update_continuously": false
-                }
-              },
-              {
-                "title": "kD",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Number Slider",
-                "properties": {
-                  "topic": "/SmartDashboard/Tuning/Swerve Steer Gains/kD",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "min_value": 0.0,
-                  "max_value": 10.0,
-                  "divisions": 11,
-                  "update_continuously": false
-                }
-              }
-            ]
-          },
-          {
-            "title": "Steer Feedforward",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 384.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "TOP"
-            },
-            "children": [
-              {
-                "title": "kS",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Number Slider",
-                "properties": {
-                  "topic": "/SmartDashboard/Tuning/Swerve Steer Gains/kS",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "min_value": 0.0,
-                  "max_value": 10.0,
-                  "divisions": 11,
-                  "update_continuously": false
-                }
-              },
-              {
-                "title": "kV",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Number Slider",
-                "properties": {
-                  "topic": "/SmartDashboard/Tuning/Swerve Steer Gains/kV",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "min_value": 0.0,
-                  "max_value": 10.0,
-                  "divisions": 11,
-                  "update_continuously": false
-                }
-              },
-              {
-                "title": "kA",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Number Slider",
-                "properties": {
-                  "topic": "/SmartDashboard/Tuning/Swerve Steer Gains/kA",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "min_value": 0.0,
-                  "max_value": 10.0,
-                  "divisions": 11,
-                  "update_continuously": false
-                }
-              }
-            ]
-          },
-          {
-            "title": "Drive Feedforward",
-            "x": 512.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 384.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "TOP"
-            },
-            "children": [
-              {
-                "title": "kS",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Number Slider",
-                "properties": {
-                  "topic": "/SmartDashboard/Tuning/Swerve Drive Gains/kS",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "min_value": 0.0,
-                  "max_value": 10.0,
-                  "divisions": 11,
-                  "update_continuously": false
-                }
-              },
-              {
-                "title": "kV",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Number Slider",
-                "properties": {
-                  "topic": "/SmartDashboard/Tuning/Swerve Drive Gains/kV",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "min_value": 0.0,
-                  "max_value": 10.0,
-                  "divisions": 11,
-                  "update_continuously": false
-                }
-              },
-              {
-                "title": "kA",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Number Slider",
-                "properties": {
-                  "topic": "/SmartDashboard/Tuning/Swerve Drive Gains/kA",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "min_value": 0.0,
-                  "max_value": 10.0,
-                  "divisions": 11,
-                  "update_continuously": false
-                }
-              }
-            ]
-          },
-          {
-            "title": "Drive Feedback",
-            "x": 768.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 384.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "TOP"
-            },
-            "children": [
-              {
-                "title": "kP",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Number Slider",
-                "properties": {
-                  "topic": "/SmartDashboard/Tuning/Swerve Drive Gains/kP",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "min_value": 0.0,
-                  "max_value": 10.0,
-                  "divisions": 11,
-                  "update_continuously": false
-                }
-              },
-              {
-                "title": "kI",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Number Slider",
-                "properties": {
-                  "topic": "/SmartDashboard/Tuning/Swerve Drive Gains/kI",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "min_value": 0.0,
-                  "max_value": 10.0,
-                  "divisions": 11,
-                  "update_continuously": false
-                }
-              },
-              {
-                "title": "kD",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Number Slider",
-                "properties": {
-                  "topic": "/SmartDashboard/Tuning/Swerve Drive Gains/kD",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "min_value": 0.0,
-                  "max_value": 10.0,
-                  "divisions": 11,
-                  "update_continuously": false
-                }
-              }
-            ]
-          }
-        ],
-        "containers": [
-          {
-            "title": "Motor 0 Error",
-            "x": 512.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Tuning/Motor 0 Error",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
+              "topic": "/SmartDashboard/Alerts",
+              "period": 0.06
             }
           },
-          {
-            "title": "Motor 1 Error",
-            "x": 640.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Tuning/Motor 1 Error",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Motor 2 Error",
-            "x": 768.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Tuning/Motor 2 Error",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Motor 3 Error",
-            "x": 896.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Tuning/Motor 3 Error",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "Drive Data",
-      "grid_layout": {
-        "layouts": [],
-        "containers": [
-          {
-            "title": "Motor 0 Velocity",
-            "x": 128.0,
-            "y": 0.0,
-            "width": 1024.0,
-            "height": 128.0,
-            "type": "Number Bar",
-            "properties": {
-              "topic": "/SmartDashboard/Drive/Motor 0 Velocity",
-              "period": 0.033,
-              "data_type": "double",
-              "min_value": -15.0,
-              "max_value": 15.0,
-              "divisions": 31,
-              "inverted": false,
-              "orientation": "horizontal"
-            }
-          },
-          {
-            "title": "Motor 1 Velocity",
-            "x": 128.0,
-            "y": 128.0,
-            "width": 1024.0,
-            "height": 128.0,
-            "type": "Number Bar",
-            "properties": {
-              "topic": "/SmartDashboard/Drive/Motor 1 Velocity",
-              "period": 0.033,
-              "data_type": "double",
-              "min_value": -15.0,
-              "max_value": 15.0,
-              "divisions": 31,
-              "inverted": false,
-              "orientation": "horizontal"
-            }
-          },
-          {
-            "title": "Motor 2 Velocity",
-            "x": 128.0,
-            "y": 256.0,
-            "width": 1024.0,
-            "height": 128.0,
-            "type": "Number Bar",
-            "properties": {
-              "topic": "/SmartDashboard/Drive/Motor 2 Velocity",
-              "period": 0.06,
-              "data_type": "double",
-              "min_value": -15.0,
-              "max_value": 15.0,
-              "divisions": 31,
-              "inverted": false,
-              "orientation": "horizontal"
-            }
-          },
-          {
-            "title": "Motor 3 Velocity",
-            "x": 128.0,
-            "y": 384.0,
-            "width": 1024.0,
-            "height": 128.0,
-            "type": "Number Bar",
-            "properties": {
-              "topic": "/SmartDashboard/Drive/Motor 3 Velocity",
-              "period": 0.06,
-              "data_type": "double",
-              "min_value": -15.0,
-              "max_value": 15.0,
-              "divisions": 31,
-              "inverted": false,
-              "orientation": "horizontal"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "Controller Configs",
-      "grid_layout": {
-        "layouts": [
-          {
-            "title": "Left Flywheel Config",
-            "x": 512.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 512.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "TOP"
-            },
-            "children": [
-              {
-                "title": "kD",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Config/Left Flywheel Config/kD",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "kI",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Config/Left Flywheel Config/kI",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "kP",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Config/Left Flywheel Config/kP",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "kV",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Config/Left Flywheel Config/kV",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "maxSpeedRadPerSec",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Config/Left Flywheel Config/maxSpeedRadPerSec",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "wheelRadiusMeters",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Config/Left Flywheel Config/wheelRadiusMeters",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              }
-            ]
-          },
-          {
-            "title": "Right Flywheel Config",
-            "x": 768.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 512.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "TOP"
-            },
-            "children": [
-              {
-                "title": "kD",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Config/Right Flywheel Config/kD",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "kI",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Config/Right Flywheel Config/kI",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "kP",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Config/Right Flywheel Config/kP",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "kV",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Config/Right Flywheel Config/kV",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "maxSpeedRadPerSec",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Config/Right Flywheel Config/maxSpeedRadPerSec",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "wheelRadiusMeters",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Config/Right Flywheel Config/wheelRadiusMeters",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              }
-            ]
-          },
-          {
-            "title": "Front Left",
-            "x": 128.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "TOP"
-            },
-            "children": [
-              {
-                "title": "DriveAppliedVolts",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/AdvantageKit/Hardware/Front Left/DriveAppliedVolts",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "DriveCurrentAmps",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/AdvantageKit/Hardware/Front Left/DriveCurrentAmps",
-                  "period": 0.06,
-                  "data_type": "double[]",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "DrivePositionRad",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/AdvantageKit/Hardware/Front Left/DrivePositionRad",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "DriveVelocityRadPerSec",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/AdvantageKit/Hardware/Front Left/DriveVelocityRadPerSec",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "TurnAppliedVolts",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/AdvantageKit/Hardware/Front Left/TurnAppliedVolts",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "TurnCurrentAmps",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/AdvantageKit/Hardware/Front Left/TurnCurrentAmps",
-                  "period": 0.06,
-                  "data_type": "double[]",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "TurnVelocityRadPerSec",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/AdvantageKit/Hardware/Front Left/TurnVelocityRadPerSec",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "DriveVelocityRadPerSec",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/AdvantageKit/Hardware/Front Left/DriveVelocityRadPerSec",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              }
-            ]
-          }
-        ],
-        "containers": []
-      }
-    },
-    {
-      "name": "Drive Config",
-      "grid_layout": {
-        "layouts": [],
-        "containers": [
-          {
-            "title": "BLAngleOffsetRad",
-            "x": 512.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/BLAngleOffsetRad",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "BLReversed",
-            "x": 512.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Toggle Button",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/BLReversed",
-              "period": 0.06,
-              "data_type": "boolean"
-            }
-          },
-          {
-            "title": "BRAngleOffsetRad",
-            "x": 640.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/BRAngleOffsetRad",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "BRReversed",
-            "x": 640.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Toggle Button",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/BRReversed",
-              "period": 0.06,
-              "data_type": "boolean"
-            }
-          },
-          {
-            "title": "FLAngleOffsetRad",
-            "x": 768.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/FLAngleOffsetRad",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "FLReversed",
-            "x": 768.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Toggle Button",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/FLReversed",
-              "period": 0.06,
-              "data_type": "boolean"
-            }
-          },
-          {
-            "title": "FRAngleOffsetRad",
-            "x": 896.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/FRAngleOffsetRad",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "FRReversed",
-            "x": 896.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Toggle Button",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/FRReversed",
-              "period": 0.06,
-              "data_type": "boolean"
-            }
-          },
-          {
-            "title": "FrontToBackDistanceMeters",
-            "x": 128.0,
-            "y": 512.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/FrontToBackDistanceMeters",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "LeftToRightDistanceMeters",
-            "x": 256.0,
-            "y": 512.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/LeftToRightDistanceMeters",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "MaxSpeedMps",
-            "x": 384.0,
-            "y": 512.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/MaxSpeedMps",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "TurnA",
-            "x": 768.0,
-            "y": 512.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/TurnA",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "TurnS",
-            "x": 768.0,
-            "y": 256.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/TurnS",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "TurnV",
-            "x": 768.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/TurnV",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "TurnD",
-            "x": 896.0,
-            "y": 512.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/TurnD",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "TurnI",
-            "x": 896.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/TurnI",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "TurnP",
-            "x": 896.0,
-            "y": 256.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/TurnP",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "DriveA",
-            "x": 512.0,
-            "y": 512.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/DriveA",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "DriveD",
-            "x": 640.0,
-            "y": 512.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/DriveD",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "DriveI",
-            "x": 640.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/DriveI",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "DriveP",
-            "x": 640.0,
-            "y": 256.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/DriveP",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "DriveS",
-            "x": 512.0,
-            "y": 256.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/DriveS",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "DriveV",
-            "x": 512.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/DriveV",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "BLDriveReversed",
-            "x": 256.0,
-            "y": 256.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/BLDriveReversed",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
-          {
-            "title": "BRDriveReversed",
-            "x": 384.0,
-            "y": 256.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/BRDriveReversed",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
-          {
-            "title": "FLDriveReversed",
-            "x": 256.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/FLDriveReversed",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
-          {
-            "title": "FRDriveReversed",
-            "x": 384.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/FRDriveReversed",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
-          {
-            "title": "HeadingP",
-            "x": 128.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/HeadingP",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "HeadingI",
-            "x": 256.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/HeadingI",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "HeadingD",
-            "x": 384.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/config/Swerve Drive/HeadingD",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "Auto",
-      "grid_layout": {
-        "layouts": [],
-        "containers": [
           {
             "title": "Auto Choices",
-            "x": 512.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
+            "x": 128.0,
+            "y": 0.0,
+            "width": 512.0,
+            "height": 256.0,
             "type": "ComboBox Chooser",
             "properties": {
               "topic": "/SmartDashboard/Auto Choices",
@@ -1330,45 +33,231 @@
             }
           },
           {
-            "title": "active",
-            "x": 384.0,
-            "y": 384.0,
-            "width": 128.0,
+            "title": "Elevator Mode",
+            "x": 640.0,
+            "y": 128.0,
+            "width": 256.0,
             "height": 128.0,
             "type": "Text Display",
             "properties": {
-              "topic": "/SmartDashboard/Auto Choices/active",
+              "topic": "/AdvantageKit/ElevatorExtender/Mode",
               "period": 0.06,
               "data_type": "string",
               "show_submit_button": false
             }
           },
           {
-            "title": "default",
-            "x": 512.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Auto Choices/default",
-              "period": 0.06,
-              "data_type": "string",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "options",
+            "title": "CurrentHeight",
             "x": 640.0,
             "y": 384.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
             "properties": {
-              "topic": "/SmartDashboard/Auto Choices/options",
+              "topic": "/AdvantageKit/ElevatorExtender/CurrentHeight",
               "period": 0.06,
-              "data_type": "string[]",
+              "data_type": "double",
               "show_submit_button": false
+            }
+          },
+          {
+            "title": "TargetHeight",
+            "x": 768.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/ElevatorExtender/TargetHeight",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Limit Switch Triggered",
+            "x": 640.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/AdvantageKit/LimitSwitch/SensorHit",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Sim",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "Sim Limit Switch Tripped",
+            "x": 640.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Toggle Switch",
+            "properties": {
+              "topic": "/SmartDashboard/Sim Limit Switch Tripped",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Elevator Tuning",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "D",
+            "x": 896.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Tuning/Elevator/D",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "I",
+            "x": 768.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Tuning/Elevator/I",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "G",
+            "x": 1024.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Tuning/Elevator/G",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "HomingMoveSpeed",
+            "x": 640.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Tuning/Elevator/HomingMoveSpeed",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "MaxAmpsPerMotor",
+            "x": 640.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Tuning/Elevator/MaxAmpsPerMotor",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "MaxHeight",
+            "x": 1152.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Tuning/Elevator/MaxHeight",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "MaxSpeedDown",
+            "x": 896.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Tuning/Elevator/MaxSpeedDown",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "MaxSpeedUp",
+            "x": 1152.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Tuning/Elevator/MaxSpeedUp",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "P",
+            "x": 640.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Tuning/Elevator/P",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "PositionRadsL",
+            "x": 384.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/ElevatorMotors/PositionRadsL",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
             }
           }
         ]

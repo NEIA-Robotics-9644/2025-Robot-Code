@@ -28,7 +28,7 @@ public class Elevator extends SubsystemBase {
   private LoggedTunableNumber elevatorMaxSpeedUp =
       new LoggedTunableNumber("Elevator/MaxSpeedUp", 1);
   private LoggedTunableNumber elevatorMaxSpeedDown =
-      new LoggedTunableNumber("Elevator/MaxSpeedDown", 0.05);
+      new LoggedTunableNumber("Elevator/MaxSpeedDown", 0.23);
 
   private LoggedTunableNumber elevatorMaxHeight =
       new LoggedTunableNumber("Elevator/MaxHeight", 18.952320098876953);
@@ -127,8 +127,8 @@ public class Elevator extends SubsystemBase {
                     output = Math.max(output, -elevatorMaxSpeedDown.get());
                   }
 
-
-                  output = MathUtil.clamp(output, -elevatorMaxSpeedDown.get(), elevatorMaxSpeedUp.get());
+                  output =
+                      MathUtil.clamp(output, -elevatorMaxSpeedDown.get(), elevatorMaxSpeedUp.get());
 
                   setVelocity(output);
                 },

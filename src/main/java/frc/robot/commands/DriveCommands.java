@@ -76,12 +76,6 @@ public class DriveCommands {
       DoubleSupplier omegaSupplier,
       BooleanSupplier resetGyroSupplier) {
     return new Command() {
-      int index = 0;
-
-      @Override
-      public void initialize() {
-        index = 0;
-      }
 
       @Override
       public void execute() {
@@ -100,14 +94,14 @@ public class DriveCommands {
                 * drive.getMaxAngularSpeedRadPerSec();
 
         // Square rotation value for more precise control
-        omega = Math.copySign(omega * omega, omega);
+        // omega = Math.copySign(omega * omega, omega);
 
         // Convert to field relative speeds & send command
         ChassisSpeeds speeds =
             new ChassisSpeeds(
                 linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
                 linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
-                omega * drive.getMaxAngularSpeedRadPerSec());
+                omega);
         boolean isFlipped =
             DriverStation.getAlliance().isPresent()
                 && DriverStation.getAlliance().get() == Alliance.Red;

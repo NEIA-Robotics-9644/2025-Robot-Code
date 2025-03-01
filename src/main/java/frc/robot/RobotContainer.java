@@ -14,6 +14,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -118,6 +119,13 @@ public class RobotContainer {
         break;
     }
 
+    NamedCommands.registerCommand("L4 Height", Commands.run(() -> elevator.goToHeight(() -> 1)));
+
+    NamedCommands.registerCommand("L4 Angle", Commands.run(() -> pivot.goToAngle(() -> 0.81)));
+
+    NamedCommands.registerCommand(
+        "Score Coral", Commands.run(() -> endEffectorWheels.setVelocity(0.5)).withTimeout(2));
+
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
@@ -153,15 +161,17 @@ public class RobotContainer {
             drive,
             () -> -hid.getLeftY() * controllerState.getCurrentDriveSpeed().translationScale,
             () -> -hid.getLeftX() * controllerState.getCurrentDriveSpeed().translationScale,
-            () -> -hid.getRightX() * controllerState.getCurrentDriveSpeed().rotationScale,
+            () -> -hid.getRightX() * controllerState.getCurrentDriveSpeed().rotationScale * 0.65,
             () -> driveCon.povRight().getAsBoolean());
 
     driveCommand.addRequirements(drive);
     drive.setDefaultCommand(driveCommand);
     driveCon.rightTrigger(0.5).whileTrue(AutoAlignCommands.closestReefAlign(drive));
 
-    driveCon.leftBumper().onTrue(Commands.run(() -> controllerState.decreaseDriveSpeedIndex()));
-    driveCon.rightBumper().onTrue(Commands.run(() -> controllerState.increaseDriveSpeedIndex()));
+    driveCon.leftBumper().onTrue(Commands.runOnce(() -> controllerState.decreaseDriveSpeedIndex()));
+    driveCon
+        .rightBumper()
+        .onTrue(Commands.runOnce(() -> controllerState.increaseDriveSpeedIndex()));
 
     // --- Operator Controls ---
     opCon
@@ -169,8 +179,8 @@ public class RobotContainer {
         .whileTrue(
             Commands.runEnd(
                 () -> {
-                  intakeWheels.setVelocity(opCon.getRightTriggerAxis() * -0.2);
-                  endEffectorWheels.setVelocity(opCon.getRightTriggerAxis() * 0.2);
+                  intakeWheels.setVelocity(opCon.getRightTriggerAxis() * -0.5);
+                  endEffectorWheels.setVelocity(opCon.getRightTriggerAxis() * 0.5);
                 },
                 () -> {
                   intakeWheels.setVelocity(0);
@@ -182,8 +192,8 @@ public class RobotContainer {
         .whileTrue(
             Commands.runEnd(
                 () -> {
-                  intakeWheels.setVelocity(opCon.getLeftTriggerAxis() * 0.2);
-                  endEffectorWheels.setVelocity(opCon.getLeftTriggerAxis() * -0.2);
+                  intakeWheels.setVelocity(opCon.getLeftTriggerAxis() * 0.5);
+                  endEffectorWheels.setVelocity(opCon.getLeftTriggerAxis() * -0.5);
                 },
                 () -> {
                   intakeWheels.setVelocity(0);
@@ -215,7 +225,7 @@ public class RobotContainer {
     // When the A button is pressed, go to L1
     opCon
         .a()
-        .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.INTAKE)));
+        .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L1)));
 
     // When the B button is pressed, go to L2
     opCon
@@ -231,6 +241,17 @@ public class RobotContainer {
     opCon
         .y()
         .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L4)));
+
+    opCon
+        .start()
+        .onTrue(
+            Commands.runOnce(
+                () -> controllerState.setCurrentSetpoint(controllerState.LowDealgify)));
+
+    new Trigger(() -> opCon.getHID().getBackButtonPressed())
+        .onTrue(
+            Commands.runOnce(
+                () -> controllerState.setCurrentSetpoint(controllerState.HighDealgify)));
 
     opCon
         .povUp()
