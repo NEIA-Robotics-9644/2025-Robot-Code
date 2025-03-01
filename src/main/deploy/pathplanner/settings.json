@@ -3,9 +3,12 @@
   "robotLength": 0.72,
   "holonomicMode": true,
   "pathFolders": [
+    "Blue Side B1",
     "Blue Side B2",
     "Blue Side B3",
-    "Blue Side B1"
+    "RFL",
+    "RFM",
+    "RFR"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,
