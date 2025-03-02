@@ -14,18 +14,17 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoAlignCommands;
+import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -121,33 +120,39 @@ public class RobotContainer {
         break;
     }
 
-    NamedCommands.registerCommand(
-        "L4Height",
-        new SequentialCommandGroup(
-            new PrintCommand("Running elevator"), elevator.goToHeight(() -> 1).withTimeout(2)));
-
-    NamedCommands.registerCommand("L4Angle", pivot.goToAngle(() -> 0.81).withTimeout(2));
-
-    NamedCommands.registerCommand(
-        "Score Coral", Commands.run(() -> endEffectorWheels.setVelocity(0.5)).withTimeout(2));
-
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
-    // FIX THIS WON"T WORK ON RED !!!
-    var week0defaultBlue =
-        Commands.run(
-                () -> {
-                  drive.runVelocity(new ChassisSpeeds(1, 0, 0));
-                })
-            .withTimeout(5.0);
-    week0defaultBlue.addRequirements(drive);
+    var moveForwardAuto =
+        DriveCommands.driveChassisSpeeds(drive, () -> new ChassisSpeeds(1, 0, 0)).withTimeout(8);
 
-    autoChooser.addOption("BLUE Week 0 Move forward", week0defaultBlue);
+    var scoreL1Auto =
+        AutoCommands.manualScore(drive, elevator, pivot, endEffectorWheels, 0.2, 0.1);
+
+    var scoreL2Auto =
+        AutoCommands.manualScore(drive, elevator, pivot, endEffectorWheels, 0.286, 0.48);
+
+    var scoreL3Auto =
+        AutoCommands.manualScore(drive, elevator, pivot, endEffectorWheels, 0.55, 0.48);
+
+    var scoreL4Auto =
+        AutoCommands.manualScore(drive, elevator, pivot, endEffectorWheels, 1, 0.81);
+
+    autoChooser.addOption("Move forward", moveForwardAuto);
+
+    autoChooser.addOption("Score L1", scoreL1Auto);
+
+    autoChooser.addOption("Score L2", scoreL2Auto);
+
+    autoChooser.addOption("Score L3", scoreL3Auto);
+
+    autoChooser.addOption("Score L4", scoreL4Auto);
 
     // Configure the button bindings
     configureButtonBindings();
   }
+
+  public void onTeleopEnable() {}
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -206,7 +211,12 @@ public class RobotContainer {
                 }));
 
     // When the robot is enabled, go into homing mode
-    new Trigger(DriverStation::isEnabled).onTrue(elevator.home());
+    new Trigger(DriverStation::isTeleopEnabled).onTrue(elevator.home());
+
+    elevator.setDefaultCommand(
+        elevator.goToHeight(() -> controllerState.getCurrentSetpoint().height));
+
+    pivot.setDefaultCommand(pivot.goToAngle(() -> controllerState.getCurrentSetpoint().angle));
 
     // When the left bumper is held, manually control the elevator and pivot with the joysticks
 
@@ -215,12 +225,6 @@ public class RobotContainer {
         .whileTrue(
             Commands.parallel(
                 elevator.manualControl(opCon::getLeftY), pivot.manualControl(opCon::getRightY)));
-
-    // Otherwise, go to the setpoint
-    elevator.setDefaultCommand(
-        elevator.goToHeight(() -> controllerState.getCurrentSetpoint().height));
-
-    pivot.setDefaultCommand(pivot.goToAngle(() -> controllerState.getCurrentSetpoint().angle));
 
     // When the right bumper is pressed, go to Intake setpoint
     opCon
@@ -279,6 +283,9 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+
+    // Cancel all running commands
+    CommandScheduler.getInstance().cancelAll();
     return autoChooser.get();
   }
 }

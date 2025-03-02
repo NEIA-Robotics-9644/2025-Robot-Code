@@ -80,7 +80,7 @@ public class Elevator extends SubsystemBase {
     return elevatorIO.getPositionRads();
   }
 
-  private void setVelocity(double normalizedVelocity) {
+  public void setVelocity(double normalizedVelocity) {
     elevatorIO.setVelocity(normalizedVelocity);
   }
 

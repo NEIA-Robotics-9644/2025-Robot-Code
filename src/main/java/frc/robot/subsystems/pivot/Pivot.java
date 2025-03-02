@@ -73,7 +73,7 @@ public class Pivot extends SubsystemBase {
               // Assuming pivot is zero when vertical, sin will be 0 when vertical and 1 when
               // horizontal (which is where we need most strength to hold the pivot up)
               double output =
-                  pid.calculate(getPositionRads(), angleRad.getAsDouble())
+                  pid.calculate(getPositionRads(), setpoint)
                       + Math.sin(angleRad.getAsDouble()) * kAngle.get();
               output = MathUtil.clamp(output, -maxSpeedUp.get(), maxSpeedDown.get());
 
