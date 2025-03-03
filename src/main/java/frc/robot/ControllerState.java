@@ -23,7 +23,7 @@ public class ControllerState {
   }
 
   public ExtenderSetpoint INTAKE = new ExtenderSetpoint(0, 0);
-  public ExtenderSetpoint L1 = new ExtenderSetpoint(0.17, 0.48);
+  public ExtenderSetpoint L1 = new ExtenderSetpoint(0.17, 0);
   public ExtenderSetpoint L2 = new ExtenderSetpoint(0.286, 0.48);
   public ExtenderSetpoint L3 = new ExtenderSetpoint(0.55, 0.48);
   public ExtenderSetpoint L4 = new ExtenderSetpoint(1, 0.81);

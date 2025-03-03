@@ -124,10 +124,9 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     var moveForwardAuto =
-        DriveCommands.driveChassisSpeeds(drive, () -> new ChassisSpeeds(1, 0, 0)).withTimeout(8);
+        DriveCommands.driveChassisSpeeds(drive, () -> new ChassisSpeeds(-1, 0, 0)).withTimeout(8);
 
-    var scoreL1Auto =
-        AutoCommands.manualScore(drive, elevator, pivot, endEffectorWheels, 0.2, 0.1);
+    var scoreL1Auto = AutoCommands.manualScore(drive, elevator, pivot, endEffectorWheels, 0.2, 0.1);
 
     var scoreL2Auto =
         AutoCommands.manualScore(drive, elevator, pivot, endEffectorWheels, 0.286, 0.48);
@@ -135,8 +134,7 @@ public class RobotContainer {
     var scoreL3Auto =
         AutoCommands.manualScore(drive, elevator, pivot, endEffectorWheels, 0.55, 0.48);
 
-    var scoreL4Auto =
-        AutoCommands.manualScore(drive, elevator, pivot, endEffectorWheels, 1, 0.81);
+    var scoreL4Auto = AutoCommands.manualScore(drive, elevator, pivot, endEffectorWheels, 1, 0.81);
 
     autoChooser.addOption("Move forward", moveForwardAuto);
 
