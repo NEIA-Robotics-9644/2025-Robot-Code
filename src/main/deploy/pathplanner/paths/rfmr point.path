@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.8009501689189191,
-        "y": 3.9731207770270265
+        "x": 5.754972185407365,
+        "y": 4.184195818219866
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.800950168918921,
-        "y": 3.9731207770270265
+        "x": 4.754972185407365,
+        "y": 4.184195818219866
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "rfmr"
     },
     {
       "anchor": {
-        "x": 6.936993243243243,
-        "y": 3.9731207770270265
+        "x": 6.504648437499998,
+        "y": 7.21693214699074
       },
       "prevControl": {
-        "x": 5.936993243243243,
-        "y": 3.9731207770270265
+        "x": 5.504648437499998,
+        "y": 7.21693214699074
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,10 +45,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "old",
+  "folder": "reefpoints",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 178.89465729137206
   },
   "useDefaultConstraints": true
 }
