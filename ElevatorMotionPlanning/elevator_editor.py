@@ -1,16 +1,10 @@
-
-
-
+import pygame
 
 class Constraint:
     angle_degs = 0
 
     def __init__(self, angle_degs):
         self.angle_degs = angle_degs
-
-    
-
-        
 
 class Selectable:
     x = 0
@@ -19,15 +13,12 @@ class Selectable:
     color = (255, 0, 0)
 
     constraint = None
-
     
     def __init__(self, x, y, radius, constraint, color):
         self.x = x
         self.y = y
         self.radius = radius
         self.color = color
-
-
         self.constraint = constraint
         
     def is_inside(self, x, y):
@@ -165,7 +156,6 @@ class Transform:
     
 # UI for editing constraints with pygame
 
-import pygame
 
 
 # Start the loop
@@ -212,7 +202,6 @@ def main():
                     x, y = event.pos
                     e_x, e_y = tf.screen_to_elevator(x, y)
                     selected.set_position(e_x, selected.y)
-
                     
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_s:
@@ -221,26 +210,18 @@ def main():
                 if event.key == pygame.K_l:
                     load_constraints("constraints.txt")
                     print("Loaded constraints from constraints.txt")
-
-                        
         
         screen.fill((0, 0, 0))
 
-
         # Draw the elevator
-
         tf.draw_rect(screen, (255, 255, 255), -0.0005, 0, 0.005, 1)
         
-        
         # Draw the selectables
-
-        
         for selectable in selectables:
             selectable.update_constrant(SCALE)
             selectable.draw(screen, tf)
        
         pygame.display.flip()
-    
 
     pygame.quit()
 
@@ -248,14 +229,3 @@ def main():
     
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
-
-
-
-
