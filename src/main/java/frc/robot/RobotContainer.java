@@ -14,6 +14,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -135,6 +136,8 @@ public class RobotContainer {
         AutoCommands.manualScore(drive, elevator, pivot, endEffectorWheels, 0.55, 0.48);
 
     var scoreL4Auto = AutoCommands.manualScore(drive, elevator, pivot, endEffectorWheels, 1, 0.81);
+
+    NamedCommands.registerCommand("L2", scoreL2Auto);
 
     autoChooser.addOption("Move forward", moveForwardAuto);
 

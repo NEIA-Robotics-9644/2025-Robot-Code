@@ -9,6 +9,12 @@
           "data": {
             "pathName": "One Coral Start To Elevator"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L2"
+          }
         }
       ]
     }

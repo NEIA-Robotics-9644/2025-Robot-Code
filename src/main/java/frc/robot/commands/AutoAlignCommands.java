@@ -62,7 +62,7 @@ public class AutoAlignCommands {
             new Pose2d(3.270, 4.197, new Rotation2d(Math.toRadians(0))), // A
             new Pose2d(3.702, 5.053, new Rotation2d(Math.toRadians(-60))), // L
             new Pose2d(4.004, 5.224, new Rotation2d(Math.toRadians(-60))), // K
-            new Pose2d(4.963, 5.244, new Rotation2d(Math.toRadians(-120))), // J
+            new Pose2d(4.963, 5.244, new Rotation2d(Math.toRadians(-120))), // J ID 20 Positions in IN: 193.1, 186.63 -> 4.90474, 4.7404
             new Pose2d(5.298, 5.036, new Rotation2d(Math.toRadians(-120))) // I
             );
 
