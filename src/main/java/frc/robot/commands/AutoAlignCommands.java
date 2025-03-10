@@ -14,6 +14,74 @@ import org.littletonrobotics.junction.Logger;
 
 public class AutoAlignCommands {
 
+  // This was found by aligning the robot to tag 20 on the right side, then calculating the back and
+  // side offsets from tag 20's position
+  // https://www.geogebra.org/calculator/bsxrynbn
+
+  public static final double NORMAL_TAG_BACKWARDS_OFFSET_METERS = 0.4652603933458;
+  public static final double NORMAL_TAG_SIDEWAYS_OFFSET_METERS = 0.2013453599755;
+
+  public static final double NORMAL_TAG_ANGLE_OFFSET_RADIANS = Math.toRadians(180);
+
+  private static List<Pose2d> getTargetPoses() {
+
+    // Blue poses
+
+    // First, get the poses of the april tags
+
+    var tagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    List<Integer> reefTags = List.of(6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22);
+    List<Pose2d> tagPoses =
+        tagLayout.getTags().stream()
+            .filter(tag -> reefTags.contains(tag.ID))
+            .map(
+                tag ->
+                    new Pose2d(
+                        tag.pose.getX(),
+                        tag.pose.getY(),
+                        new Rotation2d(tag.pose.getRotation().getAngle())))
+            .toList();
+
+    Pose2d[] targetPoses = new Pose2d[24];
+
+    // Then, add the offsets to the poses
+    for (int i = 0; i < tagPoses.size(); i++) {
+      var tagPose = tagPoses.get(i);
+      var backwardsOffset = NORMAL_TAG_BACKWARDS_OFFSET_METERS;
+      var sidewaysOffset = NORMAL_TAG_SIDEWAYS_OFFSET_METERS;
+      var angleOffset = NORMAL_TAG_ANGLE_OFFSET_RADIANS;
+
+      var x =
+          tagPose.getX()
+              + backwardsOffset * Math.cos(tagPose.getRotation().getRadians())
+              + sidewaysOffset * Math.sin(tagPose.getRotation().getRadians());
+      var y =
+          tagPose.getY()
+              + backwardsOffset * Math.sin(tagPose.getRotation().getRadians())
+              - sidewaysOffset * Math.cos(tagPose.getRotation().getRadians());
+      var rotation = new Rotation2d(tagPose.getRotation().getRadians() + angleOffset);
+
+      targetPoses[i * 2] = new Pose2d(x, y, rotation);
+
+      var x2 =
+          tagPose.getX()
+              + backwardsOffset * Math.cos(tagPose.getRotation().getRadians())
+              - sidewaysOffset * Math.sin(tagPose.getRotation().getRadians());
+
+      var y2 =
+          tagPose.getY()
+              + backwardsOffset * Math.sin(tagPose.getRotation().getRadians())
+              + sidewaysOffset * Math.cos(tagPose.getRotation().getRadians());
+
+      targetPoses[i * 2 + 1] = new Pose2d(x2, y2, rotation);
+    }
+
+    return List.of(targetPoses);
+  }
+
+  // We will take the tag pose, move backwards by the backwards offset, move sideways by the
+  // sideways offset, then rotate by the angle offset
+
   private static double distanceBetween(Pose2d pose1, Pose2d pose2) {
     return pose1.getTranslation().getDistance(pose2.getTranslation());
   }
@@ -43,51 +111,14 @@ public class AutoAlignCommands {
 
   public static Command closestReefAlign(Drive drive) {
 
-    Pose2d currentPose = drive.getPose();
     final List<Pose2d> targetPoses;
 
-    DriverStation.Alliance fieldSide =
-        DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
-    AprilTagFieldLayout kTagLayout = AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
+    targetPoses = AutoAlignCommands.getTargetPoses();
 
-    var bluePoses =
-        List.of(
-            new Pose2d(5.716, 4.197, new Rotation2d(Math.toRadians(180))), // H
-            new Pose2d(5.716, 3.861, new Rotation2d(Math.toRadians(180))), // G
-            new Pose2d(5.239, 3.040, new Rotation2d(Math.toRadians(120))), // F
-            new Pose2d(4.966, 2.877, new Rotation2d(Math.toRadians(120))), // E
-            new Pose2d(4.028, 2.877, new Rotation2d(Math.toRadians(60))), // D
-            new Pose2d(3.742, 3.040, new Rotation2d(Math.toRadians(60))), // C
-            new Pose2d(3.270, 3.850, new Rotation2d(Math.toRadians(0))), // B
-            new Pose2d(3.270, 4.197, new Rotation2d(Math.toRadians(0))), // A
-            new Pose2d(3.702, 5.053, new Rotation2d(Math.toRadians(-60))), // L
-            new Pose2d(4.004, 5.224, new Rotation2d(Math.toRadians(-60))), // K
-            new Pose2d(4.963, 5.244, new Rotation2d(Math.toRadians(-120))), // J ID 20 Positions in IN: 193.1, 186.63 -> 4.90474, 4.7404
-            new Pose2d(5.298, 5.036, new Rotation2d(Math.toRadians(-120))) // I
-            );
-
-    if (fieldSide == DriverStation.Alliance.Red) {
-      var fieldXSize = 17.55;
-      var fieldYSize = 8.05;
-
-      Pose2d[] redPoses = new Pose2d[12];
-      for (int i = 0; i < bluePoses.size(); i++) {
-
-        var bluePose = bluePoses.get(i);
-        redPoses[i] =
-            new Pose2d(
-                fieldXSize - bluePose.getX(),
-                fieldYSize - bluePose.getY(),
-                new Rotation2d(-bluePose.getRotation().getCos(), -bluePose.getRotation().getSin()));
-      }
-
-      targetPoses = List.of(redPoses);
-    } else {
-      targetPoses = bluePoses;
-    }
-
+    // Log the poses
     for (int i = 0; i < targetPoses.size(); i++) {
-      Logger.recordOutput("Pose " + i, targetPoses.get(i));
+      var pose = targetPoses.get(i);
+      Logger.recordOutput("Pose " + i, pose);
     }
 
     return new Command() {
