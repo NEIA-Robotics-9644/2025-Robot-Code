@@ -5,7 +5,6 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.controllers.AutoAlignController;
@@ -18,8 +17,9 @@ public class AutoAlignCommands {
   // side offsets from tag 20's position
   // https://www.geogebra.org/calculator/bsxrynbn
 
-  public static final double NORMAL_TAG_BACKWARDS_OFFSET_METERS = 0.4652603933458;
-  public static final double NORMAL_TAG_SIDEWAYS_OFFSET_METERS = 0.2013453599755;
+  public static final double NORMAL_TAG_BACKWARDS_OFFSET_METERS = 0.4652603933458 - 0.02;
+  public static final double NORMAL_TAG_LEFT_OFFSET_METERS = -0.2013453599755 + 0.08;
+  public static final double NORMAL_TAG_RIGHT_OFFSET_METERS = 0.2013453599755 - 0.002;
 
   public static final double NORMAL_TAG_ANGLE_OFFSET_RADIANS = Math.toRadians(180);
 
@@ -48,17 +48,16 @@ public class AutoAlignCommands {
     for (int i = 0; i < tagPoses.size(); i++) {
       var tagPose = tagPoses.get(i);
       var backwardsOffset = NORMAL_TAG_BACKWARDS_OFFSET_METERS;
-      var sidewaysOffset = NORMAL_TAG_SIDEWAYS_OFFSET_METERS;
       var angleOffset = NORMAL_TAG_ANGLE_OFFSET_RADIANS;
 
       var x =
           tagPose.getX()
               + backwardsOffset * Math.cos(tagPose.getRotation().getRadians())
-              + sidewaysOffset * Math.sin(tagPose.getRotation().getRadians());
+              + NORMAL_TAG_LEFT_OFFSET_METERS * -Math.sin(tagPose.getRotation().getRadians());
       var y =
           tagPose.getY()
               + backwardsOffset * Math.sin(tagPose.getRotation().getRadians())
-              - sidewaysOffset * Math.cos(tagPose.getRotation().getRadians());
+              + NORMAL_TAG_LEFT_OFFSET_METERS * Math.cos(tagPose.getRotation().getRadians());
       var rotation = new Rotation2d(tagPose.getRotation().getRadians() + angleOffset);
 
       targetPoses[i * 2] = new Pose2d(x, y, rotation);
@@ -66,12 +65,12 @@ public class AutoAlignCommands {
       var x2 =
           tagPose.getX()
               + backwardsOffset * Math.cos(tagPose.getRotation().getRadians())
-              - sidewaysOffset * Math.sin(tagPose.getRotation().getRadians());
+              + NORMAL_TAG_RIGHT_OFFSET_METERS * -Math.sin(tagPose.getRotation().getRadians());
 
       var y2 =
           tagPose.getY()
               + backwardsOffset * Math.sin(tagPose.getRotation().getRadians())
-              + sidewaysOffset * Math.cos(tagPose.getRotation().getRadians());
+              + NORMAL_TAG_RIGHT_OFFSET_METERS * Math.cos(tagPose.getRotation().getRadians());
 
       targetPoses[i * 2 + 1] = new Pose2d(x2, y2, rotation);
     }

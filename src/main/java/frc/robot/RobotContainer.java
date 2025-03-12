@@ -20,8 +20,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoAlignCommands;
@@ -122,8 +123,6 @@ public class RobotContainer {
     }
 
     // Set up auto routines
-    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-
     var moveForwardAuto =
         DriveCommands.driveChassisSpeeds(drive, () -> new ChassisSpeeds(-1, 0, 0)).withTimeout(8);
 
@@ -137,7 +136,37 @@ public class RobotContainer {
 
     var scoreL4Auto = AutoCommands.manualScore(drive, elevator, pivot, endEffectorWheels, 1, 0.81);
 
-    NamedCommands.registerCommand("L2", scoreL2Auto);
+    NamedCommands.registerCommand(
+        "L4", new ParallelCommandGroup(elevator.goToHeight(() -> 1), pivot.goToAngle(() -> 0.81)));
+
+    NamedCommands.registerCommand(
+        "Stow",
+        new ParallelCommandGroup(elevator.goToHeight(() -> 0), pivot.goToAngle(() -> 0))
+            .withTimeout(1));
+
+    NamedCommands.registerCommand("AutoAlign", AutoAlignCommands.closestReefAlign(drive));
+
+    NamedCommands.registerCommand(
+        "Score",
+        Commands.startEnd(
+                () -> endEffectorWheels.setVelocity(0.5), () -> endEffectorWheels.setVelocity(0))
+            .withTimeout(0.75));
+
+    NamedCommands.registerCommand(
+        "Intake",
+        Commands.startEnd(
+            () -> {
+              intakeWheels.setVelocity(-0.5);
+              endEffectorWheels.setVelocity(0.5);
+            },
+            () -> {
+              intakeWheels.setVelocity(0);
+              endEffectorWheels.setVelocity(0);
+            }));
+
+    NamedCommands.registerCommand("Test", new PrintCommand("TESTING AUTO COMMAND"));
+
+    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     autoChooser.addOption("Move forward", moveForwardAuto);
 
@@ -166,13 +195,21 @@ public class RobotContainer {
     // --- Driver Controls ---
 
     var hid = driveCon.getHID();
+    var opHid = opCon.getHID();
     // Default command, normal field-relative drive
     Command driveCommand =
         DriveCommands.joystickDrive(
             drive,
-            () -> -hid.getLeftY() * controllerState.getCurrentDriveSpeed().translationScale,
-            () -> -hid.getLeftX() * controllerState.getCurrentDriveSpeed().translationScale,
-            () -> -hid.getRightX() * controllerState.getCurrentDriveSpeed().rotationScale * 0.65,
+            () ->
+                -(hid.getLeftY() + opHid.getLeftY())
+                    * controllerState.getCurrentDriveSpeed().translationScale,
+            () ->
+                -(hid.getLeftX() + opHid.getLeftX())
+                    * controllerState.getCurrentDriveSpeed().translationScale,
+            () ->
+                -(hid.getRightX() + opHid.getRightX())
+                    * controllerState.getCurrentDriveSpeed().rotationScale
+                    * 0.65,
             () -> driveCon.povRight().getAsBoolean());
 
     driveCommand.addRequirements(drive);
@@ -286,7 +323,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
 
     // Cancel all running commands
-    CommandScheduler.getInstance().cancelAll();
     return autoChooser.get();
   }
 }

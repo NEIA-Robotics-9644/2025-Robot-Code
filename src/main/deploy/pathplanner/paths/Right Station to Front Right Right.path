@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.149692622950819,
-        "y": 4.1748463114754095
+        "x": 1.5703893442622954,
+        "y": 0.6744364754098353
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.9000381656176915,
-        "y": 4.161706603194719
+        "x": 2.570389344262295,
+        "y": 0.6744364754098353
       },
       "isLocked": false,
-      "linkedName": "Front Elevator Up Location"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.706147540983607,
-        "y": 4.1748463114754095
+        "x": 4.015881147540983,
+        "y": 2.5565061475409836
       },
       "prevControl": {
-        "x": 6.005840163934426,
-        "y": 4.162858606557377
+        "x": 3.500409836065573,
+        "y": 1.9331454918032778
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 60.94539590092285
   },
   "reversed": false,
   "folder": "old",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 142.43140797117246
   },
   "useDefaultConstraints": true
 }

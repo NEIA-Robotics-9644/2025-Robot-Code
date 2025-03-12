@@ -13,21 +13,20 @@ import frc.robot.subsystems.poseEstimator.Vision;
 import java.util.function.Supplier;
 
 public class AutoAlignController {
-  private static final double linearkP = 3.5;
+  private static final double linearkP = 12;
   private static final double linearkD = 0;
-  private static final double thetakP = 1.4;
+  private static final double thetakP = 3;
   private static final double thetakD = 0;
-  private static final double linearTolerance = 0.08;
-  private static final double thetaTolerance = Units.degreesToRadians(2.0);
+  private static final double linearTolerance = 0.01;
+  private static final double thetaTolerance = Units.degreesToRadians(0.1);
   private static final double toleranceTime = 0.5;
-  private static final double maxLinearVelocity =
-      DriveConstants.driveConfig.maxLinearVelocity() * 0.5;
+  private static final double maxLinearVelocity = DriveConstants.driveConfig.maxLinearVelocity();
   private static final double maxLinearAcceleration =
-      DriveConstants.driveConfig.maxLinearAcceleration() * 0.4;
+      DriveConstants.driveConfig.maxLinearAcceleration();
   private static final double maxAngularVelocity =
-      DriveConstants.driveConfig.maxAngularVelocity() * 0.8;
+      DriveConstants.driveConfig.maxAngularVelocity() * 1;
   private static final double maxAngularAcceleration =
-      DriveConstants.driveConfig.maxAngularAcceleration() * 0.8;
+      DriveConstants.driveConfig.maxAngularAcceleration() * 1;
   private static final double slowLinearVelocity = 2.25;
   private static final double slowLinearAcceleration = 3.0;
   private static final double slowAngularVelocity = Math.PI / 2.0;
@@ -113,7 +112,7 @@ public class AutoAlignController {
         lastSetpointTranslation.getDistance(targetPose.getTranslation()),
         linearController.getSetpoint().velocity);
     double driveVelocityScalar =
-        linearController.getSetpoint().velocity * ffScaler
+        linearController.getSetpoint().velocity // * ffScaler
             + linearController.calculate(currentDistance, 0.0);
     if (linearController.atGoal()) driveVelocityScalar = 0.0;
     lastSetpointTranslation =
@@ -125,7 +124,7 @@ public class AutoAlignController {
             .getTranslation();
 
     double thetaVelocity =
-        thetaController.getSetpoint().velocity * ffScaler
+        thetaController.getSetpoint().velocity // * ffScaler
             + thetaController.calculate(
                 currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
     if (thetaController.atGoal()) thetaVelocity = 0.0;
