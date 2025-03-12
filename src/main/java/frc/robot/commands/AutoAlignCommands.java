@@ -29,7 +29,7 @@ public class AutoAlignCommands {
 
     // First, get the poses of the april tags
 
-    var tagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    var tagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
     List<Integer> reefTags = List.of(6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22);
     List<Pose2d> tagPoses =
         tagLayout.getTags().stream()
