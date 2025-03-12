@@ -1,5 +1,8 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+
 public class ControllerState {
 
   public class ExtenderSetpoint {
@@ -62,5 +65,13 @@ public class ControllerState {
     if (currentDriveSpeedIndex > 0) {
       currentDriveSpeedIndex--;
     }
+  }
+
+  public Command setSetpoint(ExtenderSetpoint setpoint) {
+    return Commands.runOnce(
+        () -> {
+          this.setCurrentSetpoint(setpoint);
+          System.out.println("Going to L4");
+        });
   }
 }

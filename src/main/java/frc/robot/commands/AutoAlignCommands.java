@@ -17,7 +17,7 @@ public class AutoAlignCommands {
   // side offsets from tag 20's position
   // https://www.geogebra.org/calculator/bsxrynbn
 
-  public static final double NORMAL_TAG_BACKWARDS_OFFSET_METERS = 0.4652603933458 - 0.02;
+  public static final double NORMAL_TAG_BACKWARDS_OFFSET_METERS = 0.4652603933458 - 0.15;
   public static final double NORMAL_TAG_LEFT_OFFSET_METERS = -0.2013453599755 + 0.08;
   public static final double NORMAL_TAG_RIGHT_OFFSET_METERS = 0.2013453599755 - 0.002;
 
@@ -138,7 +138,7 @@ public class AutoAlignCommands {
         ChassisSpeeds speeds = alignController.update();
         ChassisSpeeds invertedSpeeds =
             new ChassisSpeeds(
-                speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, -speeds.omegaRadiansPerSecond);
+                speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
         drive.runVelocity(invertedSpeeds);
       }
     };

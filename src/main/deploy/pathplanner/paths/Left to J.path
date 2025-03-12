@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.910623191550925,
-        "y": 4.003687065972222
+        "x": 7.420389344262295,
+        "y": 6.140829918032787
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.177318028041294,
-        "y": 4.409803989955357
+        "x": 6.370165874656334,
+        "y": 5.758579835768441
       },
       "isLocked": false,
-      "linkedName": "BRFM"
+      "linkedName": "Left Start"
     },
     {
       "anchor": {
-        "x": 5.176841001157406,
-        "y": 5.230636574074074
+        "x": 5.070799180327868,
+        "y": 5.361629098360655
       },
       "prevControl": {
-        "x": 5.67096208844866,
-        "y": 5.173495047433035
+        "x": 5.849999999999999,
+        "y": 5.589395491803279
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "BRFR"
+      "linkedName": "J Stop"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -119.99999999999999
+    "rotation": -120.73548770192023
   },
   "reversed": false,
-  "folder": "RFM",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -71.56505117707806
   },
   "useDefaultConstraints": true
 }

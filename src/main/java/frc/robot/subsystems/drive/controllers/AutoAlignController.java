@@ -13,9 +13,9 @@ import frc.robot.subsystems.poseEstimator.Vision;
 import java.util.function.Supplier;
 
 public class AutoAlignController {
-  private static final double linearkP = 12;
+  private static final double linearkP = 8;
   private static final double linearkD = 0;
-  private static final double thetakP = 3;
+  private static final double thetakP = 6;
   private static final double thetakD = 0;
   private static final double linearTolerance = 0.01;
   private static final double thetaTolerance = Units.degreesToRadians(0.1);

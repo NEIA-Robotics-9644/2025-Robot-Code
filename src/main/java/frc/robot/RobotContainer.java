@@ -15,18 +15,15 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoAlignCommands;
-import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -122,34 +119,20 @@ public class RobotContainer {
         break;
     }
 
-    // Set up auto routines
-    var moveForwardAuto =
-        DriveCommands.driveChassisSpeeds(drive, () -> new ChassisSpeeds(-1, 0, 0)).withTimeout(8);
+    NamedCommands.registerCommand("L1", controllerState.setSetpoint(controllerState.L1));
 
-    var scoreL1Auto = AutoCommands.manualScore(drive, elevator, pivot, endEffectorWheels, 0.2, 0.1);
+    // NamedCommands.registerCommand(
+    //  "L4", new ParallelCommandGroup(elevator.goToHeight(() -> 1), pivot.goToAngle(() -> 0.81)));
+    NamedCommands.registerCommand("L4", controllerState.setSetpoint(controllerState.L4));
 
-    var scoreL2Auto =
-        AutoCommands.manualScore(drive, elevator, pivot, endEffectorWheels, 0.286, 0.48);
-
-    var scoreL3Auto =
-        AutoCommands.manualScore(drive, elevator, pivot, endEffectorWheels, 0.55, 0.48);
-
-    var scoreL4Auto = AutoCommands.manualScore(drive, elevator, pivot, endEffectorWheels, 1, 0.81);
-
-    NamedCommands.registerCommand(
-        "L4", new ParallelCommandGroup(elevator.goToHeight(() -> 1), pivot.goToAngle(() -> 0.81)));
-
-    NamedCommands.registerCommand(
-        "Stow",
-        new ParallelCommandGroup(elevator.goToHeight(() -> 0), pivot.goToAngle(() -> 0))
-            .withTimeout(1));
+    NamedCommands.registerCommand("Stow", controllerState.setSetpoint(controllerState.INTAKE));
 
     NamedCommands.registerCommand("AutoAlign", AutoAlignCommands.closestReefAlign(drive));
 
     NamedCommands.registerCommand(
         "Score",
         Commands.startEnd(
-                () -> endEffectorWheels.setVelocity(0.5), () -> endEffectorWheels.setVelocity(0))
+                () -> endEffectorWheels.setVelocity(1), () -> endEffectorWheels.setVelocity(0))
             .withTimeout(0.75));
 
     NamedCommands.registerCommand(
@@ -167,16 +150,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("Test", new PrintCommand("TESTING AUTO COMMAND"));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-
-    autoChooser.addOption("Move forward", moveForwardAuto);
-
-    autoChooser.addOption("Score L1", scoreL1Auto);
-
-    autoChooser.addOption("Score L2", scoreL2Auto);
-
-    autoChooser.addOption("Score L3", scoreL3Auto);
-
-    autoChooser.addOption("Score L4", scoreL4Auto);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -207,7 +180,7 @@ public class RobotContainer {
                 -(hid.getLeftX() + opHid.getLeftX())
                     * controllerState.getCurrentDriveSpeed().translationScale,
             () ->
-                -(hid.getRightX() + opHid.getRightX())
+                (hid.getRightX() + opHid.getRightX())
                     * controllerState.getCurrentDriveSpeed().rotationScale
                     * 0.65,
             () -> driveCon.povRight().getAsBoolean());
