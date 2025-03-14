@@ -16,7 +16,13 @@ package frc.robot;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.DriveMotorArrangement;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerMotorArrangement;
+
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.AddressableLEDBufferView;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.Threads;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.generated.TunerConstants;
@@ -38,6 +44,28 @@ public class Robot extends LoggedRobot {
   private RobotContainer robotContainer;
 
   public Robot() {
+
+    AddressableLED m_led = new AddressableLED(8);
+
+
+    // Reuse buffer
+
+    // Default to a length of 60, start empty output
+
+    // Length is expensive to set, so only set it once, then just update data
+
+    AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(120);
+
+    m_led.setLength(m_ledBuffer.getLength());
+    LEDPattern red = LEDPattern.solid(Color.kRed);
+    red.applyTo(m_ledBuffer);
+
+
+    // Set the data
+
+    m_led.setData(m_ledBuffer);
+
+    m_led.start();
     // Record metadata
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
