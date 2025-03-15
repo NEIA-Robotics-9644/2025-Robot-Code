@@ -48,21 +48,17 @@ class Selectable:
         else:
             text_rect = text.get_rect(center=(screen_x - text_rect.width, screen_y))
 
-
         screen.blit(text, text_rect)
 
-        
 SCALE = 180
-
 
 def save_constraints(min_constraints, max_constraints, filename):
     with open(filename, 'w') as f:
         for i in range(len(min_constraints)):
             f.write(f"{min_constraints[i].angle_degs},{max_constraints[i].angle_degs}\n")
 
-
 def load_constraints(filename):
-    
+
     min_constraints.clear()
     max_constraints.clear()
     with open(filename, 'r') as f:
@@ -72,14 +68,11 @@ def load_constraints(filename):
             min_constraints.append(Constraint(float(min_angle)))
             max_constraints.append(Constraint(float(max_angle)))
             print("Loaded: ", min_angle, max_angle)
-
             
     selectables.clear()
     for i in range(len(min_constraints)):
         selectables.append(Selectable(max_constraints[i].angle_degs / SCALE, float(i) / (len(min_constraints) - 1), 0.02, max_constraints[i], (0, 255, 0)))
         selectables.append(Selectable(min_constraints[i].angle_degs / SCALE, float(i) / (len(min_constraints) - 1), 0.02, min_constraints[i], (0, 0, 255)))
-
-        
 
 max_constraints = []
 
@@ -87,19 +80,15 @@ min_constraints = []
 
 constraint_number = 50 
 
-
 for i in range(constraint_number):
     max_constraints.append(Constraint(0))
     min_constraints.append(Constraint(0.4))
-
-
 
 selectables = []
 
 for i in range(constraint_number):
     selectables.append(Selectable(max_constraints[i].angle_degs, float(i) / (constraint_number - 1),  0.02, max_constraints[i], (0, 255, 0)))
     selectables.append(Selectable(min_constraints[i].angle_degs, float(i) / (constraint_number - 1), 0.02, min_constraints[i], (0, 0, 255)))
-
 
 class Transform: 
     world_width = 800
@@ -109,9 +98,6 @@ class Transform:
     elevator_bottom_offset = 50
 
     elevator_screen_height = world_height - elevator_top_offset - elevator_bottom_offset
-
-
-
     
     def __init__(self, world_width, world_height, elevator_top_offset, elevator_bottom_offset):
         self.world_width = world_width
@@ -119,8 +105,6 @@ class Transform:
         self.elevator_top_offset = elevator_top_offset
         self.elevator_bottom_offset = elevator_bottom_offset
         self.elevator_screen_height = world_height - elevator_top_offset - elevator_bottom_offset
-
-    
         
     def elevator_to_screen(self, x, y):
         # Transform elevator coordinates to screen coordinates
@@ -137,26 +121,17 @@ class Transform:
         elevator_y = 1 - ((y - self.elevator_top_offset) / (self.world_height - self.elevator_top_offset - self.elevator_bottom_offset))
 
         return (elevator_x, elevator_y)
-
         
     def draw_rect(self, screen, color, x, y, width, height):
         # Draw a rectangle on the screen
         screen_x, screen_y = self.elevator_to_screen(x, y)
         screen_x2, screen_y2 = self.elevator_to_screen(x + width, y + height)
 
-
         rect = pygame.Rect(screen_x, screen_y2, screen_x2 - screen_x, screen_y - screen_y2)
 
         pygame.draw.rect(screen, color, rect)
-
-
-
-
-    
     
 # UI for editing constraints with pygame
-
-
 
 # Start the loop
 
@@ -168,6 +143,8 @@ def main():
     screen_height = screen_size[1]
 
     tf = Transform(screen_width, screen_height, 50, 50)
+
+    load_constraints("constraints.txt")
 
     pygame.init()
     screen = pygame.display.set_mode(screen_size)
@@ -202,14 +179,11 @@ def main():
                     x, y = event.pos
                     e_x, e_y = tf.screen_to_elevator(x, y)
                     selected.set_position(e_x, selected.y)
+                    save_constraints(min_constraints, max_constraints, "constraints.txt")
                     
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_s:
-                    save_constraints(min_constraints, max_constraints, "constraints.txt")
-                    print("Saved constraints to constraints.txt")
-                if event.key == pygame.K_l:
-                    load_constraints("constraints.txt")
-                    print("Loaded constraints from constraints.txt")
+               if event.key == pygame.K_ESCAPE:
+                    running = False
         
         screen.fill((0, 0, 0))
 
@@ -225,7 +199,7 @@ def main():
 
     pygame.quit()
 
-    
-    
+    save_constraints(min_constraints, max_constraints, "constraints.txt")
+
 if __name__ == "__main__":
     main()
