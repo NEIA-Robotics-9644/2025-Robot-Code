@@ -16,10 +16,8 @@ package frc.robot;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.DriveMotorArrangement;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerMotorArrangement;
-
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.AddressableLEDBufferView;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.util.Color;
@@ -47,7 +45,6 @@ public class Robot extends LoggedRobot {
 
     AddressableLED m_led = new AddressableLED(8);
 
-
     // Reuse buffer
 
     // Default to a length of 60, start empty output
@@ -59,7 +56,6 @@ public class Robot extends LoggedRobot {
     m_led.setLength(m_ledBuffer.getLength());
     LEDPattern red = LEDPattern.solid(Color.kRed);
     red.applyTo(m_ledBuffer);
-
 
     // Set the data
 

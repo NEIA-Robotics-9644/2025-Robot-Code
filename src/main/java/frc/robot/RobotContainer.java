@@ -46,7 +46,9 @@ import frc.robot.subsystems.intake.wheel.IntakeWheelIOSparkMax;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOSparkMax;
-import frc.robot.subsystems.poseEstimator.Vision;
+import frc.robot.subsystems.vision.*;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -59,6 +61,7 @@ public class RobotContainer {
 
   // Subsystems
   private final Drive drive;
+  private final Vision vision;
   private final Intake intakeWheels;
   private final EndEffectorSubsystem endEffectorWheels;
   private final Elevator elevator;
@@ -89,8 +92,18 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontLeft),
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
-                new ModuleIOSim(TunerConstants.BackRight),
-                new Vision());
+                new ModuleIOSim(TunerConstants.BackRight)
+                // new Vision()
+                );
+        vision =
+            new Vision(
+                drive,
+                new VisionIO[] {
+                  new VisionIOPhotonVisionSim(
+                      VisionConstants.camera0Name, VisionConstants.robotToCamera0, drive::getPose),
+                  new VisionIOPhotonVisionSim(
+                      VisionConstants.camera1Name, VisionConstants.robotToCamera1, drive::getPose)
+                });
 
         endEffectorWheels = new EndEffectorSubsystem(new FlywheelIOSim());
         elevator = new Elevator(new ElevatorIOSim(), new LimitSwitchSensorIOSim());
@@ -105,8 +118,20 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontLeft),
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
-                new ModuleIOTalonFX(TunerConstants.BackRight),
-                new Vision());
+                new ModuleIOTalonFX(TunerConstants.BackRight)
+                // new Vision()
+                );
+
+        vision =
+            new Vision(
+                drive,
+                new VisionIO[] {
+                  new VisionIOPhotonVision(
+                      VisionConstants.camera0Name, VisionConstants.robotToCamera0),
+                  new VisionIOPhotonVision(
+                      VisionConstants.camera1Name, VisionConstants.robotToCamera1)
+                });
+
         endEffectorWheels = new EndEffectorSubsystem(new FlywheelIOSparkMax(23));
         elevator =
             new Elevator(
@@ -188,6 +213,7 @@ public class RobotContainer {
     driveCommand.addRequirements(drive);
     drive.setDefaultCommand(driveCommand);
     driveCon.rightTrigger(0.5).whileTrue(AutoAlignCommands.closestReefAlign(drive));
+    driveCon.a().whileTrue(AutoAlignCommands.closestReefAlign(drive));
 
     driveCon.leftBumper().onTrue(Commands.runOnce(() -> controllerState.decreaseDriveSpeedIndex()));
     driveCon
