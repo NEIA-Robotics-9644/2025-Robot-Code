@@ -15,6 +15,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.FieldConstants.ReefSide;
 import frc.robot.commands.AutoAlignCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
@@ -47,8 +49,7 @@ import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOSparkMax;
 import frc.robot.subsystems.vision.*;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
-import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -180,6 +181,11 @@ public class RobotContainer {
     configureButtonBindings();
   }
 
+  private Command joystickApproach(Supplier<Pose2d> approachPose) {
+    return DriveCommands.joystickApproach(
+        drive, () -> -driveCon.getHID().getLeftY() * 1, approachPose);
+  }
+
   public void onTeleopEnable() {}
 
   /**
@@ -213,7 +219,11 @@ public class RobotContainer {
     driveCommand.addRequirements(drive);
     drive.setDefaultCommand(driveCommand);
     driveCon.rightTrigger(0.5).whileTrue(AutoAlignCommands.closestReefAlign(drive));
-    driveCon.a().whileTrue(AutoAlignCommands.closestReefAlign(drive));
+    driveCon
+        .a()
+        .whileTrue(
+            joystickApproach(
+                () -> FieldConstants.getNearestReefBranch(drive.getPose(), ReefSide.RIGHT)));
 
     driveCon.leftBumper().onTrue(Commands.runOnce(() -> controllerState.decreaseDriveSpeedIndex()));
     driveCon
