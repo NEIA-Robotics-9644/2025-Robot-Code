@@ -18,12 +18,12 @@ import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
 
-  private LoggedTunableNumber elevatorP = new LoggedTunableNumber("Elevator/P", 0.2);
+  private LoggedTunableNumber elevatorP = new LoggedTunableNumber("Elevator/P", 0.1);
   private LoggedTunableNumber elevatorI = new LoggedTunableNumber("Elevator/I", 0.0);
   private LoggedTunableNumber elevatorD = new LoggedTunableNumber("Elevator/D", 0.0);
 
   // The constant power needed to keep the elevator at rest
-  private LoggedTunableNumber elevatorG = new LoggedTunableNumber("Elevator/G", 0.12);
+  private LoggedTunableNumber elevatorG = new LoggedTunableNumber("Elevator/G", 0.07);
 
   private LoggedTunableNumber elevatorMaxSpeedUp =
       new LoggedTunableNumber("Elevator/MaxSpeedUp", 1);

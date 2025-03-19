@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.FieldConstants.ReefSide;
-import frc.robot.commands.AutoAlignCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -153,7 +152,18 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("Stow", controllerState.setSetpoint(controllerState.INTAKE));
 
-    NamedCommands.registerCommand("AutoAlign", AutoAlignCommands.closestReefAlign(drive));
+    NamedCommands.registerCommand(
+        "AutoAlignRight",
+        DriveCommands.joystickApproach(
+            drive,
+            () -> 0.5,
+            () -> FieldConstants.getNearestReefBranch(drive.getPose(), ReefSide.RIGHT)));
+    NamedCommands.registerCommand(
+        "AutoAlignLeft",
+        DriveCommands.joystickApproach(
+            drive,
+            () -> 0.5,
+            () -> FieldConstants.getNearestReefBranch(drive.getPose(), ReefSide.LEFT)));
 
     NamedCommands.registerCommand(
         "Score",
@@ -218,13 +228,17 @@ public class RobotContainer {
 
     driveCommand.addRequirements(drive);
     drive.setDefaultCommand(driveCommand);
-    driveCon.rightTrigger(0.5).whileTrue(AutoAlignCommands.closestReefAlign(drive));
     driveCon
-        .a()
+        .rightTrigger(0.5)
         .whileTrue(
             joystickApproach(
                 () -> FieldConstants.getNearestReefBranch(drive.getPose(), ReefSide.RIGHT)));
 
+    driveCon
+        .leftTrigger(0.5)
+        .whileTrue(
+            joystickApproach(
+                () -> FieldConstants.getNearestReefBranch(drive.getPose(), ReefSide.LEFT)));
     driveCon.leftBumper().onTrue(Commands.runOnce(() -> controllerState.decreaseDriveSpeedIndex()));
     driveCon
         .rightBumper()
