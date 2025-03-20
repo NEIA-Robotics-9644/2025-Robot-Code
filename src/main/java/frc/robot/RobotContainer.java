@@ -192,6 +192,18 @@ public class RobotContainer {
               endEffectorWheels.setVelocity(0);
             }));
 
+    NamedCommands.registerCommand(
+        "Unjam",
+        Commands.startEnd(
+            () -> {
+              intakeWheels.setVelocity(0.5);
+              endEffectorWheels.setVelocity(-0.5);
+            },
+            () -> {
+              intakeWheels.setVelocity(0);
+              endEffectorWheels.setVelocity(0);
+            }));
+
     NamedCommands.registerCommand("Test", new PrintCommand("TESTING AUTO COMMAND"));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -287,7 +299,7 @@ public class RobotContainer {
         .leftBumper()
         .whileTrue(
             controllerState.runManualSetpoint(
-                () -> -opCon.getLeftY() * 0.01, () -> opCon.getRightX() * 0.01));
+                () -> -opCon.getLeftY() * 0.01, () -> opCon.getRightX() * 0.1));
 
     // When the right bumper is pressed, go to Intake setpoint
     opCon

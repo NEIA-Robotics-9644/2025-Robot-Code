@@ -9,6 +9,7 @@ public class SparkMaxUtil {
 
   public static void configureMotor(SparkMax motor, SparkMaxConfig config) {
 
-    motor.configureAsync(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    motor.configureAsync(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 }

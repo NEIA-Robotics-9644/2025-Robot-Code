@@ -17,9 +17,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "J to Left Station"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "J to Left Station"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Unjam"
+                }
+              }
+            ]
           }
         },
         {
@@ -48,9 +61,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "L to Left Station"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "L to Left Station"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Unjam"
+                }
+              }
+            ]
           }
         },
         {

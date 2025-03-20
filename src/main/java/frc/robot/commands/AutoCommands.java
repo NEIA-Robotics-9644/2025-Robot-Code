@@ -52,9 +52,9 @@ public class AutoCommands {
   public static Command autoScore(
       ReefSide side, Drive drive, EndEffectorSubsystem endEffector, ControllerState conState) {
 
-    var delayUntilAutoAlign = 1;
-    var delayUntilScore = 0.5;
-    var scoreDuration = 0.25;
+    var delayUntilAutoAlign = 1 - 0.4;
+    var delayUntilScore = 0.65;
+    var scoreDuration = 0.28;
 
     return conState
         .setSetpoint(conState.L4)
@@ -63,7 +63,7 @@ public class AutoCommands {
                 .andThen(
                     DriveCommands.joystickApproach(
                             drive,
-                            () -> 0.5,
+                            () -> 0.50,
                             () -> FieldConstants.getNearestReefBranch(drive.getPose(), side))
                         .withTimeout(delayUntilScore + scoreDuration)
                         .alongWith(
