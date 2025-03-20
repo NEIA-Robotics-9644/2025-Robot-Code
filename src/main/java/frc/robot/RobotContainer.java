@@ -16,7 +16,6 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.FieldConstants.ReefSide;
+import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -146,6 +146,8 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("L1", controllerState.setSetpoint(controllerState.L1));
 
+    NamedCommands.registerCommand("L3", controllerState.setSetpoint(controllerState.L3));
+
     // NamedCommands.registerCommand(
     //  "L4", new ParallelCommandGroup(elevator.goToHeight(() -> 1), pivot.goToAngle(() -> 0.81)));
     NamedCommands.registerCommand("L4", controllerState.setSetpoint(controllerState.L4));
@@ -164,6 +166,13 @@ public class RobotContainer {
             drive,
             () -> 0.5,
             () -> FieldConstants.getNearestReefBranch(drive.getPose(), ReefSide.LEFT)));
+
+    NamedCommands.registerCommand(
+        "AutoScoreLeft",
+        AutoCommands.autoScore(ReefSide.LEFT, drive, endEffectorWheels, controllerState));
+    NamedCommands.registerCommand(
+        "AutoScoreRight",
+        AutoCommands.autoScore(ReefSide.RIGHT, drive, endEffectorWheels, controllerState));
 
     NamedCommands.registerCommand(
         "Score",
@@ -193,7 +202,7 @@ public class RobotContainer {
 
   private Command joystickApproach(Supplier<Pose2d> approachPose) {
     return DriveCommands.joystickApproach(
-        drive, () -> -driveCon.getHID().getLeftY() * 1, approachPose);
+        drive, () -> -driveCon.getHID().getLeftY() * 0.75, approachPose);
   }
 
   public void onTeleopEnable() {}
@@ -214,16 +223,9 @@ public class RobotContainer {
     Command driveCommand =
         DriveCommands.joystickDrive(
             drive,
-            () ->
-                -(hid.getLeftY() + opHid.getLeftY())
-                    * controllerState.getCurrentDriveSpeed().translationScale,
-            () ->
-                -(hid.getLeftX() + opHid.getLeftX())
-                    * controllerState.getCurrentDriveSpeed().translationScale,
-            () ->
-                (hid.getRightX() + opHid.getRightX())
-                    * controllerState.getCurrentDriveSpeed().rotationScale
-                    * 0.65,
+            () -> -(hid.getLeftY()) * controllerState.getCurrentDriveSpeed().translationScale,
+            () -> -(hid.getLeftX()) * controllerState.getCurrentDriveSpeed().translationScale,
+            () -> (hid.getRightX()) * controllerState.getCurrentDriveSpeed().rotationScale * 0.65,
             () -> driveCon.povRight().getAsBoolean());
 
     driveCommand.addRequirements(drive);
@@ -272,7 +274,7 @@ public class RobotContainer {
                 }));
 
     // When the robot is enabled, go into homing mode
-    new Trigger(DriverStation::isTeleopEnabled).onTrue(elevator.home());
+    // new Trigger(DriverStation::isTeleopEnabled).onTrue(elevator.home());
 
     elevator.setDefaultCommand(
         elevator.goToHeight(() -> controllerState.getCurrentSetpoint().height));
@@ -284,8 +286,8 @@ public class RobotContainer {
     opCon
         .leftBumper()
         .whileTrue(
-            Commands.parallel(
-                elevator.manualControl(opCon::getLeftY), pivot.manualControl(opCon::getRightY)));
+            controllerState.runManualSetpoint(
+                () -> -opCon.getLeftY() * 0.01, () -> opCon.getRightX() * 0.01));
 
     // When the right bumper is pressed, go to Intake setpoint
     opCon

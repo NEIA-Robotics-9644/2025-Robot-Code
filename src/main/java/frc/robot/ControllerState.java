@@ -1,7 +1,9 @@
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import java.util.function.DoubleSupplier;
 
 public class ControllerState {
 
@@ -26,12 +28,13 @@ public class ControllerState {
   }
 
   public ExtenderSetpoint INTAKE = new ExtenderSetpoint(0, 0);
-  public ExtenderSetpoint L1 = new ExtenderSetpoint(0.17, 0);
-  public ExtenderSetpoint L2 = new ExtenderSetpoint(0.286, 0.48);
-  public ExtenderSetpoint L3 = new ExtenderSetpoint(0.55, 0.48);
-  public ExtenderSetpoint L4 = new ExtenderSetpoint(1, 0.81);
-  public ExtenderSetpoint LowDealgify = new ExtenderSetpoint(0.286, 0.52);
-  public ExtenderSetpoint HighDealgify = new ExtenderSetpoint(0.52, 0.52);
+  public ExtenderSetpoint L1 = new ExtenderSetpoint(0.17 * 0.8571428571 + 0.04, 0);
+  public ExtenderSetpoint L2 = new ExtenderSetpoint(0.286 * 0.8571428571 + 0.04, 0.48);
+  public ExtenderSetpoint L3 = new ExtenderSetpoint(0.55 * 0.8571428571 + 0.04, 0.48);
+  public ExtenderSetpoint L4 = new ExtenderSetpoint(0.8571428571 + 0.06, 0.81 - 0.07);
+  public ExtenderSetpoint LowDealgify = new ExtenderSetpoint(0.286 * 0.8571428571, 0.52);
+  public ExtenderSetpoint HighDealgify = new ExtenderSetpoint(0.52 * 0.8571428571, 0.52);
+  public ExtenderSetpoint MANUAL = new ExtenderSetpoint(0, 0);
 
   private ExtenderSetpoint currentSetpoint = INTAKE;
 
@@ -72,6 +75,18 @@ public class ControllerState {
         () -> {
           this.setCurrentSetpoint(setpoint);
           System.out.println("Going to L4");
+        });
+  }
+
+  public Command runManualSetpoint(DoubleSupplier heightChange, DoubleSupplier angleChange) {
+    return Commands.run(
+        () -> {
+          this.setCurrentSetpoint(
+              new ExtenderSetpoint(
+                  MathUtil.clamp(
+                      this.getCurrentSetpoint().height + heightChange.getAsDouble(), 0, 1),
+                  MathUtil.clamp(
+                      this.getCurrentSetpoint().angle + angleChange.getAsDouble(), 0, 1)));
         });
   }
 }

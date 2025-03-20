@@ -31,7 +31,7 @@ public class Elevator extends SubsystemBase {
       new LoggedTunableNumber("Elevator/MaxSpeedDown", 0.23);
 
   private LoggedTunableNumber elevatorMaxHeight =
-      new LoggedTunableNumber("Elevator/MaxHeight", 18.952320098876953);
+      new LoggedTunableNumber("Elevator/MaxHeight", 21.166568756103516);
   private LoggedTunableNumber elevatorHomingMoveSpeed =
       new LoggedTunableNumber("Elevator/HomingMoveSpeed", 0.05);
   private LoggedTunableNumber elevatorMaxAmps =

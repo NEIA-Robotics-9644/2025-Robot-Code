@@ -7,19 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left to J"
+            "pathName": "Right to E"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AutoScoreRight"
+            "name": "AutoScoreLeft"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "J to Left Station"
+            "pathName": "E to Right Station"
           }
         },
         {
@@ -29,38 +29,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Left Station to L"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoScoreRight"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "L to Left Station"
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Left Station to K"
+                  "pathName": "Right Station to C"
                 }
               },
               {
@@ -76,6 +45,37 @@
           "type": "named",
           "data": {
             "name": "AutoScoreLeft"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "C to Right Station"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Right Station to D"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoScoreRight"
           }
         }
       ]
