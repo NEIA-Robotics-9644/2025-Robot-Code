@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right to E"
+            "pathName": "Left to J"
           }
         },
         {
@@ -17,9 +17,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "E to Right Station"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "J to Left Station"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Unjam"
+                }
+              }
+            ]
           }
         },
         {
@@ -29,7 +42,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Right Station to C"
+                  "pathName": "Left Station to L"
                 }
               },
               {
@@ -48,9 +61,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "C to Right Station"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "L to Left Station"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Unjam"
+                }
+              }
+            ]
           }
         },
         {
@@ -60,7 +86,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Right Station to D"
+                  "pathName": "Left Station to K"
                 }
               },
               {

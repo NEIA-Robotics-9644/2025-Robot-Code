@@ -13,9 +13,10 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -206,7 +207,22 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("Test", new PrintCommand("TESTING AUTO COMMAND"));
 
-    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+    autoChooser = new LoggedDashboardChooser<>("Auto Choices");
+
+    autoChooser.addOption("Three Piece Left", new PathPlannerAuto("Three Piece Left", false));
+    autoChooser.addOption(
+        "Three Piece Right", new PathPlannerAuto("Three Piece Right Unmirrored", true));
+
+    autoChooser.addOption("One Piece Left", new PathPlannerAuto("One Piece Left", false));
+    autoChooser.addOption(
+        "One Piece Right", new PathPlannerAuto("One Piece Right Unmirrored", true));
+
+    autoChooser.addOption("Delayed One Piece Left", new PathPlannerAuto("One Piece Left", false));
+    autoChooser.addOption(
+        "Delayed One Piece Right", new PathPlannerAuto("Delayed One Piece Right Unmirrored", true));
+
+    autoChooser.addOption(
+        "Drive Forward", Commands.run(() -> drive.runVelocity(new ChassisSpeeds(-1, 0, 0))));
 
     // Configure the button bindings
     configureButtonBindings();
