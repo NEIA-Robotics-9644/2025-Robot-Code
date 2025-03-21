@@ -222,7 +222,7 @@ public class RobotContainer {
         "Delayed One Piece Right", new PathPlannerAuto("Delayed One Piece Right Unmirrored", true));
 
     autoChooser.addOption(
-        "Drive Forward", Commands.run(() -> drive.runVelocity(new ChassisSpeeds(-1, 0, 0))));
+        "Drive Forward", Commands.run(() -> drive.runVelocity(new ChassisSpeeds(1, 0, 0))));
 
     // Configure the button bindings
     configureButtonBindings();
