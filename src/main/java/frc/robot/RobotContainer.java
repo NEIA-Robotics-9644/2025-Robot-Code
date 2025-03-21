@@ -273,6 +273,30 @@ public class RobotContainer {
     driveCon
         .rightBumper()
         .onTrue(Commands.runOnce(() -> controllerState.increaseDriveSpeedIndex()));
+    driveCon
+        .x()
+        .whileTrue(
+            Commands.runEnd(
+                () -> {
+                  intakeWheels.setVelocity(0.75 * -0.5);
+                  endEffectorWheels.setVelocity(0.75 * 0.5);
+                },
+                () -> {
+                  intakeWheels.setVelocity(0);
+                  endEffectorWheels.setVelocity(0);
+                }));
+    driveCon
+        .y()
+        .whileTrue(
+            Commands.runEnd(
+                () -> {
+                  intakeWheels.setVelocity(0.75 * -0.5);
+                  endEffectorWheels.setVelocity(0.25 * 0.5);
+                },
+                () -> {
+                  intakeWheels.setVelocity(0);
+                  endEffectorWheels.setVelocity(0);
+                }));
 
     // --- Operator Controls ---
     opCon
