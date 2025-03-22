@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.9949795081967214,
-        "y": 6.872079918032787
+        "x": 1.6063524590163931,
+        "y": 7.411526639344262
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7177687922369906,
-        "y": 6.19921832841241
+        "x": 2.3291417430566623,
+        "y": 6.738665049723886
       },
       "isLocked": false,
       "linkedName": "Left Station"
@@ -34,7 +34,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 10.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
