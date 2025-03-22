@@ -222,7 +222,7 @@ public class RobotContainer {
         "Delayed One Piece Right", new PathPlannerAuto("Delayed One Piece Right Unmirrored", true));
 
     autoChooser.addOption(
-        "Drive Forward", Commands.run(() -> drive.runVelocity(new ChassisSpeeds(1, 0, 0))));
+        "Drive Forward", Commands.run(() -> drive.runVelocity(new ChassisSpeeds(-1, 0, 0))));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -273,30 +273,6 @@ public class RobotContainer {
     driveCon
         .rightBumper()
         .onTrue(Commands.runOnce(() -> controllerState.increaseDriveSpeedIndex()));
-    driveCon
-        .x()
-        .whileTrue(
-            Commands.runEnd(
-                () -> {
-                  intakeWheels.setVelocity(0.75 * -0.5);
-                  endEffectorWheels.setVelocity(0.75 * 0.5);
-                },
-                () -> {
-                  intakeWheels.setVelocity(0);
-                  endEffectorWheels.setVelocity(0);
-                }));
-    driveCon
-        .y()
-        .whileTrue(
-            Commands.runEnd(
-                () -> {
-                  intakeWheels.setVelocity(0.75 * -0.5);
-                  endEffectorWheels.setVelocity(0.25 * 0.5);
-                },
-                () -> {
-                  intakeWheels.setVelocity(0);
-                  endEffectorWheels.setVelocity(0);
-                }));
 
     // --- Operator Controls ---
     opCon
