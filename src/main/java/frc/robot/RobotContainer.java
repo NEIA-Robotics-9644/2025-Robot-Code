@@ -170,10 +170,17 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "AutoScoreLeft",
-        AutoCommands.autoScore(ReefSide.LEFT, drive, endEffectorWheels, controllerState));
+        AutoCommands.autoScore(false, ReefSide.LEFT, drive, endEffectorWheels, controllerState));
     NamedCommands.registerCommand(
         "AutoScoreRight",
-        AutoCommands.autoScore(ReefSide.RIGHT, drive, endEffectorWheels, controllerState));
+        AutoCommands.autoScore(false, ReefSide.RIGHT, drive, endEffectorWheels, controllerState));
+
+    NamedCommands.registerCommand(
+        "SlowAutoScoreLeft",
+        AutoCommands.autoScore(true, ReefSide.LEFT, drive, endEffectorWheels, controllerState));
+    NamedCommands.registerCommand(
+        "SlowAutoScoreRight",
+        AutoCommands.autoScore(true, ReefSide.RIGHT, drive, endEffectorWheels, controllerState));
 
     NamedCommands.registerCommand(
         "Score",
@@ -213,6 +220,8 @@ public class RobotContainer {
     autoChooser.addOption(
         "Three Piece Right", new PathPlannerAuto("Three Piece Right Unmirrored", true));
 
+    autoChooser.addOption("Two Piece Left", new PathPlannerAuto("Two Piece Left", false));
+
     autoChooser.addOption("One Piece Left", new PathPlannerAuto("One Piece Left", false));
     autoChooser.addOption(
         "One Piece Right", new PathPlannerAuto("One Piece Right Unmirrored", true));
@@ -230,7 +239,7 @@ public class RobotContainer {
 
   private Command joystickApproach(Supplier<Pose2d> approachPose) {
     return DriveCommands.joystickApproach(
-        drive, () -> -driveCon.getHID().getLeftY() * 0.75, approachPose);
+        drive, () -> -driveCon.getHID().getLeftY() * 0.63, approachPose);
   }
 
   public void onTeleopEnable() {}
