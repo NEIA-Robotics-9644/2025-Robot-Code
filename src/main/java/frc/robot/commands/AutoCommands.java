@@ -67,7 +67,7 @@ public class AutoCommands {
                 .andThen(
                     DriveCommands.joystickApproach(
                             drive,
-                            () -> (slow ? 0.35 : 0.50),
+                            () -> (slow ? 0.3 : 0.50),
                             () -> FieldConstants.getNearestReefBranch(drive.getPose(), side))
                         .withTimeout(delayUntilScore + scoreDuration)
                         .alongWith(
