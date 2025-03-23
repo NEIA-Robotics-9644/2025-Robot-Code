@@ -57,7 +57,7 @@ public class AutoCommands {
       ControllerState conState) {
 
     var delayUntilAutoAlign = 1 - 0.4;
-    var delayUntilScore = 0.65 + (slow ? 1 : 0);
+    var delayUntilScore = 0.65 + (slow ? 1.5 : 0);
     var scoreDuration = 0.28;
 
     return conState
@@ -67,7 +67,7 @@ public class AutoCommands {
                 .andThen(
                     DriveCommands.joystickApproach(
                             drive,
-                            () -> 0.50,
+                            () -> (slow ? 0.35 : 0.50),
                             () -> FieldConstants.getNearestReefBranch(drive.getPose(), side))
                         .withTimeout(delayUntilScore + scoreDuration)
                         .alongWith(
