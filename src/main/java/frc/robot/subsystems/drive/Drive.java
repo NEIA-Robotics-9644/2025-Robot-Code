@@ -168,6 +168,9 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
 
   @Override
   public void periodic() {
+
+    // TODO: Vishnu why is this commented out?
+
     // Optional<EstimatedRobotPose> backVisionEst = vision.getBackEstimatedGlobalPose();
     // backVisionEst.ifPresent(
     //     est -> {
@@ -261,11 +264,10 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
    * @param speeds Speeds in meters/sec
    */
   public void runVelocity(ChassisSpeeds speeds) {
-    // System.out.println("Running velocity");
 
     speeds =
         new ChassisSpeeds(
-            speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, -speeds.omegaRadiansPerSecond);
+            speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
 
     // Calculate module setpoints
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);

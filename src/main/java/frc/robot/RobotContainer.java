@@ -254,7 +254,6 @@ public class RobotContainer {
 
     // --- Driver Controls ---
 
-
     var hid = driveCon.getHID();
     var opHid = opCon.getHID();
     // Default command, normal field-relative drive
