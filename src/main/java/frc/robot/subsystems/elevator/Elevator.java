@@ -50,7 +50,7 @@ public class Elevator extends SubsystemBase {
   private Alert leftMotorOverheatingAlert =
       new Alert(
           "The Left Elevator Motor is over "
-            + MAX_OK_TEMP_CELSIUS
+              + MAX_OK_TEMP_CELSIUS
               + " deg C.  Give the robot time to cool down.",
           Alert.AlertType.kWarning);
 
