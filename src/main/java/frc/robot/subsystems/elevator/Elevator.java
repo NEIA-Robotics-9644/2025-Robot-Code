@@ -31,8 +31,19 @@ public class Elevator extends SubsystemBase {
   private LoggedTunableNumber elevatorMaxSpeedDown =
       new LoggedTunableNumber("Elevator/MaxSpeedDown", 0.23);
 
-  private LoggedTunableNumber elevatorMaxHeight =
-      new LoggedTunableNumber("Elevator/MaxHeight", 21.166568756103516);
+  private LoggedTunableNumber elevatorMaxHeightRadians =
+      new LoggedTunableNumber("Elevator/MaxHeightRadians", 21.166568756103516 + 0.1);
+
+  // How far the elevator (measured from the end effector pivot axis) is off the ground when the
+  // elevator is all the way down
+  private LoggedTunableNumber elevatorDownHeightInches =
+      new LoggedTunableNumber("Elevator/DownHeightInches", 12.5);
+
+  // How far the elevator (measured from the end effector pivot axis) is off the ground when the
+  // elevator is all the way up
+  private LoggedTunableNumber elevatorUpHeightInches =
+      new LoggedTunableNumber("Elevator/UpHeightInches", 80);
+
   private LoggedTunableNumber elevatorHomingMoveSpeed =
       new LoggedTunableNumber("Elevator/HomingMoveSpeed", 0.05);
   private LoggedTunableNumber elevatorMaxAmps =
@@ -63,6 +74,34 @@ public class Elevator extends SubsystemBase {
   private final PIDController feedback = new PIDController(0, 0, 0);
 
   private boolean isHomed = false;
+
+  public double inchesHeightToRadians(double inches) {
+    return (inches - elevatorDownHeightInches.get())
+        / (elevatorUpHeightInches.get() - elevatorDownHeightInches.get())
+        * elevatorMaxHeightRadians.get();
+  }
+
+  public double radiansToInchesHeight(double radians) {
+    return (radians / elevatorMaxHeightRadians.get())
+            * (elevatorUpHeightInches.get() - elevatorDownHeightInches.get())
+        + elevatorDownHeightInches.get();
+  }
+
+  public double normalizedPositionToInchesHeight(double normalizedPosition) {
+    var height =
+        (normalizedPosition * (elevatorUpHeightInches.get() - elevatorDownHeightInches.get()))
+            + elevatorDownHeightInches.get();
+
+    return MathUtil.clamp(height, elevatorDownHeightInches.get(), elevatorUpHeightInches.get());
+  }
+
+  public double inchesHeightToNormalizedPosition(double inches) {
+    var normalizedPosition =
+        (inches - elevatorDownHeightInches.get())
+            / (elevatorUpHeightInches.get() - elevatorDownHeightInches.get());
+
+    return MathUtil.clamp(normalizedPosition, 0, 1);
+  }
 
   public Elevator(ElevatorIO elevatorIO, LimitSwitchSensorIO limitSwitchSensorIO) {
     this.elevatorIO = elevatorIO;
@@ -95,9 +134,9 @@ public class Elevator extends SubsystemBase {
     rightMotorOverheatingAlert.set(elevatorIOInputs.tempCelsiusR > MAX_OK_TEMP_CELSIUS);
   }
 
-  @AutoLogOutput(key = "Elevator/CurrentPositionRads")
-  public double getPosition() {
-    return elevatorIO.getPositionRads();
+  @AutoLogOutput(key = "Elevator/CurrentPositionInches")
+  public double getHeightInches() {
+    return radiansToInchesHeight(elevatorIO.getPositionRads());
   }
 
   public void setVelocity(double normalizedVelocity) {
@@ -121,24 +160,20 @@ public class Elevator extends SubsystemBase {
 
   /**
    * Runs the pid loop which moves the elevator to the right height. Don't end the command
-   * prematurely
+   * prematurely The height in inches is measured from the ground to the end effector pivot axis
    */
-  public Command goToHeight(DoubleSupplier normalizedHeight) {
+  public Command goToHeight(DoubleSupplier heightInches) {
 
     var command =
         Commands.runEnd(
                 () -> {
-                  Logger.recordOutput(
-                      "Elevator/TargetPositionRads",
-                      normalizedHeight.getAsDouble() * elevatorMaxHeight.get());
-                  Logger.recordOutput(
-                      "Elevator/TargetPositionNormalized", normalizedHeight.getAsDouble());
+                  Logger.recordOutput("Elevator/TargetPositionInches", heightInches.getAsDouble());
                   feedback.setPID(elevatorP.get(), elevatorI.get(), elevatorD.get());
 
                   var output =
                       feedback.calculate(
                               elevatorIO.getPositionRads(),
-                              normalizedHeight.getAsDouble() * elevatorMaxHeight.get())
+                              this.inchesHeightToRadians(heightInches.getAsDouble()))
                           + elevatorG.get();
 
                   if (output > 0) {

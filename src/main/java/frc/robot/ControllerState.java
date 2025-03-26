@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.subsystems.elevator.Elevator;
 import java.util.function.DoubleSupplier;
 
 public class ControllerState {
@@ -11,8 +12,8 @@ public class ControllerState {
     public double height;
     public double angle;
 
-    public ExtenderSetpoint(double heightNormalized, double angleRads) {
-      this.height = heightNormalized;
+    public ExtenderSetpoint(double heightInches, double angleRads) {
+      this.height = heightInches;
       this.angle = angleRads;
     }
   }
@@ -27,14 +28,13 @@ public class ControllerState {
     }
   }
 
-  public ExtenderSetpoint INTAKE = new ExtenderSetpoint(0, 0);
-  public ExtenderSetpoint L1 = new ExtenderSetpoint(2.449 / 21, 0.47);
-  public ExtenderSetpoint L2 = new ExtenderSetpoint(0.286 * 0.8571428571 + 0.04, 0.48);
-  public ExtenderSetpoint L3 = new ExtenderSetpoint(0.55 * 0.8571428571 + 0.04, 0.48);
-  public ExtenderSetpoint L4 =
-      new ExtenderSetpoint(0.8571428571 + 0.06 - 0.027, 0.81 - 0.07 + 0.07);
-  public ExtenderSetpoint LowDealgify = new ExtenderSetpoint(0.225, 0.84);
-  public ExtenderSetpoint HighDealgify = new ExtenderSetpoint(0.4, 0.84);
+  public ExtenderSetpoint INTAKE = new ExtenderSetpoint(12.5, 0);
+  public ExtenderSetpoint L1 = new ExtenderSetpoint(25, 0.47);
+  public ExtenderSetpoint L2 = new ExtenderSetpoint(35, 0.48);
+  public ExtenderSetpoint L3 = new ExtenderSetpoint(45, 0.48);
+  public ExtenderSetpoint L4 = new ExtenderSetpoint(75, 0.81 - 0.07 + 0.07);
+  public ExtenderSetpoint LowDealgify = new ExtenderSetpoint(24, 0.84);
+  public ExtenderSetpoint HighDealgify = new ExtenderSetpoint(25, 0.84);
 
   private ExtenderSetpoint currentSetpoint = INTAKE;
 
@@ -78,13 +78,15 @@ public class ControllerState {
         });
   }
 
-  public Command runManualSetpoint(DoubleSupplier heightChange, DoubleSupplier angleChange) {
+  public Command runManualSetpoint(
+      Elevator elevator, DoubleSupplier heightChange, DoubleSupplier angleChange) {
     return Commands.run(
         () -> {
           this.setCurrentSetpoint(
               new ExtenderSetpoint(
-                  MathUtil.clamp(
-                      this.getCurrentSetpoint().height + heightChange.getAsDouble(), 0, 1),
+                  elevator.normalizedPositionToInchesHeight(
+                      elevator.inchesHeightToNormalizedPosition(this.getCurrentSetpoint().height)
+                          + heightChange.getAsDouble()),
                   MathUtil.clamp(
                       this.getCurrentSetpoint().angle + angleChange.getAsDouble(), 0, 1)));
         });

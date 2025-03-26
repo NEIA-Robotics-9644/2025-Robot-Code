@@ -348,7 +348,7 @@ public class RobotContainer {
         .leftBumper()
         .whileTrue(
             controllerState.runManualSetpoint(
-                () -> -opCon.getLeftY() * 0.01, () -> opCon.getRightX() * 0.1));
+                elevator, () -> -opCon.getLeftY() * 0.01, () -> opCon.getRightX() * 0.03));
 
     // When the right bumper is pressed, go to Intake setpoint
     opCon
