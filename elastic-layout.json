@@ -33,62 +33,55 @@
             }
           },
           {
-            "title": "Elevator Mode",
-            "x": 640.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/AdvantageKit/ElevatorExtender/Mode",
-              "period": 0.06,
-              "data_type": "string",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "CurrentHeight",
-            "x": 640.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/AdvantageKit/ElevatorExtender/CurrentHeight",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "TargetHeight",
-            "x": 768.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/AdvantageKit/ElevatorExtender/TargetHeight",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Limit Switch Triggered",
-            "x": 640.0,
+            "title": "Right",
+            "x": 128.0,
             "y": 256.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Boolean Box",
+            "width": 384.0,
+            "height": 384.0,
+            "type": "Camera Stream",
             "properties": {
-              "topic": "/AdvantageKit/LimitSwitch/SensorHit",
+              "topic": "/CameraPublisher/photonvision-front_Port_1182_Output_MJPEG_Server",
               "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "Left",
+            "x": 512.0,
+            "y": 256.0,
+            "width": 384.0,
+            "height": 384.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/photonvision-back_Port_1182_Output_MJPEG_Server",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "Left Temp C",
+            "x": 1024.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/ElevatorMotors/TempCelsiusL",
+              "period": 0.06,
+              "data_type": "double"
+            }
+          },
+          {
+            "title": "Right Temp C",
+            "x": 1152.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/ElevatorMotors/TempCelsiusR",
+              "period": 0.06,
+              "data_type": "double"
             }
           }
         ]

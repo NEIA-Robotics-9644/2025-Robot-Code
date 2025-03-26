@@ -2,6 +2,7 @@ package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -36,6 +37,22 @@ public class Elevator extends SubsystemBase {
       new LoggedTunableNumber("Elevator/HomingMoveSpeed", 0.05);
   private LoggedTunableNumber elevatorMaxAmps =
       new LoggedTunableNumber("Elevator/MaxAmpsPerMotor", 80);
+
+  private static final double MAX_OK_TEMP_CELSIUS = 90.0; // degrees Celsius
+
+  private Alert rightMotorOverheatingAlert =
+      new Alert(
+          "The Right Elevator Motor is over "
+              + MAX_OK_TEMP_CELSIUS
+              + " deg C.  Give the robot time to cool down.",
+          Alert.AlertType.kWarning);
+
+  private Alert leftMotorOverheatingAlert =
+      new Alert(
+          "The Left Elevator Motor is over "
+            + MAX_OK_TEMP_CELSIUS
+              + " deg C.  Give the robot time to cool down.",
+          Alert.AlertType.kWarning);
 
   private final ElevatorIO elevatorIO;
   private final ElevatorIOInputsAutoLogged elevatorIOInputs = new ElevatorIOInputsAutoLogged();
@@ -73,6 +90,9 @@ public class Elevator extends SubsystemBase {
 
     Logger.recordOutput("Elevator/CurrentCommand", loggedName);
     Logger.recordOutput("Elevator/Homed", isHomed);
+
+    leftMotorOverheatingAlert.set(elevatorIOInputs.tempCelsiusL > MAX_OK_TEMP_CELSIUS);
+    rightMotorOverheatingAlert.set(elevatorIOInputs.tempCelsiusR > MAX_OK_TEMP_CELSIUS);
   }
 
   @AutoLogOutput(key = "Elevator/CurrentPositionRads")
