@@ -4,17 +4,18 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.pivot.Pivot;
 import java.util.function.DoubleSupplier;
 
 public class ControllerState {
 
   public class ExtenderSetpoint {
-    public double height;
-    public double angle;
+    public double inchesFromGround;
+    public double degreesFromVertical;
 
-    public ExtenderSetpoint(double heightInches, double angleRads) {
-      this.height = heightInches;
-      this.angle = angleRads;
+    public ExtenderSetpoint(double inchesFromGround, double degreesFromVertical) {
+      this.inchesFromGround = inchesFromGround;
+      this.degreesFromVertical = degreesFromVertical;
     }
   }
 
@@ -79,16 +80,19 @@ public class ControllerState {
   }
 
   public Command runManualSetpoint(
-      Elevator elevator, DoubleSupplier heightChange, DoubleSupplier angleChange) {
+      Elevator elevator, Pivot pivot, DoubleSupplier heightChange, DoubleSupplier angleChange) {
     return Commands.run(
         () -> {
           this.setCurrentSetpoint(
               new ExtenderSetpoint(
-                  elevator.normalizedPositionToInchesHeight(
-                      elevator.inchesHeightToNormalizedPosition(this.getCurrentSetpoint().height)
-                          + heightChange.getAsDouble()),
                   MathUtil.clamp(
-                      this.getCurrentSetpoint().angle + angleChange.getAsDouble(), 0, 1)));
+                      this.getCurrentSetpoint().inchesFromGround + heightChange.getAsDouble(),
+                      elevator.getMinInchesFromGround(),
+                      elevator.getMaxInchesFromGround()),
+                  MathUtil.clamp(
+                      this.getCurrentSetpoint().degreesFromVertical + angleChange.getAsDouble(),
+                      pivot.getMinDegreesFromVertical(),
+                      pivot.getMaxDegreesFromVertical())));
         });
   }
 }

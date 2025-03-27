@@ -338,9 +338,10 @@ public class RobotContainer {
     // new Trigger(DriverStation::isTeleopEnabled).onTrue(elevator.home());
 
     elevator.setDefaultCommand(
-        elevator.goToHeight(() -> controllerState.getCurrentSetpoint().height));
+        elevator.goToHeight(() -> controllerState.getCurrentSetpoint().inchesFromGround));
 
-    pivot.setDefaultCommand(pivot.goToAngle(() -> controllerState.getCurrentSetpoint().angle));
+    pivot.setDefaultCommand(
+        pivot.goToAngle(() -> controllerState.getCurrentSetpoint().degreesFromVertical));
 
     // When the left bumper is held, manually control the elevator and pivot with the joysticks
 
@@ -348,7 +349,7 @@ public class RobotContainer {
         .leftBumper()
         .whileTrue(
             controllerState.runManualSetpoint(
-                elevator, () -> -opCon.getLeftY() * 0.01, () -> opCon.getRightX() * 0.03));
+                elevator, pivot, () -> -opCon.getLeftY() * 1, () -> opCon.getRightX() * 1));
 
     // When the right bumper is pressed, go to Intake setpoint
     opCon
@@ -388,17 +389,23 @@ public class RobotContainer {
 
     opCon
         .povUp()
-        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().height += 0.01));
+        .onTrue(
+            Commands.runOnce(() -> controllerState.getCurrentSetpoint().inchesFromGround += 0.01));
     opCon
         .povDown()
-        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().height -= 0.01));
+        .onTrue(
+            Commands.runOnce(() -> controllerState.getCurrentSetpoint().inchesFromGround -= 0.01));
 
     opCon
         .povLeft()
-        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().angle -= 0.01));
+        .onTrue(
+            Commands.runOnce(
+                () -> controllerState.getCurrentSetpoint().degreesFromVertical -= 0.01));
     opCon
         .povRight()
-        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().angle += 0.01));
+        .onTrue(
+            Commands.runOnce(
+                () -> controllerState.getCurrentSetpoint().degreesFromVertical += 0.01));
   }
 
   /**

@@ -20,7 +20,8 @@ public class Pivot extends SubsystemBase {
   private LoggedTunableNumber kI = new LoggedTunableNumber("Pivot/I", 0.0);
   private LoggedTunableNumber kD = new LoggedTunableNumber("Pivot/D", 0.0);
 
-  private LoggedTunableNumber kAngle = new LoggedTunableNumber("Pivot/AngleGain", 0.0);
+  private LoggedTunableNumber degreeAngleWhenUp =
+      new LoggedTunableNumber("Pivot/DegreeAngleWhenUp", 10.0);
 
   private LoggedTunableNumber angleOffsetRads =
       new LoggedTunableNumber("Pivot/AngleOffsetRads", 2.34);
@@ -37,6 +38,22 @@ public class Pivot extends SubsystemBase {
 
   public Pivot(PivotIO io) {
     this.io = io;
+  }
+
+  public double degreesFromVerticalToRadians(double degrees) {
+    return Math.toRadians(degrees - degreeAngleWhenUp.get());
+  }
+
+  public double radiansToDegreesFromVertical(double radians) {
+    return Math.toDegrees(radians) + degreeAngleWhenUp.get();
+  }
+
+  public double getMaxDegreesFromVertical() {
+    return radiansToDegreesFromVertical(maxAngleRads.get());
+  }
+
+  public double getMinDegreesFromVertical() {
+    return degreeAngleWhenUp.get();
   }
 
   public void periodic() {
@@ -61,20 +78,26 @@ public class Pivot extends SubsystemBase {
     return io.getPositionRads();
   }
 
-  public Command goToAngle(DoubleSupplier angleRad) {
+  @AutoLogOutput(key = "Pivot/CurrentAngleDegreesFromVertical")
+  public double getPositionDegreesFromVertical() {
+    return radiansToDegreesFromVertical(getPositionRads());
+  }
+
+  public Command goToAngle(DoubleSupplier degreesFromVertical) {
     return Commands.run(
             () -> {
-              Logger.recordOutput("Pivot/TargetAngleRads", angleRad.getAsDouble());
+              Logger.recordOutput(
+                  "Pivot/TargetDegreesFromVertical", degreesFromVertical.getAsDouble());
 
               pid.setPID(kP.get(), kI.get(), kD.get());
 
-              var setpoint = MathUtil.clamp(angleRad.getAsDouble(), 0, maxAngleRads.get());
+              var setpoint =
+                  MathUtil.clamp(
+                      degreesFromVerticalToRadians(degreesFromVertical.getAsDouble()),
+                      0,
+                      maxAngleRads.get());
 
-              // Assuming pivot is zero when vertical, sin will be 0 when vertical and 1 when
-              // horizontal (which is where we need most strength to hold the pivot up)
-              double output =
-                  pid.calculate(getPositionRads(), setpoint)
-                      + Math.sin(angleRad.getAsDouble()) * kAngle.get();
+              double output = pid.calculate(getPositionRads(), setpoint);
               output = MathUtil.clamp(output, -maxSpeedUp.get(), maxSpeedDown.get());
 
               setVelocity(output);
@@ -82,15 +105,5 @@ public class Pivot extends SubsystemBase {
             this)
         .withInterruptBehavior(InterruptionBehavior.kCancelSelf)
         .withName("Pivot Go To Angle");
-  }
-
-  public Command manualControl(DoubleSupplier speed) {
-    return Commands.run(
-            () -> {
-              setVelocity(speed.getAsDouble());
-            },
-            this)
-        .withName("Pivot Manual Control")
-        .withInterruptBehavior(InterruptionBehavior.kCancelSelf);
   }
 }
