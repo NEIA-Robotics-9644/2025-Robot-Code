@@ -3,6 +3,11 @@
 
 import math
 import pygame
+import tkinter as tk
+
+import tkinter as tk
+from tkinter import filedialog
+
 
 
 
@@ -95,7 +100,9 @@ def get_constraints(normalized_height):
 
 def main():
 
-    load_constraints("constraints.txt")
+    filename = filedialog.askopenfilename(title="Select constraints file", filetypes=[("Text files", "*.txt")])
+
+    load_constraints(filename)
 
 
     pygame.init()

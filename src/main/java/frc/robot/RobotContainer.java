@@ -49,6 +49,7 @@ import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOSparkMax;
 import frc.robot.subsystems.vision.*;
+import frc.robot.util.ExtenderConstraints;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -340,8 +341,14 @@ public class RobotContainer {
     elevator.setDefaultCommand(
         elevator.goToHeight(() -> controllerState.getCurrentSetpoint().inchesFromGround));
 
+    var extenderConstraints =
+        new ExtenderConstraints("constraints.txt", elevator.getMaxInchesFromGround());
+
     pivot.setDefaultCommand(
-        pivot.goToAngle(() -> controllerState.getCurrentSetpoint().degreesFromVertical));
+        pivot.pivotConstraintsCommand(
+            elevator::getHeightInches,
+            extenderConstraints,
+            () -> controllerState.getCurrentSetpoint().degreesFromVertical));
 
     // When the left bumper is held, manually control the elevator and pivot with the joysticks
 

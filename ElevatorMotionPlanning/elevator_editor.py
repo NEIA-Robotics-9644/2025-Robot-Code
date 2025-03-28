@@ -1,4 +1,6 @@
 import pygame
+import tkinter as tk
+from tkinter import filedialog
 
 class Constraint:
     angle_degs = 0
@@ -80,6 +82,8 @@ min_constraints = []
 
 constraint_number = 50 
 
+height_of_highest_constraint_inches = 80
+
 for i in range(constraint_number):
     max_constraints.append(Constraint(0))
     min_constraints.append(Constraint(0.4))
@@ -144,7 +148,9 @@ def main():
 
     tf = Transform(screen_width, screen_height, 50, 50)
 
-    load_constraints("constraints.txt")
+    file_path = filedialog.askopenfilename()
+
+    load_constraints(file_path)
 
     pygame.init()
     screen = pygame.display.set_mode(screen_size)
@@ -194,12 +200,28 @@ def main():
         for selectable in selectables:
             selectable.update_constrant(SCALE)
             selectable.draw(screen, tf)
+
+            
+        # Draw the height markings
+        
+        num_markings = 16
+        
+        for i in range(num_markings + 1):
+            y = i / num_markings
+            tf.draw_rect(screen, (255, 255, 255), -0.005, y, 0.01, 0.005)
+            font = pygame.font.Font(None, 14)
+            text = font.render(str(round(y * height_of_highest_constraint_inches)) + " in", True, (255, 255, 255))
+            screen_x, screen_y = tf.elevator_to_screen(-0.01, y)
+
+            text_rect = text.get_rect(center=(screen_x - 300, screen_y))
+            screen.blit(text, text_rect)
+            
        
         pygame.display.flip()
 
     pygame.quit()
 
-    save_constraints(min_constraints, max_constraints, "constraints.txt")
+    save_constraints(min_constraints, max_constraints, file_path)
 
 if __name__ == "__main__":
     main()

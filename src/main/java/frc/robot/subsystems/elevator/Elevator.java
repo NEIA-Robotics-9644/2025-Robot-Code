@@ -103,10 +103,6 @@ public class Elevator extends SubsystemBase {
     return MathUtil.clamp(normalizedPosition, 0, 1);
   }
 
-  public double maxInchesFromGround() {
-    return normalizedPositionToInchesHeight(1);
-  }
-
   public Elevator(ElevatorIO elevatorIO, LimitSwitchSensorIO limitSwitchSensorIO) {
     this.elevatorIO = elevatorIO;
     this.limitSwitchSensorIO = limitSwitchSensorIO;
