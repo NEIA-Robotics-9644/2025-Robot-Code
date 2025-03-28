@@ -17,9 +17,10 @@ public class Pivot extends SubsystemBase {
   private LoggedTunableNumber maxAmps = new LoggedTunableNumber("Pivot/Max Amps", 40.0);
   private LoggedTunableNumber maxSpeedUp = new LoggedTunableNumber("Pivot/Max Speed Up", 1.0);
   private LoggedTunableNumber maxSpeedDown = new LoggedTunableNumber("Pivot/Max Speed Down", 1);
-  private LoggedTunableNumber kP = new LoggedTunableNumber("Pivot/P", 0.5);
+  private LoggedTunableNumber kP = new LoggedTunableNumber("Pivot/P", 0.6);
   private LoggedTunableNumber kI = new LoggedTunableNumber("Pivot/I", 0.0);
   private LoggedTunableNumber kD = new LoggedTunableNumber("Pivot/D", 0.0);
+  private LoggedTunableNumber kG = new LoggedTunableNumber("Pivot/G", -0.024);
 
   private LoggedTunableNumber degreeAngleWhenUp =
       new LoggedTunableNumber("Pivot/DegreeAngleWhenUp", 10.0);
@@ -92,7 +93,7 @@ public class Pivot extends SubsystemBase {
     var setpoint =
         MathUtil.clamp(degreesFromVerticalToRadians(degreesFromVertical), 0, maxAngleRads.get());
 
-    double output = pid.calculate(getPositionRads(), setpoint);
+    double output = pid.calculate(getPositionRads(), setpoint) + kG.get();
     output = MathUtil.clamp(output, -maxSpeedUp.get(), maxSpeedDown.get());
 
     setVelocity(output);

@@ -49,7 +49,6 @@ class Elevator:
         # Get the min and max angles for the given height
         min_angle, max_angle = get_constraints(self.height)
 
-        print("Min angle: ", min_angle, "Max angle: ", max_angle)
         
         # Clamp the angle setpoint to the min and max angles
         if target_angle < min_angle:

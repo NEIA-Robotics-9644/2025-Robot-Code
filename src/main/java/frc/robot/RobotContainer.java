@@ -17,6 +17,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -27,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.FieldConstants.ReefSide;
 import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.ExtenderCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -338,19 +340,16 @@ public class RobotContainer {
     // When the robot is enabled, go into homing mode
     // new Trigger(DriverStation::isTeleopEnabled).onTrue(elevator.home());
 
-    elevator.setDefaultCommand(
-        elevator.goToHeight(() -> controllerState.getCurrentSetpoint().inchesFromGround));
+    var extenderConstraints = new ExtenderConstraints("constraints.txt", 80);
 
-    var extenderConstraints =
-        new ExtenderConstraints("constraints.txt", elevator.getMaxInchesFromGround());
-
-    pivot.setDefaultCommand(
-        pivot.pivotConstraintsCommand(
-            elevator::getHeightInches,
-            extenderConstraints,
-            () -> controllerState.getCurrentSetpoint().degreesFromVertical));
-
-    // When the left bumper is held, manually control the elevator and pivot with the joysticks
+    new Trigger(DriverStation::isEnabled)
+        .onTrue(
+            ExtenderCommands.goToHeightThenPivot(
+                elevator,
+                pivot,
+                extenderConstraints,
+                () -> controllerState.getCurrentSetpoint().inchesFromGround,
+                () -> controllerState.getCurrentSetpoint().degreesFromVertical));
 
     opCon
         .leftBumper()
@@ -396,23 +395,19 @@ public class RobotContainer {
 
     opCon
         .povUp()
-        .onTrue(
-            Commands.runOnce(() -> controllerState.getCurrentSetpoint().inchesFromGround += 0.01));
+        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().inchesFromGround += 1));
     opCon
         .povDown()
-        .onTrue(
-            Commands.runOnce(() -> controllerState.getCurrentSetpoint().inchesFromGround -= 0.01));
+        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().inchesFromGround -= 1));
 
     opCon
         .povLeft()
         .onTrue(
-            Commands.runOnce(
-                () -> controllerState.getCurrentSetpoint().degreesFromVertical -= 0.01));
+            Commands.runOnce(() -> controllerState.getCurrentSetpoint().degreesFromVertical -= 1));
     opCon
         .povRight()
         .onTrue(
-            Commands.runOnce(
-                () -> controllerState.getCurrentSetpoint().degreesFromVertical += 0.01));
+            Commands.runOnce(() -> controllerState.getCurrentSetpoint().degreesFromVertical += 1));
   }
 
   /**

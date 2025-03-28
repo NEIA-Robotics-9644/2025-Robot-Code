@@ -169,11 +169,8 @@ def main():
 
                 e_x, e_y = tf.screen_to_elevator(x, y)
 
-                print("Mouse clicked at: ", e_x, e_y)
                 for selectable in selectables:
-                    print("Checking if inside: ", selectable.x, selectable.y, selectable.radius)
                     if selectable.is_inside(e_x, e_y):
-                        print("Selected")
                         selected = selectable
                         break
                     
@@ -185,7 +182,7 @@ def main():
                     x, y = event.pos
                     e_x, e_y = tf.screen_to_elevator(x, y)
                     selected.set_position(e_x, selected.y)
-                    save_constraints(min_constraints, max_constraints, "constraints.txt")
+                    save_constraints(min_constraints, max_constraints, file_path)
                     
             if event.type == pygame.KEYDOWN:
                if event.key == pygame.K_ESCAPE:

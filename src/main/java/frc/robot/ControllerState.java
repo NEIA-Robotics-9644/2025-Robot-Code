@@ -29,11 +29,11 @@ public class ControllerState {
     }
   }
 
-  public ExtenderSetpoint INTAKE = new ExtenderSetpoint(12.5, 0);
-  public ExtenderSetpoint L1 = new ExtenderSetpoint(25, 0.47);
-  public ExtenderSetpoint L2 = new ExtenderSetpoint(35, 0.48);
-  public ExtenderSetpoint L3 = new ExtenderSetpoint(45, 0.48);
-  public ExtenderSetpoint L4 = new ExtenderSetpoint(75, 0.81 - 0.07 + 0.07);
+  public ExtenderSetpoint INTAKE = new ExtenderSetpoint(12.5, 10);
+  public ExtenderSetpoint L1 = new ExtenderSetpoint(15, 10);
+  public ExtenderSetpoint L2 = new ExtenderSetpoint(25, 30);
+  public ExtenderSetpoint L3 = new ExtenderSetpoint(45, 30);
+  public ExtenderSetpoint L4 = new ExtenderSetpoint(75, 70);
   public ExtenderSetpoint LowDealgify = new ExtenderSetpoint(24, 0.84);
   public ExtenderSetpoint HighDealgify = new ExtenderSetpoint(25, 0.84);
 
@@ -75,7 +75,6 @@ public class ControllerState {
     return Commands.runOnce(
         () -> {
           this.setCurrentSetpoint(setpoint);
-          System.out.println("Going to L4");
         });
   }
 
