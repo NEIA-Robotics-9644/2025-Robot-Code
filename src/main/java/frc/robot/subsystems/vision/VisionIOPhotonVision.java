@@ -58,6 +58,8 @@ public class VisionIOPhotonVision implements VisionIO {
         inputs.latestTargetObservation = new TargetObservation(new Rotation2d(), new Rotation2d());
       }
 
+      // Maybe do it like this: result.getBestTarget().bestCameraToTarget
+
       // Add pose observation
       if (result.multitagResult.isPresent()) { // Multitag result
         var multitagResult = result.multitagResult.get();

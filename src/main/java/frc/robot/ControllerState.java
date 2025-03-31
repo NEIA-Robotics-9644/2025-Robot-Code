@@ -30,9 +30,9 @@ public class ControllerState {
   }
 
   public ExtenderSetpoint INTAKE = new ExtenderSetpoint(12.5, 10);
-  public ExtenderSetpoint L1 = new ExtenderSetpoint(15, 10);
-  public ExtenderSetpoint L2 = new ExtenderSetpoint(25, 30);
-  public ExtenderSetpoint L3 = new ExtenderSetpoint(45, 30);
+  public ExtenderSetpoint L1 = new ExtenderSetpoint(20, 10);
+  public ExtenderSetpoint L2 = new ExtenderSetpoint(26, 30);
+  public ExtenderSetpoint L3 = new ExtenderSetpoint(44, 30);
   public ExtenderSetpoint L4 = new ExtenderSetpoint(75, 70);
   public ExtenderSetpoint LowDealgify = new ExtenderSetpoint(24, 0.84);
   public ExtenderSetpoint HighDealgify = new ExtenderSetpoint(25, 0.84);

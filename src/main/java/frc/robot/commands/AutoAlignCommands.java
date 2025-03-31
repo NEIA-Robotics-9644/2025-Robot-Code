@@ -4,12 +4,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.controllers.AutoAlignController;
 import java.util.List;
-import org.littletonrobotics.junction.Logger;
 
 public class AutoAlignCommands {
 
@@ -107,40 +102,4 @@ public class AutoAlignCommands {
   }
 
   private AutoAlignCommands() {}
-
-  public static Command closestReefAlign(Drive drive) {
-
-    final List<Pose2d> targetPoses;
-
-    targetPoses = AutoAlignCommands.getTargetPoses();
-
-    // Log the poses
-    for (int i = 0; i < targetPoses.size(); i++) {
-      var pose = targetPoses.get(i);
-      Logger.recordOutput("Pose " + i, pose);
-    }
-
-    return new Command() {
-
-      AutoAlignController alignController;
-
-      @Override
-      public void initialize() {
-
-        alignController =
-            new AutoAlignController(
-                findClosestPose(drive.getPose(), targetPoses), null, false, drive);
-      }
-
-      @Override
-      public void execute() {
-
-        ChassisSpeeds speeds = alignController.update();
-        ChassisSpeeds invertedSpeeds =
-            new ChassisSpeeds(
-                speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
-        drive.runVelocity(invertedSpeeds);
-      }
-    };
-  }
 }

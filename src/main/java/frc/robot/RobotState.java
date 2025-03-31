@@ -9,13 +9,10 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
-import frc.robot.subsystems.poseEstimator.Vision;
 
 /** Tracks the robot's position, orientation, and field-relative motion. */
 public class RobotState {
   private static RobotState instance = null;
-
-  public Vision vision = new Vision();
 
   // Current pose of the robot on the field
   private Pose2d currentPose = new Pose2d();

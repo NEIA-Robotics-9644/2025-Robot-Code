@@ -27,12 +27,12 @@ public class Elevator extends SubsystemBase {
   private LoggedTunableNumber elevatorG = new LoggedTunableNumber("Elevator/G", 0.1);
 
   private LoggedTunableNumber elevatorMaxSpeedUp =
-      new LoggedTunableNumber("Elevator/MaxSpeedUp", 1);
+      new LoggedTunableNumber("Elevator/MaxSpeedUp", 0.5);
   private LoggedTunableNumber elevatorMaxSpeedDown =
       new LoggedTunableNumber("Elevator/MaxSpeedDown", 0.23);
 
   private LoggedTunableNumber elevatorMaxHeightRadians =
-      new LoggedTunableNumber("Elevator/MaxHeightRadians", 21.166568756103516 + 0.1);
+      new LoggedTunableNumber("Elevator/MaxHeightRadians", 21.166568756103516);
 
   // How far the elevator (measured from the end effector pivot axis) is off the ground when the
   // elevator is all the way down
