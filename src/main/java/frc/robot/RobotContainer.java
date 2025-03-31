@@ -107,7 +107,9 @@ public class RobotContainer {
                   new VisionIOPhotonVisionSim(
                       VisionConstants.camera0Name, VisionConstants.robotToCamera0, drive::getPose),
                   new VisionIOPhotonVisionSim(
-                      VisionConstants.camera1Name, VisionConstants.robotToCamera1, drive::getPose)
+                      VisionConstants.camera1Name, VisionConstants.robotToCamera1, drive::getPose),
+                  new VisionIOPhotonVisionSim(
+                      VisionConstants.camera2Name, VisionConstants.robotToCamera2, drive::getPose)
                 });
 
         endEffectorWheels = new EndEffectorSubsystem(new FlywheelIOSim());
@@ -134,7 +136,9 @@ public class RobotContainer {
                   new VisionIOPhotonVision(
                       VisionConstants.camera0Name, VisionConstants.robotToCamera0),
                   new VisionIOPhotonVision(
-                      VisionConstants.camera1Name, VisionConstants.robotToCamera1)
+                      VisionConstants.camera1Name, VisionConstants.robotToCamera1),
+                  new VisionIOPhotonVision(
+                      VisionConstants.camera2Name, VisionConstants.robotToCamera2)
                 });
 
         endEffectorWheels = new EndEffectorSubsystem(new FlywheelIOSparkMax(23));

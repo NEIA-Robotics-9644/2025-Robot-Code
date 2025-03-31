@@ -26,6 +26,7 @@ public class VisionConstants {
   // Camera names, must match names configured on coprocessor
   public static String camera0Name = "camera_back"; // left?
   public static String camera1Name = "camera_front"; // right?
+  public static String camera2Name = "camera_middle"; // middle
 
   // Robot to camera transforms
   // (Not used by Limelight, configure in web UI instead)
@@ -35,6 +36,8 @@ public class VisionConstants {
   public static Transform3d robotToCamera1 =
       new Transform3d(
           0.302, 0.238 - 0.051, 0.155, new Rotation3d(0, Math.toRadians(10), Math.toRadians(-51)));
+  public static Transform3d robotToCamera2 =
+      new Transform3d(7.204, 0, 8.046, new Rotation3d(0, Math.toRadians(10), 0));
 
   // Basic filtering thresholds
   public static double maxAmbiguity = 0.3;
@@ -50,7 +53,9 @@ public class VisionConstants {
   public static double[] cameraStdDevFactors =
       new double[] {
         1.0, // Camera 0
-        1.0 // Camera 1
+        1.0, // Camera 1
+        1,
+        0 // Camera 2
       };
 
   // Multipliers to apply for MegaTag 2 observations

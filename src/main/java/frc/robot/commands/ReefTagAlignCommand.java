@@ -20,9 +20,6 @@ public class ReefTagAlignCommand {
     LoggedTunableNumber rightOffsetInches =
         new LoggedTunableNumber("ReefTagAlign/RightOffsetInches", 12);
 
-
-
-
     return Commands.none();
   }
 }

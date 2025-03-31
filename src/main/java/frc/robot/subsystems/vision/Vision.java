@@ -29,7 +29,6 @@ import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
@@ -66,28 +65,19 @@ public class Vision extends SubsystemBase {
     return inputs[cameraIndex].latestTargetObservation.tx();
   }
 
-
   public Optional<Pose3d> getNearestReefTagPose() {
 
-
     for (int cameraIndex = 0; cameraIndex < io.length; cameraIndex++) {
-
-
 
       for (var observation : inputs[cameraIndex].poseObservations) {
         if (observation.tagCount() == 0) {
           continue;
         }
-
-
       }
     }
 
     return Optional.empty();
-
   }
-
-
 
   @Override
   public void periodic() {
