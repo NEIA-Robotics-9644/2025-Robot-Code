@@ -27,10 +27,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.FieldConstants.ReefSide;
 import frc.robot.commands.AutoCommands;
+import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ExtenderCommands;
 import frc.robot.commands.ReefTagAlignCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.climb.Climb;
+import frc.robot.subsystems.climb.ClimbIOSim;
+import frc.robot.subsystems.climb.ClimbIOSparkMax;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -51,7 +55,11 @@ import frc.robot.subsystems.intake.wheel.IntakeWheelIOSparkMax;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOSparkMax;
-import frc.robot.subsystems.vision.*;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionConstants;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.ExtenderConstraints;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -71,6 +79,7 @@ public class RobotContainer {
   private final EndEffectorSubsystem endEffectorWheels;
   private final Elevator elevator;
   private final Pivot pivot;
+  private final Climb climb;
 
   // Driver controller
   private final CommandXboxController driveCon = new CommandXboxController(0);
@@ -116,6 +125,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim(), new LimitSwitchSensorIOSim());
         pivot = new Pivot(new PivotIOSim());
         intakeWheels = new Intake(new IntakeWheelIOSim(), new CoralSensorIOSim());
+        climb = new Climb(new ClimbIOSim());
         break;
       default:
         // Real robot, instantiate hardware IO implementations
@@ -147,6 +157,7 @@ public class RobotContainer {
                 new ElevatorIOSparkMax(20, 21, false, true),
                 new LimitSwitchSensorIORoboRio(9, true));
         pivot = new Pivot(new PivotIOSparkMax(22));
+        climb = new Climb(new ClimbIOSparkMax(0)); // Set this later
 
         intakeWheels = new Intake(new IntakeWheelIOSparkMax(24, 1, 40), new CoralSensorIOSim());
 
@@ -318,6 +329,10 @@ public class RobotContainer {
     driveCon.a().onTrue(ReefTagAlignCommand.reefTagAlign(drive, vision));
 
     // --- Operator Controls ---
+
+    var oLeftYAxisUp = new Trigger(() -> opCon.getLeftY() > 0.05);
+    oLeftYAxisUp.whileTrue(new ClimbCommand(climb, () -> opCon.getLeftY()));
+
     opCon
         .rightTrigger(0.1)
         .whileTrue(
