@@ -47,7 +47,11 @@ public class VisionIOPhotonVision implements VisionIO {
     // Read new camera observations
     Set<Short> tagIds = new HashSet<>();
     List<PoseObservation> poseObservations = new LinkedList<>();
+
+    inputs.photonPipelineResults.clear();
     for (var result : camera.getAllUnreadResults()) {
+      inputs.photonPipelineResults.add(result);
+
       // Update latest target observation
       if (result.hasTargets()) {
         inputs.latestTargetObservation =
@@ -57,8 +61,6 @@ public class VisionIOPhotonVision implements VisionIO {
       } else {
         inputs.latestTargetObservation = new TargetObservation(new Rotation2d(), new Rotation2d());
       }
-
-      // Maybe do it like this: result.getBestTarget().bestCameraToTarget
 
       // Add pose observation
       if (result.multitagResult.isPresent()) { // Multitag result
