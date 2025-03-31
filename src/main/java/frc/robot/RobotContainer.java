@@ -29,6 +29,7 @@ import frc.robot.FieldConstants.ReefSide;
 import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ExtenderCommands;
+import frc.robot.commands.ReefTagAlignCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -309,6 +310,8 @@ public class RobotContainer {
                   intakeWheels.setVelocity(0);
                   endEffectorWheels.setVelocity(0);
                 }));
+
+    driveCon.a().onTrue(ReefTagAlignCommand.reefTagAlign(drive, vision));
 
     // --- Operator Controls ---
     opCon
