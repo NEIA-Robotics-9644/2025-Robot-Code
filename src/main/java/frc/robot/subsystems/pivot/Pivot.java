@@ -130,7 +130,6 @@ public class Pivot extends SubsystemBase {
                       pivotAngle,
                       constraint.minDegreesFromVertical(),
                       constraint.maxDegreesFromVertical());
-              System.out.println("Clamped angle: " + clampedAngle);
               this.goToAngle(clampedAngle);
             },
             this)

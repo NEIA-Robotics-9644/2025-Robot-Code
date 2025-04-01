@@ -20,27 +20,30 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
+import frc.robot.subsystems.vision.VisionIO.TagObservation;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Vision extends SubsystemBase {
   private final VisionConsumer consumer;
   private final VisionIO[] io;
   private final VisionIOInputsAutoLogged[] inputs;
   private final Alert[] disconnectedAlerts;
+  private final Drive drive;
 
-  public Vision(VisionConsumer consumer, VisionIO... io) {
+  public Vision(VisionConsumer consumer, Drive drive, VisionIO... io) {
+
+    this.drive = drive;
     this.consumer = consumer;
     this.io = io;
 
@@ -68,44 +71,42 @@ public class Vision extends SubsystemBase {
     return inputs[cameraIndex].latestTargetObservation.tx();
   }
 
-  public Optional<Pose2d> getNearestReefTagPose() {
-
-    var photonPipelineResults = new LinkedList<PhotonPipelineResult>();
-
-    for (int cameraIndex = 0; cameraIndex < io.length; cameraIndex++) {
-      for (var result : inputs[cameraIndex].photonPipelineResults) {
-        photonPipelineResults.add(result);
-      }
-    }
+  public Optional<TagObservation> getNearestTagObservation() {
 
     // Find the nearest reef tag
     double nearestDistance = Double.POSITIVE_INFINITY;
+    TagObservation nearestTagObservation = null;
 
-    PhotonTrackedTarget bestTarget = null;
-
-    for (PhotonPipelineResult result : photonPipelineResults) {
-      if (result.hasTargets()) {
-        var target = result.getBestTarget();
-        if (VisionConstants.reefTags.contains(target.fiducialId)) {
+    for (int cameraIndex = 0; cameraIndex < io.length; cameraIndex++) {
+      for (var tagObservation : inputs[cameraIndex].tagObservations) {
+        if (VisionConstants.reefTags.contains(tagObservation.tagId())) {
           var distance =
-              target.bestCameraToTarget.getTranslation().getDistance(Translation3d.kZero);
+              tagObservation.tagOffset().getTranslation().getDistance(Translation2d.kZero);
+
           if (distance < nearestDistance) {
             nearestDistance = distance;
+            nearestTagObservation = tagObservation;
           }
-          bestTarget = target;
         }
       }
     }
 
-    if (bestTarget == null) {
+    if (nearestTagObservation == null) {
       return Optional.empty();
     }
 
-    return Optional.of(
-        new Pose2d(
-            bestTarget.bestCameraToTarget.getTranslation().getX(),
-            bestTarget.bestCameraToTarget.getTranslation().getY(),
-            new Rotation2d(bestTarget.bestCameraToTarget.getRotation().getAngle())));
+    return Optional.of(nearestTagObservation);
+  }
+
+  public Optional<TagObservation> getTagObservation(int tagId) {
+    for (int cameraIndex = 0; cameraIndex < io.length; cameraIndex++) {
+      for (var tagObservation : inputs[cameraIndex].tagObservations) {
+        if (tagObservation.tagId() == tagId) {
+          return Optional.of(tagObservation);
+        }
+      }
+    }
+    return Optional.empty();
   }
 
   @Override
@@ -115,8 +116,24 @@ public class Vision extends SubsystemBase {
       Logger.processInputs("Vision/Camera" + Integer.toString(i), inputs[i]);
     }
 
-    Logger.recordOutput(
-        "Vision/AutoAlign/NearestReefTagPose", getNearestReefTagPose().orElse(null));
+    var reefTagPose = getNearestTagObservation();
+    if (!reefTagPose.isPresent()) {
+      Logger.recordOutput("Vision/AutoAlign/NearestReefTagPose", Pose2d.kZero);
+    } else {
+
+      var drivePose = drive.getPose();
+      var tagOffsetPose = reefTagPose.get();
+      var sumPose =
+          new Pose2d(
+              drivePose
+                  .getTranslation()
+                  .plus(
+                      tagOffsetPose.tagOffset().getTranslation().rotateBy(drivePose.getRotation())),
+              tagOffsetPose.tagOffset().getRotation().plus(drivePose.getRotation()));
+      Logger.recordOutput("Vision/AutoAlign/NearestReefTagPose", sumPose);
+
+      Logger.recordOutput("Vision/AutoAlign/TagOffset", tagOffsetPose);
+    }
 
     // Initialize logging values
     List<Pose3d> allTagPoses = new LinkedList<>();
@@ -127,7 +144,7 @@ public class Vision extends SubsystemBase {
     // Loop over cameras
     for (int cameraIndex = 0; cameraIndex < io.length; cameraIndex++) {
       // Update disconnected alert
-      disconnectedAlerts[cameraIndex].set(!inputs[cameraIndex].connected);
+      disconnectedAlerts[cameraIndex].set(inputs[cameraIndex].connected);
 
       // Initialize logging values
       List<Pose3d> tagPoses = new LinkedList<>();

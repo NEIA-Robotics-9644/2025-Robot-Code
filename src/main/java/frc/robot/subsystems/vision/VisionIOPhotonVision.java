@@ -15,6 +15,7 @@ package frc.robot.subsystems.vision;
 
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -48,9 +49,9 @@ public class VisionIOPhotonVision implements VisionIO {
     Set<Short> tagIds = new HashSet<>();
     List<PoseObservation> poseObservations = new LinkedList<>();
 
-    inputs.photonPipelineResults.clear();
+    List<TagObservation> tagObservations = new LinkedList<>();
+
     for (var result : camera.getAllUnreadResults()) {
-      inputs.photonPipelineResults.add(result);
 
       // Update latest target observation
       if (result.hasTargets()) {
@@ -58,6 +59,20 @@ public class VisionIOPhotonVision implements VisionIO {
             new TargetObservation(
                 Rotation2d.fromDegrees(result.getBestTarget().getYaw()),
                 Rotation2d.fromDegrees(result.getBestTarget().getPitch()));
+
+        // Add tag observations
+        for (var target : result.getTargets()) {
+
+          var tagOffset = this.robotToCamera.plus(target.getBestCameraToTarget());
+
+          tagObservations.add(
+              new TagObservation(
+                  new Pose2d(
+                      tagOffset.getTranslation().getX(),
+                      tagOffset.getTranslation().getY(),
+                      tagOffset.getRotation().toRotation2d()),
+                  target.fiducialId));
+        }
       } else {
         inputs.latestTargetObservation = new TargetObservation(new Rotation2d(), new Rotation2d());
       }
@@ -130,6 +145,12 @@ public class VisionIOPhotonVision implements VisionIO {
     int i = 0;
     for (int id : tagIds) {
       inputs.tagIds[i++] = id;
+    }
+
+    // Save tag observations to inputs object
+    inputs.tagObservations = new TagObservation[tagObservations.size()];
+    for (int j = 0; j < tagObservations.size(); j++) {
+      inputs.tagObservations[j] = tagObservations.get(j);
     }
   }
 }
