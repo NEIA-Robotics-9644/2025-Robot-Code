@@ -285,20 +285,36 @@ public class RobotContainer {
     driveCon
         .rightTrigger(0.5)
         .whileTrue(
-            ReefTagAlignCommand.reefTagAlign(drive, vision, () -> driveCon.getLeftY(), ReefTagAlignCommand.AlignGoal.RIGHT));
+            ReefTagAlignCommand.reefTagAlign(
+                drive, vision, () -> driveCon.getLeftY() * 0.63, ReefTagAlignCommand.AlignGoal.RIGHT));
 
     driveCon
         .leftTrigger(0.5)
         .whileTrue(
-            ReefTagAlignCommand.reefTagAlign(drive, vision, () -> driveCon.getLeftY(), ReefTagAlignCommand.AlignGoal.LEFT));
+            ReefTagAlignCommand.reefTagAlign(
+                drive, vision, () -> driveCon.getLeftY() * 0.63, ReefTagAlignCommand.AlignGoal.LEFT));
+
+    driveCon
+        .y()
+        .whileTrue(
+            ReefTagAlignCommand.reefTagAlign(
+                drive, vision, () -> driveCon.getLeftY() * 0.63, ReefTagAlignCommand.AlignGoal.CENTER));
 
 
-    driveCon.a().whileTrue(ReefTagAlignCommand.reefTagAlign(drive, vision, () -> -driveCon.getLeftY(), ReefTagAlignCommand.AlignGoal.CENTER));
+                // Drop is left d pad plus burger button
+
+                // Climber unwinch is up d pad
+                
+                // Down is climber winch
+
+                // Lock is screenshare button plus burger button
 
     driveCon.leftBumper().onTrue(Commands.runOnce(() -> controllerState.decreaseDriveSpeedIndex()));
+
     driveCon
         .rightBumper()
         .onTrue(Commands.runOnce(() -> controllerState.increaseDriveSpeedIndex()));
+
     driveCon
         .x()
         .whileTrue(
@@ -311,18 +327,7 @@ public class RobotContainer {
                   intakeWheels.setVelocity(0);
                   endEffectorWheels.setVelocity(0);
                 }));
-    driveCon
-        .y()
-        .whileTrue(
-            Commands.runEnd(
-                () -> {
-                  intakeWheels.setVelocity(0.75 * -0.5);
-                  endEffectorWheels.setVelocity(0.25 * 0.5);
-                },
-                () -> {
-                  intakeWheels.setVelocity(0);
-                  endEffectorWheels.setVelocity(0);
-                }));
+    
 
     // --- Operator Controls ---
 
