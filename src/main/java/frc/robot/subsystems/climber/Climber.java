@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.LoggedTunableNumber;
 import java.util.function.DoubleSupplier;
-
-import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -49,7 +47,6 @@ public class Climber extends SubsystemBase {
         "Climb/CurrentCommand",
         getCurrentCommand() != null ? getCurrentCommand().getName() : "None");
     Logger.processInputs("Climb", inputs);
-
 
     motorIO.setMaxAmps((int) maxAmps.get());
   }
@@ -105,7 +102,6 @@ public class Climber extends SubsystemBase {
         .withName("Climb Go To Angle");
   }
 
-
   public Command positionControl(DoubleSupplier positionChangeRadPerSec) {
     return Commands.run(
             () -> {
@@ -116,5 +112,4 @@ public class Climber extends SubsystemBase {
         .withInterruptBehavior(InterruptionBehavior.kCancelSelf)
         .withName("Climb Position Control");
   }
-
 }

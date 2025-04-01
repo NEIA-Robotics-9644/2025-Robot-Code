@@ -29,7 +29,6 @@ public class ControllerState {
     }
   }
 
-
   public ExtenderSetpoint INTAKE = new ExtenderSetpoint(12.5, 10);
   public ExtenderSetpoint L1 = new ExtenderSetpoint(20, 10);
   public ExtenderSetpoint L2 = new ExtenderSetpoint(26, 30);
@@ -78,7 +77,6 @@ public class ControllerState {
           this.setCurrentSetpoint(setpoint);
         });
   }
-
 
   public Command runManualSetpoint(
       Elevator elevator, Pivot pivot, DoubleSupplier heightChange, DoubleSupplier angleChange) {

@@ -12,11 +12,7 @@ import frc.robot.subsystems.end_effector.EndEffector;
 public class AutoCommands {
 
   public static Command autoScore(
-      boolean slow,
-      ReefSide side,
-      Drive drive,
-      EndEffector endEffector,
-      ControllerState conState) {
+      boolean slow, ReefSide side, Drive drive, EndEffector endEffector, ControllerState conState) {
 
     var delayUntilAutoAlign = 1 - 0.4;
     var delayUntilScore = 0.65 + (slow ? 1.5 : 0);

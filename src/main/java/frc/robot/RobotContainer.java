@@ -323,15 +323,17 @@ public class RobotContainer {
 
     lock.onTrue(Commands.runOnce(() -> climber.lockClimb()));
 
-    climber.setDefaultCommand(climber.positionControl(() -> {
-        if (opCon.getHID().getPOV() == 0) {
-            return 0.5;
-        } else if (opCon.getHID().getPOV() == 180) {
-            return -0.5;
-        } else {
-            return 0;
-        }
-    }));
+    climber.setDefaultCommand(
+        climber.positionControl(
+            () -> {
+              if (opCon.getHID().getPOV() == 0) {
+                return 0.5;
+              } else if (opCon.getHID().getPOV() == 180) {
+                return -0.5;
+              } else {
+                return 0;
+              }
+            }));
 
     // Lock is screenshare button plus burger button
 
