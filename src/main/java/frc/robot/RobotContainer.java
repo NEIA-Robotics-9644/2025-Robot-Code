@@ -287,32 +287,37 @@ public class RobotContainer {
 
     driveCommand.addRequirements(drive);
     drive.setDefaultCommand(driveCommand);
-    driveCon
-        .rightTrigger(0.5)
-        .whileTrue(
-            ReefTagAlignCommand.reefTagAlign(
-                drive,
-                vision,
-                () -> driveCon.getLeftY() * 0.63,
-                ReefTagAlignCommand.AlignGoal.RIGHT));
+    // driveCon
+    //     .rightTrigger(0.5)
+    //     .whileTrue(
+    //         ReefTagAlignCommand.reefTagAlign(
+    //             drive,
+    //             vision,
+    //             () -> driveCon.getLeftY() * 0.63,
+    //             ReefTagAlignCommand.AlignGoal.RIGHT));
 
-    driveCon
-        .leftTrigger(0.5)
-        .whileTrue(
-            ReefTagAlignCommand.reefTagAlign(
-                drive,
-                vision,
-                () -> driveCon.getLeftY() * 0.63,
-                ReefTagAlignCommand.AlignGoal.LEFT));
+    // driveCon
+    //     .leftTrigger(0.5)
+    //     .whileTrue(
+    //         ReefTagAlignCommand.reefTagAlign(
+    //             drive,
+    //             vision,
+    //             () -> driveCon.getLeftY() * 0.63,
+    //             ReefTagAlignCommand.AlignGoal.LEFT));
 
-    driveCon
-        .y()
-        .whileTrue(
-            ReefTagAlignCommand.reefTagAlign(
-                drive,
-                vision,
-                () -> driveCon.getLeftY() * 0.63,
-                ReefTagAlignCommand.AlignGoal.CENTER));
+    // driveCon
+    //     .y()
+    //     .whileTrue(
+    //         ReefTagAlignCommand.reefTagAlign(
+    //             drive,
+    //             vision,
+    //             () -> driveCon.getLeftY() * 0.63,
+    //             ReefTagAlignCommand.AlignGoal.CENTER));
+
+    driveCon.rightTrigger(0.5).whileTrue(joystickApproach(() -> FieldConstants.getNearestReefBranch(drive.getPose(), ReefSide.RIGHT)));
+    driveCon.leftTrigger(0.5).whileTrue(joystickApproach(() -> FieldConstants.getNearestReefBranch(drive.getPose(), ReefSide.LEFT)));
+    driveCon.y().whileTrue(joystickApproach(() -> FieldConstants.getNearestReefFace(drive.getPose())));
+
 
     // Drop is left d pad plus burger button
     var drop = new Trigger(() -> driveCon.getHID().getPOV() == 270).and(driveCon.start());
