@@ -31,6 +31,9 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ExtenderCommands;
 import frc.robot.commands.ReefTagAlignCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberIOSim;
+import frc.robot.subsystems.climber.ClimberIOSparkMax;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -75,6 +78,7 @@ public class RobotContainer {
   private final EndEffectorSubsystem endEffectorWheels;
   private final Elevator elevator;
   private final Pivot pivot;
+  private final Climber climber;
 
   // Driver controller
   private final CommandXboxController driveCon = new CommandXboxController(0);
@@ -121,6 +125,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim(), new LimitSwitchSensorIOSim());
         pivot = new Pivot(new PivotIOSim());
         intakeWheels = new Intake(new IntakeWheelIOSim(), new CoralSensorIOSim());
+        climber = new Climber(new ClimberIOSim());
         break;
       default:
         // Real robot, instantiate hardware IO implementations
@@ -153,7 +158,7 @@ public class RobotContainer {
                 new ElevatorIOSparkMax(20, 21, false, true),
                 new LimitSwitchSensorIORoboRio(9, true));
         pivot = new Pivot(new PivotIOSparkMax(22));
-        // climb = new Climb(new ClimbIOSparkMax(0)); // Set this later
+        climber = new Climber(new ClimberIOSparkMax(25));
 
         intakeWheels = new Intake(new IntakeWheelIOSparkMax(24, 1, 40), new CoralSensorIOSim());
 
@@ -286,28 +291,49 @@ public class RobotContainer {
         .rightTrigger(0.5)
         .whileTrue(
             ReefTagAlignCommand.reefTagAlign(
-                drive, vision, () -> driveCon.getLeftY() * 0.63, ReefTagAlignCommand.AlignGoal.RIGHT));
+                drive,
+                vision,
+                () -> driveCon.getLeftY() * 0.63,
+                ReefTagAlignCommand.AlignGoal.RIGHT));
 
     driveCon
         .leftTrigger(0.5)
         .whileTrue(
             ReefTagAlignCommand.reefTagAlign(
-                drive, vision, () -> driveCon.getLeftY() * 0.63, ReefTagAlignCommand.AlignGoal.LEFT));
+                drive,
+                vision,
+                () -> driveCon.getLeftY() * 0.63,
+                ReefTagAlignCommand.AlignGoal.LEFT));
 
     driveCon
         .y()
         .whileTrue(
             ReefTagAlignCommand.reefTagAlign(
-                drive, vision, () -> driveCon.getLeftY() * 0.63, ReefTagAlignCommand.AlignGoal.CENTER));
+                drive,
+                vision,
+                () -> driveCon.getLeftY() * 0.63,
+                ReefTagAlignCommand.AlignGoal.CENTER));
 
+    // Drop is left d pad plus burger button
+    var drop = new Trigger(() -> driveCon.getHID().getPOV() == 270).and(driveCon.start());
 
-                // Drop is left d pad plus burger button
+    drop.onTrue(Commands.runOnce(() -> climber.releaseIntake()));
 
-                // Climber unwinch is up d pad
-                
-                // Down is climber winch
+    var lock = driveCon.start().and(driveCon.back());
 
-                // Lock is screenshare button plus burger button
+    lock.onTrue(Commands.runOnce(() -> climber.lockClimb()));
+
+    climber.setDefaultCommand(climber.positionControl(() -> {
+        if (opCon.getHID().getPOV() == 0) {
+            return 0.5;
+        } else if (opCon.getHID().getPOV() == 180) {
+            return -0.5;
+        } else {
+            return 0;
+        }
+    }));
+
+    // Lock is screenshare button plus burger button
 
     driveCon.leftBumper().onTrue(Commands.runOnce(() -> controllerState.decreaseDriveSpeedIndex()));
 
@@ -327,7 +353,6 @@ public class RobotContainer {
                   intakeWheels.setVelocity(0);
                   endEffectorWheels.setVelocity(0);
                 }));
-    
 
     // --- Operator Controls ---
 
