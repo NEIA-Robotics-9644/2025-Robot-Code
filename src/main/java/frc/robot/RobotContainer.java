@@ -285,14 +285,16 @@ public class RobotContainer {
     driveCon
         .rightTrigger(0.5)
         .whileTrue(
-            joystickApproach(
-                () -> FieldConstants.getNearestReefBranch(drive.getPose(), ReefSide.RIGHT)));
+            ReefTagAlignCommand.reefTagAlign(drive, vision, () -> driveCon.getLeftY(), ReefTagAlignCommand.AlignGoal.RIGHT));
 
     driveCon
         .leftTrigger(0.5)
         .whileTrue(
-            joystickApproach(
-                () -> FieldConstants.getNearestReefBranch(drive.getPose(), ReefSide.LEFT)));
+            ReefTagAlignCommand.reefTagAlign(drive, vision, () -> driveCon.getLeftY(), ReefTagAlignCommand.AlignGoal.LEFT));
+
+
+    driveCon.a().whileTrue(ReefTagAlignCommand.reefTagAlign(drive, vision, () -> -driveCon.getLeftY(), ReefTagAlignCommand.AlignGoal.CENTER));
+
     driveCon.leftBumper().onTrue(Commands.runOnce(() -> controllerState.decreaseDriveSpeedIndex()));
     driveCon
         .rightBumper()
@@ -321,24 +323,6 @@ public class RobotContainer {
                   intakeWheels.setVelocity(0);
                   endEffectorWheels.setVelocity(0);
                 }));
-
-    driveCon
-        .a()
-        .whileTrue(
-            ReefTagAlignCommand.reefTagAlign(
-                drive, vision, () -> -driveCon.getLeftY(), ReefTagAlignCommand.AlignGoal.LEFT));
-
-    driveCon
-        .b()
-        .whileTrue(
-            ReefTagAlignCommand.reefTagAlign(
-                drive, vision, () -> -driveCon.getLeftY(), ReefTagAlignCommand.AlignGoal.CENTER));
-
-    driveCon
-        .x()
-        .whileTrue(
-            ReefTagAlignCommand.reefTagAlign(
-                drive, vision, () -> -driveCon.getLeftY(), ReefTagAlignCommand.AlignGoal.RIGHT));
 
     // --- Operator Controls ---
 

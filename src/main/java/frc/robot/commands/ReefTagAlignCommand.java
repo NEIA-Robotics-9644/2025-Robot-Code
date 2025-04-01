@@ -83,8 +83,6 @@ public class ReefTagAlignCommand {
 
           var robotToTag = tagPose.minus(Pose2d.kZero);
 
-          var tagToRobot = robotToTag.inverse();
-
           var robotFromTag = Pose2d.kZero.transformBy(robotToTag.inverse());
 
           var leftRight = leftRightController.calculate(robotFromTag.getY(), targetLeftRightValue);
