@@ -1,16 +1,3 @@
-// Copyright 2021-2025 FRC 6328
-// http://github.com/Mechanical-Advantage
-//
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// version 3 as published by the Free Software Foundation or
-// available in the root directory of this project.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
-
 package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
@@ -48,9 +35,8 @@ import frc.robot.subsystems.end_effector.EndEffector;
 import frc.robot.subsystems.end_effector.FlywheelIOSim;
 import frc.robot.subsystems.end_effector.FlywheelIOSparkMax;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.sensor.CoralSensorIOSim;
-import frc.robot.subsystems.intake.wheel.IntakeWheelIOSim;
-import frc.robot.subsystems.intake.wheel.IntakeWheelIOSparkMax;
+import frc.robot.subsystems.intake.IntakeWheelIOSim;
+import frc.robot.subsystems.intake.IntakeWheelIOSparkMax;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOSparkMax;
@@ -124,7 +110,7 @@ public class RobotContainer {
         endEffectorWheels = new EndEffector(new FlywheelIOSim());
         elevator = new Elevator(new ElevatorIOSim(), new LimitSwitchSensorIOSim());
         pivot = new Pivot(new PivotIOSim());
-        intakeWheels = new Intake(new IntakeWheelIOSim(), new CoralSensorIOSim());
+        intakeWheels = new Intake(new IntakeWheelIOSim());
         climber = new Climber(new ClimberIOSim());
         break;
       default:
@@ -160,7 +146,7 @@ public class RobotContainer {
         pivot = new Pivot(new PivotIOSparkMax(22));
         climber = new Climber(new ClimberIOSparkMax(25));
 
-        intakeWheels = new Intake(new IntakeWheelIOSparkMax(24, 1, 40), new CoralSensorIOSim());
+        intakeWheels = new Intake(new IntakeWheelIOSparkMax(24, 1, 40));
 
         break;
     }

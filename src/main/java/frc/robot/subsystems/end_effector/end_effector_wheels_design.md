@@ -1,7 +1,6 @@
 
 
 # End Effector Wheels
-
 The end effector is the mechanism mounted on the pivot at the end of the elevator.
 The end effector has wheels which spin in opposite directions and push the coral through.
 

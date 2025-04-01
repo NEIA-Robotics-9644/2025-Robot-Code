@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.ControllerState;
 import frc.robot.FieldConstants;
@@ -36,5 +37,9 @@ public class AutoCommands {
                                             () -> endEffector.setVelocity(0))
                                         .withTimeout(scoreDuration)))))
         .andThen(conState.setSetpoint(conState.INTAKE));
+  }
+
+  public static Command autoScoreAgainstReef(ReefTagAlignCommand.AlignGoal goal) {
+    return new PrintCommand("Not implemented");
   }
 }
