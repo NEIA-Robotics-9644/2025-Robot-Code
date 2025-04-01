@@ -9,14 +9,14 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class EndEffectorSubsystem extends SubsystemBase {
+public class EndEffector extends SubsystemBase {
 
   private LoggedTunableNumber maxAmps = new LoggedTunableNumber("EndEffectorWheels/Max Amps", 40.0);
 
   private final FlywheelIO io;
   private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
 
-  public EndEffectorSubsystem(FlywheelIO io) {
+  public EndEffector(FlywheelIO io) {
     this.io = io;
   }
 

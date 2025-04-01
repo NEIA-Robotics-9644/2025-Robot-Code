@@ -44,7 +44,7 @@ import frc.robot.subsystems.elevator.elevator_motors.ElevatorIOSim;
 import frc.robot.subsystems.elevator.elevator_motors.ElevatorIOSparkMax;
 import frc.robot.subsystems.elevator.limit_sensor.LimitSwitchSensorIORoboRio;
 import frc.robot.subsystems.elevator.limit_sensor.LimitSwitchSensorIOSim;
-import frc.robot.subsystems.end_effector.EndEffectorSubsystem;
+import frc.robot.subsystems.end_effector.EndEffector;
 import frc.robot.subsystems.end_effector.FlywheelIOSim;
 import frc.robot.subsystems.end_effector.FlywheelIOSparkMax;
 import frc.robot.subsystems.intake.Intake;
@@ -75,7 +75,7 @@ public class RobotContainer {
   private final Drive drive;
   private final Vision vision;
   private final Intake intakeWheels;
-  private final EndEffectorSubsystem endEffectorWheels;
+  private final EndEffector endEffectorWheels;
   private final Elevator elevator;
   private final Pivot pivot;
   private final Climber climber;
@@ -121,7 +121,7 @@ public class RobotContainer {
                       VisionConstants.camera2Name, VisionConstants.robotToCamera2, drive::getPose)
                 });
 
-        endEffectorWheels = new EndEffectorSubsystem(new FlywheelIOSim());
+        endEffectorWheels = new EndEffector(new FlywheelIOSim());
         elevator = new Elevator(new ElevatorIOSim(), new LimitSwitchSensorIOSim());
         pivot = new Pivot(new PivotIOSim());
         intakeWheels = new Intake(new IntakeWheelIOSim(), new CoralSensorIOSim());
@@ -152,7 +152,7 @@ public class RobotContainer {
                       VisionConstants.camera2Name, VisionConstants.robotToCamera2)
                 });
 
-        endEffectorWheels = new EndEffectorSubsystem(new FlywheelIOSparkMax(23));
+        endEffectorWheels = new EndEffector(new FlywheelIOSparkMax(23));
         elevator =
             new Elevator(
                 new ElevatorIOSparkMax(20, 21, false, true),

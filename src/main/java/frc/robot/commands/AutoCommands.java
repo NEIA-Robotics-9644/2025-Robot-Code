@@ -7,7 +7,7 @@ import frc.robot.ControllerState;
 import frc.robot.FieldConstants;
 import frc.robot.FieldConstants.ReefSide;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.end_effector.EndEffectorSubsystem;
+import frc.robot.subsystems.end_effector.EndEffector;
 
 public class AutoCommands {
 
@@ -15,7 +15,7 @@ public class AutoCommands {
       boolean slow,
       ReefSide side,
       Drive drive,
-      EndEffectorSubsystem endEffector,
+      EndEffector endEffector,
       ControllerState conState) {
 
     var delayUntilAutoAlign = 1 - 0.4;
