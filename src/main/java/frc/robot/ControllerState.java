@@ -1,13 +1,18 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.pivot.Pivot;
 import java.util.function.DoubleSupplier;
 
-public class ControllerState {
+public class ControllerState extends SubsystemBase {
+
+  NetworkTableEntry useSetpointQueueingEntry;
 
   public class ExtenderSetpoint {
     public double inchesFromGround;
@@ -47,7 +52,24 @@ public class ControllerState {
 
   public int currentDriveSpeedIndex = 0;
 
-  public ControllerState() {}
+  public ControllerState() {
+    // Initialize the useSetpointQueueing entry
+
+    useSetpointQueueingEntry =
+        NetworkTableInstance.getDefault()
+            .getTable("SmartDashboard")
+            .getEntry("Use Setpoint Queueing");
+    useSetpointQueueingEntry.setBoolean(true); // Default to not using queueing
+  }
+
+  @Override
+  public void periodic() {
+    // Update the useSetpointQueueing entry on the SmartDashboard
+    if (!useSetpointQueueingEntry.getBoolean(false)) {
+      currentSetpoint =
+          queuedSetpoint; // If queueing is disabled, go immediately to the queued setpoint
+    }
+  }
 
   public ExtenderSetpoint getCurrentSetpoint() {
     return currentSetpoint;
