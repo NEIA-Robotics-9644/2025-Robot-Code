@@ -35,6 +35,7 @@ public class ExtenderCommands {
                   } else {
                     return 0;
                   }
-                }));
+                }))
+        .withName("Extender Movement With Constraints");
   }
 }

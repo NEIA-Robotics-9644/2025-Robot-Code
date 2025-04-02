@@ -143,12 +143,12 @@ public class Elevator extends SubsystemBase {
     elevatorIO.setVelocity(normalizedVelocity);
   }
 
-  private void resetElevator() {
+  public void zeroEncoders() {
     elevatorIO.zeroEncoders();
     isHomed = true;
   }
 
-  private boolean limitSwitchTripped() {
+  public boolean limitSwitchTripped() {
     return limitSwitchSensorIO.sensorHit();
   }
 
@@ -213,10 +213,14 @@ public class Elevator extends SubsystemBase {
     var command =
         Commands.run(() -> elevatorIO.setVelocity(-elevatorHomingMoveSpeed.get()), this)
             .until(() -> limitSwitchTripped())
-            .andThen(Commands.runOnce(() -> resetElevator()))
+            .andThen(resetElevator())
             .withName("Homing Sequence")
             .withInterruptBehavior(InterruptionBehavior.kCancelSelf);
     return command;
+  }
+
+  public Command resetElevator() {
+    return Commands.runOnce(() -> zeroEncoders());
   }
 
   public double getMinInchesFromGround() {

@@ -141,7 +141,7 @@ public class RobotContainer {
         elevator =
             new Elevator(
                 new ElevatorIOSparkMax(20, 21, false, true),
-                new LimitSwitchSensorIORoboRio(2, true)); // PLUG IN LIMIT SWITCHES HERE
+                new LimitSwitchSensorIORoboRio(9, true));
         pivot = new Pivot(new PivotIOSparkMax(22));
         climber = new Climber(new ClimberIOSparkMax(25), 9, 7);
 
@@ -363,9 +363,6 @@ public class RobotContainer {
 
     // --- Operator Controls ---
 
-    var oLeftYAxisUp = new Trigger(() -> opCon.getLeftY() > 0.05);
-    // oLeftYAxisUp.whileTrue(new ClimbCommand(climb, () -> opCon.getLeftY()));
-
     opCon
         .rightTrigger(0.1)
         .whileTrue(
@@ -379,7 +376,10 @@ public class RobotContainer {
                   endEffectorWheels.setVelocity(0);
                 }));
 
-    new Trigger(DriverStation::isEnabled)
+    new Trigger(DriverStation::isTeleopEnabled).onTrue(elevator.home());
+
+    elevator
+        .isHomed()
         .onTrue(
             ExtenderCommands.goToHeightThenPivot(
                 elevator,
@@ -402,7 +402,6 @@ public class RobotContainer {
                 }));
 
     // When the robot is enabled, go into homing mode
-    // new Trigger(DriverStation::isTeleopEnabled).onTrue(elevator.home());
 
     opCon
         .leftBumper()

@@ -50,22 +50,26 @@ public class Climber extends SubsystemBase {
         getCurrentCommand() != null ? getCurrentCommand().getName() : "None");
     Logger.processInputs("Climb", inputs);
 
+    if (this.intakeReleased()) {
+      Logger.recordOutput("Climb/IntakeState", "Intake Released");
+    } else {
+      Logger.recordOutput("Climb/IntakeState", "Intake Locked");
+    }
+
     motorIO.setMaxAmps((int) maxAmps.get());
   }
 
   public void toggleIntake() {
     if (intakeReleased()) {
-
       intakeReleaseMotor.set(0); // retract
-
     } else {
-      intakeReleaseMotor.set(0.3); // extend
+      intakeReleaseMotor.set(0.5); // extend
     }
   }
 
   @AutoLogOutput(key = "Climb/IntakeReleased")
   public boolean intakeReleased() {
-    return this.intakeReleaseMotor.getAngle() > 0.15;
+    return this.intakeReleaseMotor.getAngle() > 0.25;
   }
 
   public void toggleClimbLock() {

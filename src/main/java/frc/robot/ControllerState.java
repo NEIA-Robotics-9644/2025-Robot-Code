@@ -59,7 +59,7 @@ public class ControllerState extends SubsystemBase {
         NetworkTableInstance.getDefault()
             .getTable("SmartDashboard")
             .getEntry("Use Setpoint Queueing");
-    useSetpointQueueingEntry.setBoolean(true); // Default to not using queueing
+    useSetpointQueueingEntry.setBoolean(true); // Default to using setpoint queueing
   }
 
   @Override
@@ -124,6 +124,11 @@ public class ControllerState extends SubsystemBase {
                       this.getCurrentSetpoint().degreesFromVertical + angleChange.getAsDouble(),
                       pivot.getMinDegreesFromVertical(),
                       pivot.getMaxDegreesFromVertical())));
+
+          if (elevator.limitSwitchTripped()) {
+            elevator.zeroEncoders();
+            System.out.println("In manual mode, zeroed encoders");
+          }
         });
   }
 }
