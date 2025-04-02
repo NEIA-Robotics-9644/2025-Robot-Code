@@ -29,7 +29,6 @@ import frc.robot.FieldConstants.ReefSide;
 import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ExtenderCommands;
-import frc.robot.commands.ReefTagAlignCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberIOSim;
@@ -156,7 +155,7 @@ public class RobotContainer {
         elevator =
             new Elevator(
                 new ElevatorIOSparkMax(20, 21, false, true),
-                new LimitSwitchSensorIORoboRio(9, true));
+                new LimitSwitchSensorIORoboRio(2, true)); // PLUG IN LIMIT SWITCHES HERE
         pivot = new Pivot(new PivotIOSparkMax(22));
         climber = new Climber(new ClimberIOSparkMax(25));
 
@@ -314,10 +313,19 @@ public class RobotContainer {
     //             () -> driveCon.getLeftY() * 0.63,
     //             ReefTagAlignCommand.AlignGoal.CENTER));
 
-    driveCon.rightTrigger(0.5).whileTrue(joystickApproach(() -> FieldConstants.getNearestReefBranch(drive.getPose(), ReefSide.RIGHT)));
-    driveCon.leftTrigger(0.5).whileTrue(joystickApproach(() -> FieldConstants.getNearestReefBranch(drive.getPose(), ReefSide.LEFT)));
-    driveCon.y().whileTrue(joystickApproach(() -> FieldConstants.getNearestReefFace(drive.getPose())));
-
+    driveCon
+        .rightTrigger(0.5)
+        .whileTrue(
+            joystickApproach(
+                () -> FieldConstants.getNearestReefBranch(drive.getPose(), ReefSide.RIGHT)));
+    driveCon
+        .leftTrigger(0.5)
+        .whileTrue(
+            joystickApproach(
+                () -> FieldConstants.getNearestReefBranch(drive.getPose(), ReefSide.LEFT)));
+    driveCon
+        .y()
+        .whileTrue(joystickApproach(() -> FieldConstants.getNearestReefFace(drive.getPose())));
 
     // Drop is left d pad plus burger button
     var drop = new Trigger(() -> driveCon.getHID().getPOV() == 270).and(driveCon.start());
