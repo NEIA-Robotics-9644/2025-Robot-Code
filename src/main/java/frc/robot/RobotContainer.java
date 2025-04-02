@@ -225,6 +225,8 @@ public class RobotContainer {
     autoChooser.addOption(
         "Three Piece Right", new PathPlannerAuto("Three Piece Right Unmirrored", true));
 
+    autoChooser.addOption(
+        "Three Piece Right - Unique", new PathPlannerAuto("Three Piece Right - Unique", false));
     autoChooser.addOption("Two Piece Left", new PathPlannerAuto("Two Piece Left", false));
 
     autoChooser.addOption("One Piece Left", new PathPlannerAuto("One Piece Left", false));
@@ -322,6 +324,8 @@ public class RobotContainer {
 
     lock.onTrue(Commands.runOnce(() -> climber.toggleClimbLock()));
 
+    var extenderConstraints = new ExtenderConstraints("constraints.txt", 80);
+
     climber.setDefaultCommand(
         climber.positionControl(
             () -> {
@@ -355,6 +359,8 @@ public class RobotContainer {
                   endEffectorWheels.setVelocity(0);
                 }));
 
+    driveCon.a().onTrue(Commands.runOnce(() -> controllerState.activateQueuedSetpoint()));
+
     // --- Operator Controls ---
 
     var oLeftYAxisUp = new Trigger(() -> opCon.getLeftY() > 0.05);
@@ -373,6 +379,15 @@ public class RobotContainer {
                   endEffectorWheels.setVelocity(0);
                 }));
 
+    new Trigger(DriverStation::isEnabled)
+        .onTrue(
+            ExtenderCommands.goToHeightThenPivot(
+                elevator,
+                pivot,
+                extenderConstraints,
+                () -> controllerState.getCurrentSetpoint().inchesFromGround,
+                () -> controllerState.getCurrentSetpoint().degreesFromVertical));
+
     opCon
         .leftTrigger(0.1)
         .whileTrue(
@@ -389,17 +404,6 @@ public class RobotContainer {
     // When the robot is enabled, go into homing mode
     // new Trigger(DriverStation::isTeleopEnabled).onTrue(elevator.home());
 
-    var extenderConstraints = new ExtenderConstraints("constraints.txt", 80);
-
-    new Trigger(DriverStation::isEnabled)
-        .onTrue(
-            ExtenderCommands.goToHeightThenPivot(
-                elevator,
-                pivot,
-                extenderConstraints,
-                () -> controllerState.getCurrentSetpoint().inchesFromGround,
-                () -> controllerState.getCurrentSetpoint().degreesFromVertical));
-
     opCon
         .leftBumper()
         .whileTrue(
@@ -412,35 +416,26 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.INTAKE)));
 
     // When the A button is pressed, go to L1
-    opCon
-        .a()
-        .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L1)));
+    opCon.a().onTrue(Commands.runOnce(() -> controllerState.setQueuedSetpoint(controllerState.L1)));
 
     // When the B button is pressed, go to L2
-    opCon
-        .b()
-        .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L2)));
+    opCon.b().onTrue(Commands.runOnce(() -> controllerState.setQueuedSetpoint(controllerState.L2)));
 
     // When the X button is pressed, go to L3
-    opCon
-        .x()
-        .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L3)));
+    opCon.x().onTrue(Commands.runOnce(() -> controllerState.setQueuedSetpoint(controllerState.L3)));
 
     // When the Y button is pressed, go to L4
-    opCon
-        .y()
-        .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L4)));
+    opCon.y().onTrue(Commands.runOnce(() -> controllerState.setQueuedSetpoint(controllerState.L4)));
 
     opCon
         .start()
         .onTrue(
-            Commands.runOnce(
-                () -> controllerState.setCurrentSetpoint(controllerState.LowDealgify)));
+            Commands.runOnce(() -> controllerState.setQueuedSetpoint(controllerState.LowDealgify)));
 
     new Trigger(() -> opCon.getHID().getBackButtonPressed())
         .onTrue(
             Commands.runOnce(
-                () -> controllerState.setCurrentSetpoint(controllerState.HighDealgify)));
+                () -> controllerState.setQueuedSetpoint(controllerState.HighDealgify)));
 
     opCon
         .povUp()
