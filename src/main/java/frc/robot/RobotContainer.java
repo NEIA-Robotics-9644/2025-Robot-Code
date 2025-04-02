@@ -110,7 +110,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim(), new LimitSwitchSensorIOSim());
         pivot = new Pivot(new PivotIOSim());
         intakeWheels = new Intake(new IntakeWheelIOSim());
-        climber = new Climber(new ClimberIOSim());
+        climber = new Climber(new ClimberIOSim(), 9, 8);
         break;
       default:
         // Real robot, instantiate hardware IO implementations
@@ -143,7 +143,7 @@ public class RobotContainer {
                 new ElevatorIOSparkMax(20, 21, false, true),
                 new LimitSwitchSensorIORoboRio(2, true)); // PLUG IN LIMIT SWITCHES HERE
         pivot = new Pivot(new PivotIOSparkMax(22));
-        climber = new Climber(new ClimberIOSparkMax(25));
+        climber = new Climber(new ClimberIOSparkMax(25), 9, 7);
 
         intakeWheels = new Intake(new IntakeWheelIOSparkMax(24, 1, 40));
 
@@ -316,11 +316,11 @@ public class RobotContainer {
     // Drop is left d pad plus burger button
     var drop = new Trigger(() -> driveCon.getHID().getPOV() == 270).and(driveCon.start());
 
-    drop.onTrue(Commands.runOnce(() -> climber.releaseIntake()));
+    drop.onTrue(Commands.runOnce(() -> climber.toggleIntake()));
 
     var lock = driveCon.start().and(driveCon.back());
 
-    lock.onTrue(Commands.runOnce(() -> climber.lockClimb()));
+    lock.onTrue(Commands.runOnce(() -> climber.toggleClimbLock()));
 
     climber.setDefaultCommand(
         climber.positionControl(

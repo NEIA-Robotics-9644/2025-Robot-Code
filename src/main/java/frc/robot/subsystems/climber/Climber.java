@@ -2,6 +2,7 @@ package frc.robot.subsystems.climber;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -24,19 +25,21 @@ public class Climber extends SubsystemBase {
   private LoggedTunableNumber minAngleRads = new LoggedTunableNumber("Climb/Min Angle Rads", 0.0);
 
   // MAKE THIS AN INTERFACE WHEN WE HAVE TIME
-  // private Servo climbLockMotor;
+  private Servo climbLockMotor;
 
-  // private Servo intakeReleaseMotor;
+  private Servo intakeReleaseMotor;
 
   private final ClimberIO motorIO;
   private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
 
   private PIDController pid = new PIDController(kP.get(), kI.get(), kD.get());
 
-  public Climber(ClimberIO io) {
+  public Climber(ClimberIO io, int intakeReleaseChannel, int climbLockChannel) {
     this.motorIO = io;
-    // intakeReleaseMotor.set(0);
-    // climbLockMotor.set(0);
+    this.intakeReleaseMotor = new Servo(intakeReleaseChannel);
+    this.climbLockMotor = new Servo(climbLockChannel);
+    intakeReleaseMotor.set(0);
+    climbLockMotor.set(0);
   }
 
   public void periodic() {
@@ -50,22 +53,32 @@ public class Climber extends SubsystemBase {
     motorIO.setMaxAmps((int) maxAmps.get());
   }
 
-  public void releaseIntake() {
-    // intakeReleaseMotor.set(1);
+  public void toggleIntake() {
+    if (intakeReleased()) {
+
+      intakeReleaseMotor.set(0); // retract
+
+    } else {
+      intakeReleaseMotor.set(0.3); // extend
+    }
   }
 
   @AutoLogOutput(key = "Climb/IntakeReleased")
   public boolean intakeReleased() {
-    return false; // intakeReleaseMotor.getAngle() > 0.5;
+    return this.intakeReleaseMotor.getAngle() > 0.15;
   }
 
-  public void lockClimb() {
-    // climbLockMotor.set(1);
+  public void toggleClimbLock() {
+    if (climbLocked()) {
+      climbLockMotor.setAngle(-30); // unlock
+    } else {
+      climbLockMotor.set(1); // lock
+    }
   }
 
   @AutoLogOutput(key = "Climb/ClimbLocked")
   public boolean climbLocked() {
-    return false; // climbLockMotor.getAngle() > 0.5;
+    return climbLockMotor.getAngle() > 0.5;
   }
 
   public void setVelocity(double velocity) {
