@@ -1,4 +1,4 @@
-package frc.robot.subsystems.intake.wheel;
+package frc.robot.subsystems.intake;
 
 public class IntakeWheelIOSim implements IntakeWheelIO {
   private double velocityRPM = 0.0;

@@ -1,4 +1,4 @@
-package frc.robot.subsystems.intake.wheel;
+package frc.robot.subsystems.intake;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase;
