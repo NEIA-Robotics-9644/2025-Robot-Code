@@ -39,6 +39,8 @@ public class ControllerState {
 
   private ExtenderSetpoint currentSetpoint = INTAKE;
 
+  private ExtenderSetpoint queuedSetpoint = currentSetpoint;
+
   public DriveSpeed[] driveSpeeds = {
     new DriveSpeed(0.5, 0.5), new DriveSpeed(0.75, 0.75), new DriveSpeed(1.0, 1.0)
   };
@@ -53,6 +55,14 @@ public class ControllerState {
 
   public void setCurrentSetpoint(ExtenderSetpoint currentSetpoint) {
     this.currentSetpoint = currentSetpoint;
+  }
+
+  public void setQueuedSetpoint(ExtenderSetpoint queuedSetpoint) {
+    this.queuedSetpoint = queuedSetpoint;
+  }
+
+  public void activateQueuedSetpoint() {
+    this.currentSetpoint = this.queuedSetpoint;
   }
 
   public DriveSpeed getCurrentDriveSpeed() {

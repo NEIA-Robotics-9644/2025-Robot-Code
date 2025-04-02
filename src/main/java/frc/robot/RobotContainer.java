@@ -359,16 +359,8 @@ public class RobotContainer {
                   endEffectorWheels.setVelocity(0);
                 }));
 
-    driveCon
-        .a()
-        .whileTrue(
-            ExtenderCommands.goToHeightThenPivot(
-                elevator,
-                pivot,
-                extenderConstraints,
-                () -> controllerState.getCurrentSetpoint().inchesFromGround,
-                () -> controllerState.getCurrentSetpoint().degreesFromVertical));
-        
+    driveCon.a().onTrue(Commands.runOnce(() -> controllerState.activateQueuedSetpoint()));
+
     // --- Operator Controls ---
 
     var oLeftYAxisUp = new Trigger(() -> opCon.getLeftY() > 0.05);
@@ -386,6 +378,15 @@ public class RobotContainer {
                   intakeWheels.setVelocity(0);
                   endEffectorWheels.setVelocity(0);
                 }));
+
+    new Trigger(DriverStation::isEnabled)
+        .onTrue(
+            ExtenderCommands.goToHeightThenPivot(
+                elevator,
+                pivot,
+                extenderConstraints,
+                () -> controllerState.getCurrentSetpoint().inchesFromGround,
+                () -> controllerState.getCurrentSetpoint().degreesFromVertical));
 
     opCon
         .leftTrigger(0.1)
@@ -415,35 +416,26 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.INTAKE)));
 
     // When the A button is pressed, go to L1
-    opCon
-        .a()
-        .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L1)));
+    opCon.a().onTrue(Commands.runOnce(() -> controllerState.setQueuedSetpoint(controllerState.L1)));
 
     // When the B button is pressed, go to L2
-    opCon
-        .b()
-        .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L2)));
+    opCon.b().onTrue(Commands.runOnce(() -> controllerState.setQueuedSetpoint(controllerState.L2)));
 
     // When the X button is pressed, go to L3
-    opCon
-        .x()
-        .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L3)));
+    opCon.x().onTrue(Commands.runOnce(() -> controllerState.setQueuedSetpoint(controllerState.L3)));
 
     // When the Y button is pressed, go to L4
-    opCon
-        .y()
-        .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L4)));
+    opCon.y().onTrue(Commands.runOnce(() -> controllerState.setQueuedSetpoint(controllerState.L4)));
 
     opCon
         .start()
         .onTrue(
-            Commands.runOnce(
-                () -> controllerState.setCurrentSetpoint(controllerState.LowDealgify)));
+            Commands.runOnce(() -> controllerState.setQueuedSetpoint(controllerState.LowDealgify)));
 
     new Trigger(() -> opCon.getHID().getBackButtonPressed())
         .onTrue(
             Commands.runOnce(
-                () -> controllerState.setCurrentSetpoint(controllerState.HighDealgify)));
+                () -> controllerState.setQueuedSetpoint(controllerState.HighDealgify)));
 
     opCon
         .povUp()
