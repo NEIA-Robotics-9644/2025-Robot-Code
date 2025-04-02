@@ -225,6 +225,8 @@ public class RobotContainer {
     autoChooser.addOption(
         "Three Piece Right", new PathPlannerAuto("Three Piece Right Unmirrored", true));
 
+    autoChooser.addOption(
+        "Three Piece Right - Unique", new PathPlannerAuto("Three Piece Right - Unique", false));
     autoChooser.addOption("Two Piece Left", new PathPlannerAuto("Two Piece Left", false));
 
     autoChooser.addOption("One Piece Left", new PathPlannerAuto("One Piece Left", false));
