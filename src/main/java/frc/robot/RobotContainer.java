@@ -322,6 +322,8 @@ public class RobotContainer {
 
     lock.onTrue(Commands.runOnce(() -> climber.lockClimb()));
 
+    var extenderConstraints = new ExtenderConstraints("constraints.txt", 80);
+
     climber.setDefaultCommand(
         climber.positionControl(
             () -> {
@@ -355,6 +357,16 @@ public class RobotContainer {
                   endEffectorWheels.setVelocity(0);
                 }));
 
+    driveCon
+        .a()
+        .whileTrue(
+            ExtenderCommands.goToHeightThenPivot(
+                elevator,
+                pivot,
+                extenderConstraints,
+                () -> controllerState.getCurrentSetpoint().inchesFromGround,
+                () -> controllerState.getCurrentSetpoint().degreesFromVertical));
+        
     // --- Operator Controls ---
 
     var oLeftYAxisUp = new Trigger(() -> opCon.getLeftY() > 0.05);
@@ -388,17 +400,6 @@ public class RobotContainer {
 
     // When the robot is enabled, go into homing mode
     // new Trigger(DriverStation::isTeleopEnabled).onTrue(elevator.home());
-
-    var extenderConstraints = new ExtenderConstraints("constraints.txt", 80);
-
-    new Trigger(DriverStation::isEnabled)
-        .onTrue(
-            ExtenderCommands.goToHeightThenPivot(
-                elevator,
-                pivot,
-                extenderConstraints,
-                () -> controllerState.getCurrentSetpoint().inchesFromGround,
-                () -> controllerState.getCurrentSetpoint().degreesFromVertical));
 
     opCon
         .leftBumper()
