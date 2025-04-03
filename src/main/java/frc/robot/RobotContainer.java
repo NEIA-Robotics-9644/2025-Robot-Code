@@ -359,7 +359,6 @@ public class RobotContainer {
                   endEffectorWheels.setVelocity(0);
                 }));
 
-
     // --- Operator Controls ---
 
     opCon
@@ -414,21 +413,30 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.INTAKE)));
 
     // When the A button is pressed, go to L1
-    opCon.a().onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L1)));
+    opCon
+        .a()
+        .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L1)));
 
     // When the B button is pressed, go to L2
-    opCon.b().onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L2)));
+    opCon
+        .b()
+        .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L2)));
 
     // When the X button is pressed, go to L3
-    opCon.x().onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L3)));
+    opCon
+        .x()
+        .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L3)));
 
     // When the Y button is pressed, go to L4
-    opCon.y().onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L4)));
+    opCon
+        .y()
+        .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L4)));
 
     opCon
         .start()
         .onTrue(
-            Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.LowDealgify)));
+            Commands.runOnce(
+                () -> controllerState.setCurrentSetpoint(controllerState.LowDealgify)));
 
     new Trigger(() -> opCon.getHID().getBackButtonPressed())
         .onTrue(
@@ -437,10 +445,12 @@ public class RobotContainer {
 
     opCon
         .povUp()
-        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().inchesFromGround += 0.5));
+        .onTrue(
+            Commands.runOnce(() -> controllerState.getCurrentSetpoint().inchesFromGround += 0.5));
     opCon
         .povDown()
-        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().inchesFromGround -= 0.5));
+        .onTrue(
+            Commands.runOnce(() -> controllerState.getCurrentSetpoint().inchesFromGround -= 0.5));
 
     opCon
         .povLeft()

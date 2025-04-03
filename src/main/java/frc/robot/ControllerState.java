@@ -10,7 +10,6 @@ import java.util.function.DoubleSupplier;
 
 public class ControllerState extends SubsystemBase {
 
-
   public class ExtenderSetpoint {
     public double inchesFromGround;
     public double degreesFromVertical;
@@ -47,14 +46,10 @@ public class ControllerState extends SubsystemBase {
 
   public int currentDriveSpeedIndex = 0;
 
-  public ControllerState() {
-
-  }
+  public ControllerState() {}
 
   @Override
-  public void periodic() {
-    
-  }
+  public void periodic() {}
 
   public ExtenderSetpoint getCurrentSetpoint() {
     return currentSetpoint;
@@ -63,7 +58,6 @@ public class ControllerState extends SubsystemBase {
   public void setCurrentSetpoint(ExtenderSetpoint currentSetpoint) {
     this.currentSetpoint = currentSetpoint;
   }
-
 
   public DriveSpeed getCurrentDriveSpeed() {
     return driveSpeeds[currentDriveSpeedIndex];
