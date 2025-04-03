@@ -246,7 +246,7 @@ public class RobotContainer {
 
   private Command joystickApproach(Supplier<Pose2d> approachPose) {
     return DriveCommands.joystickApproach(
-        drive, () -> -driveCon.getHID().getLeftY() * 0.63, approachPose);
+        drive, () -> -driveCon.getHID().getLeftY() * 0.9, approachPose);
   }
 
   public void onTeleopEnable() {}
@@ -327,12 +327,12 @@ public class RobotContainer {
     var extenderConstraints = new ExtenderConstraints("constraints.txt", 80);
 
     climber.setDefaultCommand(
-        climber.positionControl(
+        climber.moveWithVelocity(
             () -> {
-              if (opCon.getHID().getPOV() == 0) {
-                return 0.5;
-              } else if (opCon.getHID().getPOV() == 180) {
-                return -0.5;
+              if (driveCon.getHID().getPOV() == 0) {
+                return 50;
+              } else if (driveCon.getHID().getPOV() == 180) {
+                return -50;
               } else {
                 return 0;
               }
@@ -359,12 +359,11 @@ public class RobotContainer {
                   endEffectorWheels.setVelocity(0);
                 }));
 
-    driveCon.a().onTrue(Commands.runOnce(() -> controllerState.activateQueuedSetpoint()));
 
     // --- Operator Controls ---
 
     opCon
-        .rightTrigger(0.1)
+        .rightTrigger(0.05)
         .whileTrue(
             Commands.runEnd(
                 () -> {
@@ -389,7 +388,7 @@ public class RobotContainer {
                 () -> controllerState.getCurrentSetpoint().degreesFromVertical));
 
     opCon
-        .leftTrigger(0.1)
+        .leftTrigger(0.05)
         .whileTrue(
             Commands.runEnd(
                 () -> {
@@ -415,33 +414,33 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.INTAKE)));
 
     // When the A button is pressed, go to L1
-    opCon.a().onTrue(Commands.runOnce(() -> controllerState.setQueuedSetpoint(controllerState.L1)));
+    opCon.a().onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L1)));
 
     // When the B button is pressed, go to L2
-    opCon.b().onTrue(Commands.runOnce(() -> controllerState.setQueuedSetpoint(controllerState.L2)));
+    opCon.b().onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L2)));
 
     // When the X button is pressed, go to L3
-    opCon.x().onTrue(Commands.runOnce(() -> controllerState.setQueuedSetpoint(controllerState.L3)));
+    opCon.x().onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L3)));
 
     // When the Y button is pressed, go to L4
-    opCon.y().onTrue(Commands.runOnce(() -> controllerState.setQueuedSetpoint(controllerState.L4)));
+    opCon.y().onTrue(Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.L4)));
 
     opCon
         .start()
         .onTrue(
-            Commands.runOnce(() -> controllerState.setQueuedSetpoint(controllerState.LowDealgify)));
+            Commands.runOnce(() -> controllerState.setCurrentSetpoint(controllerState.LowDealgify)));
 
     new Trigger(() -> opCon.getHID().getBackButtonPressed())
         .onTrue(
             Commands.runOnce(
-                () -> controllerState.setQueuedSetpoint(controllerState.HighDealgify)));
+                () -> controllerState.setCurrentSetpoint(controllerState.HighDealgify)));
 
     opCon
         .povUp()
-        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().inchesFromGround += 1));
+        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().inchesFromGround += 0.5));
     opCon
         .povDown()
-        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().inchesFromGround -= 1));
+        .onTrue(Commands.runOnce(() -> controllerState.getCurrentSetpoint().inchesFromGround -= 0.5));
 
     opCon
         .povLeft()

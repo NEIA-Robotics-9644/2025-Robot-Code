@@ -1,8 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -12,7 +10,6 @@ import java.util.function.DoubleSupplier;
 
 public class ControllerState extends SubsystemBase {
 
-  NetworkTableEntry useSetpointQueueingEntry;
 
   public class ExtenderSetpoint {
     public double inchesFromGround;
@@ -44,8 +41,6 @@ public class ControllerState extends SubsystemBase {
 
   private ExtenderSetpoint currentSetpoint = INTAKE;
 
-  private ExtenderSetpoint queuedSetpoint = currentSetpoint;
-
   public DriveSpeed[] driveSpeeds = {
     new DriveSpeed(0.5, 0.5), new DriveSpeed(0.75, 0.75), new DriveSpeed(1.0, 1.0)
   };
@@ -53,22 +48,12 @@ public class ControllerState extends SubsystemBase {
   public int currentDriveSpeedIndex = 0;
 
   public ControllerState() {
-    // Initialize the useSetpointQueueing entry
 
-    useSetpointQueueingEntry =
-        NetworkTableInstance.getDefault()
-            .getTable("SmartDashboard")
-            .getEntry("Use Setpoint Queueing");
-    useSetpointQueueingEntry.setBoolean(true); // Default to using setpoint queueing
   }
 
   @Override
   public void periodic() {
-    // Update the useSetpointQueueing entry on the SmartDashboard
-    if (!useSetpointQueueingEntry.getBoolean(false)) {
-      currentSetpoint =
-          queuedSetpoint; // If queueing is disabled, go immediately to the queued setpoint
-    }
+    
   }
 
   public ExtenderSetpoint getCurrentSetpoint() {
@@ -79,13 +64,6 @@ public class ControllerState extends SubsystemBase {
     this.currentSetpoint = currentSetpoint;
   }
 
-  public void setQueuedSetpoint(ExtenderSetpoint queuedSetpoint) {
-    this.queuedSetpoint = queuedSetpoint;
-  }
-
-  public void activateQueuedSetpoint() {
-    this.currentSetpoint = this.queuedSetpoint;
-  }
 
   public DriveSpeed getCurrentDriveSpeed() {
     return driveSpeeds[currentDriveSpeedIndex];
