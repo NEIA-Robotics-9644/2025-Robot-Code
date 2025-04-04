@@ -31,7 +31,7 @@ public class ControllerState extends SubsystemBase {
   }
 
   public ExtenderSetpoint INTAKE = new ExtenderSetpoint(12.5, 10);
-  public ExtenderSetpoint L1 = new ExtenderSetpoint(20, 10);
+  public ExtenderSetpoint L1 = new ExtenderSetpoint(20 - 1, 10);
   public ExtenderSetpoint L2 = new ExtenderSetpoint(26, 30);
   public ExtenderSetpoint L3 = new ExtenderSetpoint(44, 30);
   public ExtenderSetpoint L4 = new ExtenderSetpoint(75, 70);
