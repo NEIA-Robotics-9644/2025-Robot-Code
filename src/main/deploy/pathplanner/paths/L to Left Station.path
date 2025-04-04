@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6636924743909556,
-        "y": 6.101910311259498
+        "x": 2.7812808911181657,
+        "y": 5.992422811473634
       },
       "isLocked": false,
       "linkedName": "L Stop"
     },
     {
       "anchor": {
-        "x": 1.1628073770491802,
-        "y": 7.351588114754097
+        "x": 1.365,
+        "y": 7.34
       },
       "prevControl": {
-        "x": 1.891647407791476,
-        "y": 6.4611085380151145
+        "x": 2.155755266560904,
+        "y": 6.590236987715482
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 4.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -142.98932676639686
+    "rotation": -54.15878343212306
   },
   "reversed": false,
   "folder": "Left Paths",
