@@ -35,8 +35,8 @@ public class ControllerState extends SubsystemBase {
   public ExtenderSetpoint L2 = new ExtenderSetpoint(26, 30);
   public ExtenderSetpoint L3 = new ExtenderSetpoint(44, 30);
   public ExtenderSetpoint L4 = new ExtenderSetpoint(75, 70);
-  public ExtenderSetpoint LowDealgify = new ExtenderSetpoint(24, 0.84);
-  public ExtenderSetpoint HighDealgify = new ExtenderSetpoint(25, 0.84);
+  public ExtenderSetpoint LowDealgify = new ExtenderSetpoint(25, 70);
+  public ExtenderSetpoint HighDealgify = new ExtenderSetpoint(45, 70);
 
   private ExtenderSetpoint currentSetpoint = INTAKE;
 
@@ -85,22 +85,25 @@ public class ControllerState extends SubsystemBase {
   public Command runManualSetpoint(
       Elevator elevator, Pivot pivot, DoubleSupplier heightChange, DoubleSupplier angleChange) {
     return Commands.run(
-        () -> {
-          this.setCurrentSetpoint(
-              new ExtenderSetpoint(
-                  MathUtil.clamp(
-                      this.getCurrentSetpoint().inchesFromGround + heightChange.getAsDouble(),
-                      elevator.getMinInchesFromGround(),
-                      elevator.getMaxInchesFromGround()),
-                  MathUtil.clamp(
-                      this.getCurrentSetpoint().degreesFromVertical + angleChange.getAsDouble(),
-                      pivot.getMinDegreesFromVertical(),
-                      pivot.getMaxDegreesFromVertical())));
+            () -> {
+              this.setCurrentSetpoint(
+                  new ExtenderSetpoint(
+                      MathUtil.clamp(
+                          this.getCurrentSetpoint().inchesFromGround + heightChange.getAsDouble(),
+                          elevator.getMinInchesFromGround(),
+                          elevator.getMaxInchesFromGround()),
+                      MathUtil.clamp(
+                          this.getCurrentSetpoint().degreesFromVertical + angleChange.getAsDouble(),
+                          pivot.getMinDegreesFromVertical(),
+                          pivot.getMaxDegreesFromVertical())));
 
-          if (elevator.limitSwitchTripped()) {
-            elevator.zeroEncoders();
-            System.out.println("In manual mode, zeroed encoders");
-          }
-        });
+              if (elevator.limitSwitchTripped()) {
+                elevator.zeroEncoders();
+                System.out.println("In manual mode, zeroed encoders");
+              }
+            })
+        .alongWith(elevator.goToHeight(() -> currentSetpoint.inchesFromGround))
+        .alongWith(pivot.goToAngle(() -> currentSetpoint.degreesFromVertical))
+        .withName("Manual Extender Control");
   }
 }

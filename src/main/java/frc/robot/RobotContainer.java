@@ -4,7 +4,6 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -110,7 +109,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim(), new LimitSwitchSensorIOSim());
         pivot = new Pivot(new PivotIOSim());
         intakeWheels = new Intake(new IntakeWheelIOSim());
-        climber = new Climber(new ClimberIOSim(), 9, 8);
+        climber = new Climber(new ClimberIOSim(), 9, 7);
         break;
       default:
         // Real robot, instantiate hardware IO implementations
@@ -222,23 +221,29 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices");
 
     autoChooser.addOption("Three Piece Left", new PathPlannerAuto("Three Piece Left", false));
+
+    autoChooser.addOption(
+        "Slow Three Piece Left", new PathPlannerAuto("Slow Three Piece Left", false));
     autoChooser.addOption(
         "Three Piece Right", new PathPlannerAuto("Three Piece Right Unmirrored", true));
 
     autoChooser.addOption(
-        "Three Piece Right - Unique", new PathPlannerAuto("Three Piece Right - Unique", false));
+        "Three Piece Right Unique", new PathPlannerAuto("Three Piece Right Unique", false));
     autoChooser.addOption("Two Piece Left", new PathPlannerAuto("Two Piece Left", false));
 
     autoChooser.addOption("One Piece Left", new PathPlannerAuto("One Piece Left", false));
     autoChooser.addOption(
         "One Piece Right", new PathPlannerAuto("One Piece Right Unmirrored", true));
 
-    autoChooser.addOption("Delayed One Piece Left", new PathPlannerAuto("One Piece Left", false));
+    autoChooser.addOption(
+        "Delayed One Piece Left", new PathPlannerAuto("Delayed One Piece Left", false));
     autoChooser.addOption(
         "Delayed One Piece Right", new PathPlannerAuto("Delayed One Piece Right Unmirrored", true));
 
     autoChooser.addOption(
         "Drive Forward", Commands.run(() -> drive.runVelocity(new ChassisSpeeds(1, 0, 0))));
+
+    autoChooser.addOption("Center Left", new PathPlannerAuto("One Piece Left"));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -330,9 +335,9 @@ public class RobotContainer {
         climber.moveWithVelocity(
             () -> {
               if (driveCon.getHID().getPOV() == 0) {
-                return 50;
+                return 20;
               } else if (driveCon.getHID().getPOV() == 180) {
-                return -50;
+                return -20;
               } else {
                 return 0;
               }
@@ -374,17 +379,15 @@ public class RobotContainer {
                   endEffectorWheels.setVelocity(0);
                 }));
 
-    new Trigger(DriverStation::isTeleopEnabled).onTrue(elevator.home());
+    // new Trigger(DriverStation::isEnabled).onTrue(elevator.home());
 
-    elevator
-        .isHomed()
-        .onTrue(
-            ExtenderCommands.goToHeightThenPivot(
-                elevator,
-                pivot,
-                extenderConstraints,
-                () -> controllerState.getCurrentSetpoint().inchesFromGround,
-                () -> controllerState.getCurrentSetpoint().degreesFromVertical));
+    elevator.setDefaultCommand(
+        ExtenderCommands.goToHeightThenPivot(
+            elevator,
+            pivot,
+            extenderConstraints,
+            () -> controllerState.getCurrentSetpoint().inchesFromGround,
+            () -> controllerState.getCurrentSetpoint().degreesFromVertical));
 
     opCon
         .leftTrigger(0.05)

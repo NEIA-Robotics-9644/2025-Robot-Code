@@ -15,8 +15,8 @@ public class AutoCommands {
   public static Command autoScore(
       boolean slow, ReefSide side, Drive drive, EndEffector endEffector, ControllerState conState) {
 
-    var delayUntilAutoAlign = 1 - 0.4;
-    var delayUntilScore = 0.65 + (slow ? 1.5 : 0);
+    var delayUntilAutoAlign = 0;
+    var delayUntilScore = 1.4 + (slow ? 2.5 : 0);
     var scoreDuration = 0.28;
 
     return conState
