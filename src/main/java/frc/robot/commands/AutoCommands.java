@@ -16,7 +16,7 @@ public class AutoCommands {
       boolean slow, ReefSide side, Drive drive, EndEffector endEffector, ControllerState conState) {
 
     var delayUntilAutoAlign = 0;
-    var delayUntilScore = 1.4 + (slow ? 2.5 : 0);
+    var delayUntilScore = 1.3 + (slow ? 2.5 : 0);
     var scoreDuration = 0.28;
 
     return conState
