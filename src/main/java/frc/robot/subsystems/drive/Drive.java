@@ -344,7 +344,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
 
   /** Returns the measured chassis speeds of the robot. */
   @AutoLogOutput(key = "SwerveChassisSpeeds/Measured")
-  private ChassisSpeeds getChassisSpeeds() {
+  public ChassisSpeeds getChassisSpeeds() {
     return kinematics.toChassisSpeeds(getModuleStates());
   }
 
@@ -382,6 +382,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
   public void setPose(Pose2d pose) {
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
   }
+
 
   /** Adds a new timestamped vision measurement. */
   public void addVisionMeasurement(

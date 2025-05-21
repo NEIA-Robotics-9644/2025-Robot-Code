@@ -3,7 +3,10 @@ package frc.robot;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -44,6 +47,8 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.ExtenderConstraints;
+import frc.robot.util.LoggedTunableNumber;
+
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -74,6 +79,9 @@ public class RobotContainer {
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
+
+    private LoggedTunableNumber alignPredictionSeconds =
+        new LoggedTunableNumber("Align Prediction Seconds", 0.3);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -249,10 +257,39 @@ public class RobotContainer {
     configureButtonBindings();
   }
 
-  private Command joystickApproach(Supplier<Pose2d> approachPose) {
-    return DriveCommands.joystickApproach(
-        drive, () -> -driveCon.getHID().getLeftY() * 0.9, approachPose);
-  }
+    private Command joystickApproach(Supplier<Pose2d> approachPose) {
+        return DriveCommands.joystickApproach(
+            drive, () -> -driveCon.getHID().getLeftY() * 0.9, approachPose);
+    }
+    
+    private Pose2d getFuturePose(double seconds)
+    {
+        return drive.getPose().exp(drive.getChassisSpeeds().toTwist2d(seconds));
+    }
+
+    public Command spitAndStrafe(ReefSide side) {
+        return Commands.deadline(
+            AutoCommands.autoL1(controllerState, endEffectorWheels),
+            Commands.either(
+                joystickApproach(
+                    () -> FieldConstants.getNearestReefBranch(
+                        getFuturePose(alignPredictionSeconds.get()), side
+                    ).transformBy(
+                        new Transform2d(0, Units.inchesToMeters(24), new Rotation2d())
+                    )
+                ),
+                joystickApproach(
+                    () -> FieldConstants.getNearestReefBranch(
+                        getFuturePose(alignPredictionSeconds.get()), side
+                    ).transformBy(
+                        new Transform2d(0, Units.inchesToMeters(-24), new Rotation2d())
+                    )
+                ),
+                () -> side == ReefSide.RIGHT
+            )
+        );
+    }    
+
 
   public void onTeleopEnable() {}
 
@@ -319,6 +356,14 @@ public class RobotContainer {
     driveCon
         .y()
         .whileTrue(joystickApproach(() -> FieldConstants.getNearestReefFace(drive.getPose())));
+
+    driveCon
+        .leftBumper().and(driveCon.a())
+        .whileTrue(spitAndStrafe(ReefSide.LEFT));
+
+    driveCon
+        .rightBumper().and(driveCon.a())
+        .whileTrue(spitAndStrafe(ReefSide.RIGHT));
 
     // Drop is left d pad plus burger button
     var drop = new Trigger(() -> driveCon.getHID().getPOV() == 270).and(driveCon.start());

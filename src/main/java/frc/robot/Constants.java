@@ -15,29 +15,6 @@ public final class Constants {
   // Set this to false during comp to lock in the tuning values
   public static boolean tuningMode = true;
 
-  public static Map<String, Double> extenderAngles =
-      Map.of(
-          "L1", 25.0,
-          "L2", 30.0,
-          "L3", 35.0,
-          "L4", 100.0,
-          "Intake", 1.0,
-          "Process", 2.0,
-          "L2Dealgify", 3.0,
-          "L3Dealgify", 4.0,
-          "Zero", 0.0);
-  public static Map<String, Double> effectorAngles =
-      Map.of(
-          "L1", 25.0,
-          "L2", 30.0,
-          "L3", 35.0,
-          "L4", 100.0,
-          "Intake", 1.0,
-          "Process", 2.0,
-          "L2Dealgify", 3.0,
-          "L3Dealgify", 4.0,
-          "Zero", 0.0);
-
   public static enum Mode {
     /** Running on a real robot. */
     REAL,
