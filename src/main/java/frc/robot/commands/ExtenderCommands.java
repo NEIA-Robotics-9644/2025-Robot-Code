@@ -38,4 +38,17 @@ public class ExtenderCommands {
                 }))
         .withName("Extender Movement With Constraints");
   }
+
+  public static Command goToHeightNoConstraints(
+    Elevator elevator,
+    Pivot pivot,
+    DoubleSupplier inchesFromGround,
+    DoubleSupplier degreesFromVertical
+  ) {
+    return elevator
+      .goToHeight(inchesFromGround),
+      .alongWith(
+        pivot.goToAngle(degreesFromVertical)
+      ).withName("Extender Movement Without Constraints")
+  }
 }

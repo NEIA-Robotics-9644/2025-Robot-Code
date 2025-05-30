@@ -8,7 +8,6 @@ import frc.robot.ControllerState;
 import frc.robot.FieldConstants;
 import frc.robot.FieldConstants.ReefSide;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.end_effector.EndEffector;
 
 public class AutoCommands {
@@ -42,15 +41,15 @@ public class AutoCommands {
 
   public static Command autoL1(ControllerState conState, EndEffector endEffector) {
 
-    var scoreDuration = 0.28;
-    
+    var scoreDuration = 1;
+
     return Commands.sequence(
-      conState.setSetpoint(conState.L1)
-      .alongWith(
-        Commands.startEnd(
-          () -> endEffector.setVelocity(0.25),
-          () -> endEffector.setVelocity(0)).withTimeout(scoreDuration))
-    );
+        conState
+            .setSetpoint(conState.L1)
+            .alongWith(
+                Commands.startEnd(
+                        () -> endEffector.setVelocity(0.6), () -> endEffector.setVelocity(0))
+                    .withTimeout(scoreDuration)));
   }
 
   public static Command autoScoreAgainstReef(ReefTagAlignCommand.AlignGoal goal) {

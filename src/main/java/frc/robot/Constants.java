@@ -1,7 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
-import java.util.Map;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
