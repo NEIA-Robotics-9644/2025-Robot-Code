@@ -12,3 +12,5 @@ We program our robot with Java, using WPILib.
 
 ## Code Structure
 We use the command-based structure specified by WPILib, with some modifications.  We use Input-Output interfaces for any hardware-specific code to allow our subsystems to be fully hardware-independent and allow for full system simulation through the creation of mockup Input-Output interfaces.
+
+![robot](robot.JPG)
