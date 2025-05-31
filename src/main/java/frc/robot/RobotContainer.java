@@ -285,7 +285,7 @@ public class RobotContainer {
                         getFuturePose(alignPredictionSeconds.get()), side)
                     .transformBy(
                         new Transform2d(0, Units.inchesToMeters(-24), new Rotation2d()))),
-        () -> side == ReefSide.RIGHT)); */
+        () -> side == ReefSide.RIGHT));*/
 
         Commands.either(
             L1joystickApproach(
@@ -397,6 +397,24 @@ public class RobotContainer {
     // Lock is screenshare button plus burger button
 
     driveCon.leftBumper().onTrue(Commands.runOnce(() -> controllerState.decreaseDriveSpeedIndex()));
+
+    driveCon.povUp().onTrue(Commands.runOnce(() -> ExtenderCommands.autoAlgaeIntake(
+        controllerState, 
+        endEffectorWheels, 
+        pivot, 
+        2.0, //tune later
+        100.0, //tune later
+        controllerState.LowDealgify
+        )));
+
+    driveCon.povUp().onTrue(Commands.runOnce(() -> ExtenderCommands.autoAlgaeIntake(
+        controllerState, 
+        endEffectorWheels, 
+        pivot, 
+        2.0, //tune later
+        100.0, //tune later
+        controllerState.HighDealgify
+        )));
 
     driveCon
         .rightBumper()
