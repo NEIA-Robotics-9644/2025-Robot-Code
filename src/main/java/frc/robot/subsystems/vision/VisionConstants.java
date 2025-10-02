@@ -28,18 +28,18 @@ public class VisionConstants {
   public static List<Integer> reefTags = List.of(6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22);
 
   // Camera names, must match names configured on coprocessor
-  public static String camera0Name = "camera_back"; // left?
-  public static String camera1Name = "camera_front"; // right?
+  public static String camera0Name = "camera_right";
+  public static String camera1Name = "camera_left";
   public static String camera2Name = "camera_middle"; // middle
 
   // Robot to camera transforms
   // (Not used by Limelight, configure in web UI instead)
   public static Transform3d robotToCamera0 =
       new Transform3d(
-          0.302, -0.238 - 0.051, 0.155, new Rotation3d(0, Math.toRadians(10), Math.toRadians(55)));
+          0.302, -0.238 - 0.051, 0.155, new Rotation3d(0, Math.toRadians(10), Math.toRadians(50)));
   public static Transform3d robotToCamera1 =
       new Transform3d(
-          0.302, 0.238 - 0.051, 0.155, new Rotation3d(0, Math.toRadians(10), Math.toRadians(-51)));
+          0.302, 0.238 - 0.051, 0.155, new Rotation3d(0, Math.toRadians(10), Math.toRadians(-39)));
   public static Transform3d robotToCamera2 =
       new Transform3d(
           Units.inchesToMeters(7.204),

@@ -398,23 +398,31 @@ public class RobotContainer {
 
     driveCon.leftBumper().onTrue(Commands.runOnce(() -> controllerState.decreaseDriveSpeedIndex()));
 
-    driveCon.povUp().onTrue(Commands.runOnce(() -> ExtenderCommands.autoAlgaeIntake(
-        controllerState, 
-        endEffectorWheels, 
-        pivot, 
-        2.0, //tune later
-        100.0, //tune later
-        controllerState.LowDealgify
-        )));
+    driveCon
+        .povUp()
+        .onTrue(
+            Commands.runOnce(
+                () ->
+                    ExtenderCommands.autoAlgaeIntake(
+                        controllerState,
+                        endEffectorWheels,
+                        pivot,
+                        2.0, // tune later
+                        100.0, // tune later
+                        controllerState.LowDealgify)));
 
-    driveCon.povUp().onTrue(Commands.runOnce(() -> ExtenderCommands.autoAlgaeIntake(
-        controllerState, 
-        endEffectorWheels, 
-        pivot, 
-        2.0, //tune later
-        100.0, //tune later
-        controllerState.HighDealgify
-        )));
+    driveCon
+        .povUp()
+        .onTrue(
+            Commands.runOnce(
+                () ->
+                    ExtenderCommands.autoAlgaeIntake(
+                        controllerState,
+                        endEffectorWheels,
+                        pivot,
+                        2.0, // tune later
+                        100.0, // tune later
+                        controllerState.HighDealgify)));
 
     driveCon
         .rightBumper()

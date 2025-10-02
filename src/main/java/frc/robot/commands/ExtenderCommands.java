@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.ControllerState;
 import frc.robot.ControllerState.ExtenderSetpoint;
 import frc.robot.subsystems.elevator.Elevator;
@@ -43,35 +42,36 @@ public class ExtenderCommands {
                 }))
         .withName("Extender Movement With Constraints");
   }
-  
+
   public static Command goToHeightNoConstraints(
       Elevator elevator,
       Pivot pivot,
       DoubleSupplier inchesFromGround,
-      DoubleSupplier degreesFromVertical)   {
+      DoubleSupplier degreesFromVertical) {
     return elevator
-      .goToHeight(inchesFromGround)
-      .alongWith(
-        pivot.goToAngle(degreesFromVertical)
-      ).withName("Extender Movement Without Constraints");
+        .goToHeight(inchesFromGround)
+        .alongWith(pivot.goToAngle(degreesFromVertical))
+        .withName("Extender Movement Without Constraints");
   }
 
   public static Command autoAlgaeIntake(
-      ControllerState controller, 
-      EndEffector endEffector, 
-      Pivot pivot, 
-      Double scoreDuration, 
-      Double angle, 
-      ExtenderSetpoint setpoint)  {
-    return Commands.sequence( 
-      controller.setSetpoint(setpoint).alongWith(
-        Commands.startEnd(
-          () -> endEffector.setVelocity(0.25),
-          () -> {
-            endEffector.setVelocity(0);
-            pivot.goToAngle(angle);
-          }
-        ).withTimeout(scoreDuration)
-      )).withName("Auto Algae Inkae to Low or High");
+      ControllerState controller,
+      EndEffector endEffector,
+      Pivot pivot,
+      Double scoreDuration,
+      Double angle,
+      ExtenderSetpoint setpoint) {
+    return Commands.sequence(
+            controller
+                .setSetpoint(setpoint)
+                .alongWith(
+                    Commands.startEnd(
+                            () -> endEffector.setVelocity(0.25),
+                            () -> {
+                              endEffector.setVelocity(0);
+                              pivot.goToAngle(angle);
+                            })
+                        .withTimeout(scoreDuration)))
+        .withName("Auto Algae Inkae to Low or High");
   }
 }
