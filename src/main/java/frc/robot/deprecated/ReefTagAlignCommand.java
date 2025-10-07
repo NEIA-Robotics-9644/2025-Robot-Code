@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.deprecated;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;

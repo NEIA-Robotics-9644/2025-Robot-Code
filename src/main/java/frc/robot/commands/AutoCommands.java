@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.ControllerState;
 import frc.robot.FieldConstants;
 import frc.robot.FieldConstants.ReefSide;
+import frc.robot.deprecated.ReefTagAlignCommand;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.end_effector.EndEffector;
 

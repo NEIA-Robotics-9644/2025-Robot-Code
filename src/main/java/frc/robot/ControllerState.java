@@ -37,6 +37,9 @@ public class ControllerState extends SubsystemBase {
   public ExtenderSetpoint L4 = new ExtenderSetpoint(75, 70);
   public ExtenderSetpoint LowDealgify = new ExtenderSetpoint(25, 70);
   public ExtenderSetpoint HighDealgify = new ExtenderSetpoint(45, 70);
+  public ExtenderSetpoint HighAlgaeIntake = new ExtenderSetpoint(45, 70);
+  public ExtenderSetpoint LowAlgaeIntake = new ExtenderSetpoint(25, 70);
+  public ExtenderSetpoint AlgaeClamp = new ExtenderSetpoint(20, 55);
 
   private ExtenderSetpoint currentSetpoint = INTAKE;
 
