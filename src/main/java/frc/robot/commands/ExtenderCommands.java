@@ -74,4 +74,9 @@ public class ExtenderCommands {
                         .withTimeout(scoreDuration)))
         .withName("Auto Algae Inkae to Low or High");
   }
+
+  public static Command autoAlgaeScore(){
+
+    return Commands.runOnce(() -> System.out.println("Not implemented"));
+  }
 }
